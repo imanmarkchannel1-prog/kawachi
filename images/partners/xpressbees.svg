@@ -1,0 +1,8 @@
+<svg viewBox="0 0 160 35" xmlns="http://www.w3.org/2000/svg">
+  <g transform="translate(8, 6)">
+    <path d="M2 14 C1 10, 3 6, 7 6 C10 6, 12 9, 13 11 C14 9, 16 6, 19 6 C23 6, 25 10, 24 14 C22 17, 16 20, 13 20 C10 20, 4 17, 2 14 Z" fill="#f37021" opacity="0.85" transform="rotate(-15, 13, 13)" />
+    <text x="30" y="17" font-family="'Inter', system-ui, -apple-system, sans-serif" font-weight="900" font-size="16" fill="#132c66" letter-spacing="-0.04em">
+      xpress<tspan fill="#f37021">bees</tspan>
+    </text>
+  </g>
+</svg>

@@ -1,0 +1,1371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kawachi - Premium Headless WooCommerce Marketplace</title>
+  <meta name="description" content="Explore a curated selection of lifestyle, wellness, home appliances, and smart gadgets at Kawachi. High-performance, premium utility shopping.">
+  <link rel="stylesheet" href="css/global-styles.css?v=4.6">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+</head>
+<body>
+  <!-- 2. Header -->
+  <header class="main-header marketplace-header" id="site-header">
+    <div class="container header-container">
+      
+      <!-- Logo Group -->
+      <div class="logo-group">
+        <a href="index.html" class="logo brand-logo white-logo" id="site-logo">
+          <span>K</span><span class="logo-body">awac<span class="logo-tagline">life banaye easy</span></span><span>hi<sup>&reg;</sup></span>
+        </a>
+      </div>
+
+      <!-- All Categories Dropdown -->
+      <div class="category-select-container">
+        <select class="all-categories-select" aria-label="All Categories" onchange="if(this.value && this.value !== '#') window.location.href=this.value;">
+          <option value="#">All Categories</option>
+          <option value="search.html?q=Furniture">Home Furniture</option>
+          <option value="search.html?q=Kitchen">Kitchen Storage</option>
+          <option value="search.html?q=Decor">Home Decor</option>
+          <option value="search.html?q=Beauty">Health &amp; Beauty</option>
+          <option value="search.html?q=Utility">Utility Products</option>
+        </select>
+      </div>
+
+      <!-- Search Bar -->
+      <div class="search-container">
+        <form action="search.html" method="GET" id="header-search-form" style="display: flex; align-items: center; width: 100%;">
+          <div class="search-bar-inner">
+            <input type="text" class="search-input" name="q" placeholder="Search products, brands and categories..." aria-label="Search Products" autocomplete="off" />
+            <button type="submit" class="search-submit-btn" aria-label="Submit Search">
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+              </svg>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Utilities (Wishlist, Account, Orders & Returns, Cart) -->
+      <div class="header-utilities">
+        <a href="search.html?q=Wishlist" class="utility-link">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+          </svg>
+          <span>Wishlist</span>
+        </a>
+        <a href="support-center.html" class="utility-link">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+          </svg>
+          <span>Account</span>
+        </a>
+        <a href="returns-warranties.html" class="utility-link">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+          </svg>
+          <span>Orders &amp; Returns</span>
+        </a>
+        <!-- Cart Trigger -->
+        <button id="cart-drawer-trigger" class="utility-link" aria-label="Open Shopping Cart" aria-expanded="false">
+          <div style="position: relative; display: flex; align-items: center; justify-content: center;">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+            </svg>
+            <span class="badge" id="cart-badge-count">0</span>
+          </div>
+          <span>Cart</span>
+        </button>
+      </div>
+
+    </div>
+    
+    <!-- Secondary Navigation Sub-bar inside header to sticky together -->
+    <div class="sub-navbar-redesign">
+      <div class="container sub-nav-container">
+        <div class="sub-nav-left">
+          <a href="#" class="sub-nav-link all-menu">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" style="margin-right: 4px; display: inline-block; vertical-align: middle;">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+            <strong>All</strong>
+          </a>
+          <a href="#home-furniture" class="sub-nav-link">Home Furniture</a>
+          <a href="#kitchen-storage" class="sub-nav-link">Kitchen Storage</a>
+          <a href="#study-office" class="sub-nav-link">Study &amp; Office</a>
+          <a href="#utility-products" class="sub-nav-link">Utility Products</a>
+          <a href="search.html?q=new" class="sub-nav-link">New Arrivals</a>
+          <a href="#deals-of-the-day" class="sub-nav-link highlighted-link">Deals</a>
+          <a href="contact.html?type=bulk" class="sub-nav-link">Bulk Orders</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search Backdrop Overlay -->
+    <div class="search-backdrop" id="search-backdrop"></div>
+  </header>
+<main id="main-content">
+  <!-- Centered container layout wrapper for Amazon/Flipkart styling -->
+  <div class="centered-marketplace-layout">
+    
+    <!-- 1. Hero Auto-Scrolling Banner Carousel -->
+    <section class="hero-carousel-section">
+      <div class="carousel-container-inner">
+        <!-- Navigation Arrows -->
+        <button class="carousel-arrow prev" id="hero-carousel-prev" aria-label="Previous Slide">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
+          </svg>
+        </button>
+        <button class="carousel-arrow next" id="hero-carousel-next" aria-label="Next Slide">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </button>
+
+        <!-- Carousel Track -->
+        <div class="carousel-slides-track" id="hero-slides-track">
+          
+          <!-- Slide 1: Upgrade Your Home -->
+          <div class="carousel-slide slide-active" style="background: linear-gradient(135deg, #091e3a 0%, #10346c 100%);">
+            <div class="slide-content">
+              <span class="slide-badge">LATEST SMART DESKS &amp; CHAIRS</span>
+              <h2 class="slide-title">Upgrade Your Home,<br><span class="highlight">Elevate Your Life</span></h2>
+              <p class="slide-subtitle">Smart storage, space-saving furniture &amp; innovative solutions for modern living.</p>
+              <a href="#home-furniture" class="slide-btn">Explore Now</a>
+            </div>
+            <div class="slide-images-group">
+              <img src="images/products/meditation_chair.png" alt="Floor Chair" class="slide-img-1">
+              <img src="images/products/laptop_desk.png" alt="Laptop Table" class="slide-img-2">
+              <img src="images/products/trolley_organizer.png" alt="Trolley Rack" class="slide-img-3">
+            </div>
+          </div>
+
+          <!-- Slide 2: Kitchen Organizers -->
+          <div class="carousel-slide" style="background: linear-gradient(135deg, #062f1b 0%, #0d5c36 100%);">
+            <div class="slide-content">
+              <span class="slide-badge">KITCHEN DE-CLUTTER SALE</span>
+              <h2 class="slide-title">Organize Your Kitchen,<br><span class="highlight">Organize Your Mind</span></h2>
+              <p class="slide-subtitle">Multi-tier microwave racks, slide-out trolleys, and modern steel basket systems.</p>
+              <a href="#kitchen-storage" class="slide-btn">Shop Kitchen</a>
+            </div>
+            <div class="slide-images-group">
+              <img src="images/products/kitchen_rack.png" alt="Kitchen Rack" class="slide-img-1">
+              <img src="images/products/trolley_organizer.png" alt="Trolley Organizer" class="slide-img-2">
+              <img src="images/products/wall_shelves.png" alt="Wall Shelf" class="slide-img-3">
+            </div>
+          </div>
+
+          <!-- Slide 3: Smart Office -->
+          <div class="carousel-slide" style="background: linear-gradient(135deg, #2a0845 0%, #6441a5 100%);">
+            <div class="slide-content">
+              <span class="slide-badge">WORK &amp; STUDY EFFICIENCY</span>
+              <h2 class="slide-title">Smart Work From Home,<br><span class="highlight">Enhanced Focus</span></h2>
+              <p class="slide-subtitle">Premium adjustable study desks, ergonomic chairs, and laptop bed tables.</p>
+              <a href="#study-office" class="slide-btn">Explore Office</a>
+            </div>
+            <div class="slide-images-group">
+              <img src="images/products/laptop_desk.png" alt="Laptop Bed Table" class="slide-img-1">
+              <img src="images/products/bedside_table.png" alt="Bedside Drawer" class="slide-img-2">
+              <img src="images/products/wall_shelves.png" alt="Office Shelf" class="slide-img-3">
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Carousel Indicators -->
+        <div class="carousel-dots-indicator" id="hero-dots-indicator">
+          <span class="carousel-dot-indicator dot-active" data-slide-index="0"></span>
+          <span class="carousel-dot-indicator" data-slide-index="1"></span>
+          <span class="carousel-dot-indicator" data-slide-index="2"></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. 4-Box Discovery Grid (Trending, Bestsellers, Home Makeover, Utility Hacks) -->
+    <section class="discovery-grid-section">
+      <div class="discovery-grid">
+        
+        <!-- Box 1: Trending Now -->
+        <div class="discovery-card">
+          <h3 class="discovery-card-title">Trending Now</h3>
+          <p class="discovery-card-subtitle">Most popular items right now</p>
+          <div class="discovery-card-2x2">
+            <a href="single-product.html?id=105" class="discovery-grid-item">
+              <img src="images/products/meditation_chair.png" alt="Meditation Chair">
+              <span>Floor Chair</span>
+            </a>
+            <a href="single-product.html?id=101" class="discovery-grid-item">
+              <img src="images/products/laptop_desk.png" alt="Laptop Table">
+              <span>Smart Desk</span>
+            </a>
+            <a href="single-product.html?id=103" class="discovery-grid-item">
+              <img src="images/products/wall_shelves.png" alt="Floating Shelves">
+              <span>Wall Shelves</span>
+            </a>
+            <a href="single-product.html?id=113" class="discovery-grid-item">
+              <img src="images/products/trolley_organizer.png" alt="Trolley Organizer">
+              <span>Trolley Rack</span>
+            </a>
+          </div>
+          <a href="#trending-now" class="discovery-card-link">Explore all</a>
+        </div>
+
+        <!-- Box 2: Bestsellers -->
+        <div class="discovery-card">
+          <h3 class="discovery-card-title">Bestsellers</h3>
+          <p class="discovery-card-subtitle">Top picks by our customers</p>
+          <div class="discovery-card-2x2">
+            <a href="single-product.html?id=102" class="discovery-grid-item">
+              <img src="images/products/kitchen_rack.png" alt="Kitchen Rack">
+              <span>Kitchen Rack</span>
+            </a>
+            <a href="single-product.html?id=104" class="discovery-grid-item">
+              <img src="images/products/steam_sauna.png" alt="Steam Sauna">
+              <span>Sauna Box</span>
+            </a>
+            <a href="single-product.html?id=106" class="discovery-grid-item">
+              <img src="images/products/bedside_table.png" alt="Bedside Table">
+              <span>Bedside Table</span>
+            </a>
+            <a href="single-product.html?id=101" class="discovery-grid-item">
+              <img src="images/products/laptop_desk.png" alt="Laptop Desk">
+              <span>Study Table</span>
+            </a>
+          </div>
+          <a href="#best-sellers" class="discovery-card-link">Explore all</a>
+        </div>
+
+        <!-- Box 3: Home Makeover -->
+        <div class="discovery-card">
+          <h3 class="discovery-card-title">Home Makeover</h3>
+          <p class="discovery-card-subtitle">Style your space</p>
+          <div class="discovery-card-2x2">
+            <a href="single-product.html?id=103" class="discovery-grid-item">
+              <img src="images/products/wall_shelves.png" alt="Wall Mounted Shelves">
+              <span>Wall Shelves</span>
+            </a>
+            <a href="single-product.html?id=106" class="discovery-grid-item">
+              <img src="images/products/bedside_table.png" alt="Bedside Drawers">
+              <span>Bedside Table</span>
+            </a>
+            <a href="single-product.html?id=105" class="discovery-grid-item">
+              <img src="images/products/meditation_chair.png" alt="Floor Sofa">
+              <span>Floor Chair</span>
+            </a>
+            <a href="single-product.html?id=113" class="discovery-grid-item">
+              <img src="images/products/trolley_organizer.png" alt="Utility Organizer">
+              <span>Storage Cart</span>
+            </a>
+          </div>
+          <a href="#home-furniture" class="discovery-card-link">Explore all</a>
+        </div>
+
+        <!-- Box 4: Smart Utilities (Replacing sign in) -->
+        <div class="discovery-card">
+          <h3 class="discovery-card-title">Smart Utilities</h3>
+          <p class="discovery-card-subtitle">Clever household hacks</p>
+          <div class="discovery-card-2x2">
+            <a href="single-product.html?id=113" class="discovery-grid-item">
+              <img src="images/products/trolley_organizer.png" alt="Storage Trolley">
+              <span>Storage Trolley</span>
+            </a>
+            <a href="single-product.html?id=102" class="discovery-grid-item">
+              <img src="images/products/kitchen_rack.png" alt="Kitchen Shelf">
+              <span>Kitchen Shelf</span>
+            </a>
+            <a href="single-product.html?id=104" class="discovery-grid-item">
+              <img src="images/products/steam_sauna.png" alt="Finnish Sauna">
+              <span>Sauna Box</span>
+            </a>
+            <a href="single-product.html?id=101" class="discovery-grid-item">
+              <img src="images/products/laptop_desk.png" alt="Bedside Desk">
+              <span>Study Desk</span>
+            </a>
+          </div>
+          <a href="#utility-products" class="discovery-card-link">Explore all</a>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 3. Deals of the Day (Auto-Scrolling Slider) -->
+    <section class="deals-of-the-day-section" id="deals-of-the-day">
+      <div class="deals-header">
+        <div class="deals-title-group">
+          <h2 class="deals-heading">Deals of the Day</h2>
+          <!-- Countdown Timer -->
+          <div class="deals-countdown">
+            <span class="countdown-tag">Ends in</span>
+            <div class="countdown-clock-digits" id="deals-countdown-clock">
+              <span class="digit-box" id="clock-h">08</span>
+              <span class="separator">:</span>
+              <span class="digit-box" id="clock-m">45</span>
+              <span class="separator">:</span>
+              <span class="digit-box" id="clock-s">32</span>
+            </div>
+          </div>
+        </div>
+        <a href="#best-sellers" class="deals-view-all">View all &rarr;</a>
+      </div>
+
+      <div class="deals-slider-outer">
+        <!-- Navigation Arrows -->
+        <button class="deals-arrow prev" id="deals-prev-btn" aria-label="Previous Deal">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
+          </svg>
+        </button>
+        <button class="deals-arrow next" id="deals-next-btn" aria-label="Next Deal">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </button>
+
+        <div class="deals-slider-wrapper">
+          <div class="deals-slider-track" id="deals-slider-track">
+            <!-- Populated dynamically with 6 deals in an auto-scrolling row -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Marketplace Features Trust Strip -->
+    <section class="marketplace-trust-section">
+      <div class="trust-container-inner">
+        
+        <!-- Trust Box 1 -->
+        <div class="trust-item-box">
+          <div class="trust-item-icon">
+            <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10M13 8h7.88a1 1 0 01.97.757l1.37 5.5A1 1 0 0122.25 15.5h-1.25" />
+            </svg>
+          </div>
+          <div class="trust-item-info">
+            <h4 class="trust-title">Free Delivery</h4>
+            <p class="trust-desc">On orders above ₹12,000</p>
+          </div>
+        </div>
+
+        <!-- Trust Box 2 -->
+        <div class="trust-item-box">
+          <div class="trust-item-icon">
+            <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 7.89M9 11l3 3L21 4"></path>
+            </svg>
+          </div>
+          <div class="trust-item-info">
+            <h4 class="trust-title">Easy Returns</h4>
+            <p class="trust-desc">Within 7 days</p>
+          </div>
+        </div>
+
+        <!-- Trust Box 3 -->
+        <div class="trust-item-box">
+          <div class="trust-item-icon">
+            <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+            </svg>
+          </div>
+          <div class="trust-item-info">
+            <h4 class="trust-title">Secure Payments</h4>
+            <p class="trust-desc">100% safe &amp; secure</p>
+          </div>
+        </div>
+
+        <!-- Trust Box 4 -->
+        <div class="trust-item-box">
+          <div class="trust-item-icon">
+            <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138z"></path>
+            </svg>
+          </div>
+          <div class="trust-item-info">
+            <h4 class="trust-title">Quality Assured</h4>
+            <p class="trust-desc">Tested &amp; Trusted</p>
+          </div>
+        </div>
+
+        <!-- Trust Box 5 -->
+        <div class="trust-item-box">
+          <div class="trust-item-icon">
+            <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+          </div>
+          <div class="trust-item-info">
+            <h4 class="trust-title">24/7 Support</h4>
+            <p class="trust-desc">We're here to help</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 5. Shop by Category & Best Sellers (Side-by-side section) -->
+    <section class="split-category-best-sellers-section">
+      <div class="split-grid-row">
+        
+        <!-- Left Side: Shop by Category bubbles (60% width) -->
+        <div class="bubble-categories-card" style="padding: 0 !important; overflow: hidden; display: flex; flex-direction: column;">
+          <div class="split-card-header" style="padding: 18px 20px; background-color: #ffffff;">
+            <h3 class="split-section-title" style="margin: 0 !important;">Shop by Category</h3>
+          </div>
+          <div class="split-card-body" style="padding: 24px 20px; flex-grow: 1; display: flex; flex-direction: column; gap: 24px;">
+            <div class="bubble-categories-row">
+              
+              <!-- Category Bubble 1 -->
+              <a href="#home-furniture" class="bubble-category-item">
+                <div class="bubble-image-wrap">
+                  <div class="bubble-image-inner">
+                    <img src="images/products/meditation_chair.png" alt="Sofa &amp; Chairs">
+                  </div>
+                </div>
+                <span class="bubble-name">Sofa &amp; Chairs</span>
+              </a>
+
+              <!-- Category Bubble 2 -->
+              <a href="#home-furniture" class="bubble-category-item">
+                <div class="bubble-image-wrap">
+                  <div class="bubble-image-inner">
+                    <img src="images/products/laptop_desk.png" alt="Tables">
+                  </div>
+                </div>
+                <span class="bubble-name">Tables</span>
+              </a>
+
+              <!-- Category Bubble 3 -->
+              <a href="#kitchen-storage" class="bubble-category-item">
+                <div class="bubble-image-wrap">
+                  <div class="bubble-image-inner">
+                    <img src="images/products/kitchen_rack.png" alt="Storage Racks">
+                  </div>
+                </div>
+                <span class="bubble-name">Storage Racks</span>
+              </a>
+
+              <!-- Category Bubble 4 -->
+              <a href="#study-office" class="bubble-category-item">
+                <div class="bubble-image-wrap">
+                  <div class="bubble-image-inner">
+                    <img src="images/products/wall_shelves.png" alt="Wall Shelves">
+                  </div>
+                </div>
+                <span class="bubble-name">Wall Shelves</span>
+              </a>
+
+            </div>
+
+            <!-- Premium Promo Banner inside the categories card to balance layout height -->
+            <a href="#home-furniture" class="split-promo-banner" style="margin-top: 8px !important;">
+              <div class="banner-content">
+                <span class="banner-badge">Featured Deals</span>
+                <h4 class="banner-title">Transform Your Home with Space Savers</h4>
+                <p class="banner-text">Get up to 40% off on all folding tables and multipurpose racks.</p>
+                <span class="banner-btn">Shop Collection &rarr;</span>
+              </div>
+              <div class="banner-image-wrap">
+                <img src="images/products/laptop_desk.png" alt="Smart Table">
+              </div>
+            </a>
+
+            <!-- Second Premium Promo Banner for Kitchen/Utility Deals to balance height with Best Sellers list -->
+            <a href="#kitchen-storage" class="split-promo-banner" style="background: linear-gradient(135deg, #D97706 0%, #92400E 100%) !important; margin-top: 0px !important;">
+              <div class="banner-content">
+                <span class="banner-badge" style="background: rgba(255, 255, 255, 0.2) !important;">Kitchen Deals</span>
+                <h4 class="banner-title">De-clutter Your Kitchen Space</h4>
+                <p class="banner-text">Save up to 35% on multi-tier steel racks and trolley organizers.</p>
+                <span class="banner-btn" style="color: #92400E !important;">Explore Kitchen &rarr;</span>
+              </div>
+              <div class="banner-image-wrap">
+                <img src="images/products/kitchen_rack.png" alt="Kitchen Rack">
+              </div>
+            </a>
+
+          </div>
+        </div>
+
+        <!-- Right Side: Best Sellers cards (40% width) -->
+        <div class="list-best-sellers-card" style="padding: 0 !important; overflow: hidden; display: flex; flex-direction: column;">
+          <div class="split-card-header" style="padding: 18px 20px; background-color: #ffffff;">
+            <div class="list-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0 !important;">
+              <h3 class="split-section-title" style="margin: 0 !important;">Best Sellers</h3>
+              <a href="#best-sellers" class="list-view-all">View all &rarr;</a>
+            </div>
+          </div>
+          <div class="split-card-body" style="padding: 24px 20px; flex-grow: 1;">
+            <p class="split-section-subtitle" style="margin: 0 0 16px 0 !important; position: static !important; display: block !important;">Most loved by customers</p>
+            <div class="split-best-sellers-products" id="split-best-sellers-products-container">
+              <!-- Populated dynamically with 4 products -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 6. Home Furniture Strip (Horizontal product slider) -->
+    <section class="product-slider-section" id="home-furniture" style="background-color: var(--color-bg-white); padding: 40px 0; border-bottom: 1px solid var(--color-border); border-radius: 20px; box-shadow: var(--shadow-sm); margin-bottom: 30px;">
+      <div class="container">
+        <div style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-end;">
+          <div>
+            <h2 class="kawachi-sec-title">Home Furniture</h2>
+            <p class="kawachi-sec-desc">Space-saving study desks, laptop tables, and support units.</p>
+          </div>
+          <a href="#best-sellers" style="font-size: 14px; font-weight: 700; color: #1463FF; display: flex; align-items: center; gap: 4px; text-decoration: none;">
+            View All &rarr;
+          </a>
+        </div>
+        <div class="slider-container-outer" style="position: relative;">
+          <button class="slider-arrow-btn prev" aria-label="Previous Slide">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path></svg>
+          </button>
+          <button class="slider-arrow-btn next" aria-label="Next Slide">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+          </button>
+          <div class="product-slider-wrapper" style="overflow: hidden; padding: 12px 4px;">
+            <div class="product-slider-track" id="track-home-furniture" style="display: flex; gap: 24px; transition: transform 0.5s ease;">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. Kitchen Storage Strip (Horizontal product slider) -->
+    <section class="product-slider-section" id="kitchen-storage" style="background-color: var(--color-bg-white); padding: 40px 0; border-bottom: 1px solid var(--color-border); border-radius: 20px; box-shadow: var(--shadow-sm); margin-bottom: 30px;">
+      <div class="container">
+        <div style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-end;">
+          <div>
+            <h2 class="kawachi-sec-title">Kitchen Storage</h2>
+            <p class="kawachi-sec-desc">Premium multi-tier organizers, microwave racks, and mobile trolleys.</p>
+          </div>
+          <a href="#best-sellers" style="font-size: 14px; font-weight: 700; color: #1463FF; display: flex; align-items: center; gap: 4px; text-decoration: none;">
+            View All &rarr;
+          </a>
+        </div>
+        <div class="slider-container-outer" style="position: relative;">
+          <button class="slider-arrow-btn prev" aria-label="Previous Slide">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path></svg>
+          </button>
+          <button class="slider-arrow-btn next" aria-label="Next Slide">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+          </button>
+          <div class="product-slider-wrapper" style="overflow: hidden; padding: 12px 4px;">
+            <div class="product-slider-track" id="track-kitchen-furniture" style="display: flex; gap: 24px; transition: transform 0.5s ease;">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. Three Promo Banners Row (Up to 50% off) -->
+    <section class="promo-banners-triple-section">
+      <div class="promo-banners-triple-row">
+        
+        <!-- Banner 1: Up to 50% Off -->
+        <div class="promo-box-triple" style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: #ffffff;">
+          <div class="promo-box-left">
+            <span class="promo-badge-tag">MEGA SALE</span>
+            <h3 class="promo-title">Up to 50% Off</h3>
+            <p class="promo-text">Home Essentials</p>
+            <a href="#home-furniture" class="promo-btn-white">Shop Now &rarr;</a>
+          </div>
+          <div class="promo-box-right">
+            <img src="images/products/meditation_chair.png" alt="Furniture Sale">
+          </div>
+        </div>
+
+        <!-- Banner 2: Smart Storage Solutions -->
+        <div class="promo-box-triple" style="background: linear-gradient(135deg, #e65c00 0%, #f9d423 100%); color: #ffffff;">
+          <div class="promo-box-left">
+            <span class="promo-badge-tag" style="background-color: rgba(255,255,255,0.2);">SPACE SAVERS</span>
+            <h3 class="promo-title">Smart Storage</h3>
+            <p class="promo-text">Organize your space</p>
+            <a href="#kitchen-storage" class="promo-btn-white" style="color: #e65c00;">Shop Now &rarr;</a>
+          </div>
+          <div class="promo-box-right">
+            <img src="images/products/trolley_organizer.png" alt="Storage Sale">
+          </div>
+        </div>
+
+        <!-- Banner 3: New Season Arrivals -->
+        <div class="promo-box-triple" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: #ffffff;">
+          <div class="promo-box-left">
+            <span class="promo-badge-tag" style="background-color: rgba(255,255,255,0.2);">JUST IN</span>
+            <h3 class="promo-title">New Season</h3>
+            <p class="promo-text">Fresh collections weekly</p>
+            <a href="search.html?q=new" class="promo-btn-white" style="color: #11998e;">Explore Now &rarr;</a>
+          </div>
+          <div class="promo-box-right">
+            <img src="images/products/wall_shelves.png" alt="New Arrivals">
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 9. Study & Office Strip (Horizontal product slider) -->
+    <section class="product-slider-section" id="study-office" style="background-color: var(--color-bg-white); padding: 40px 0; border-bottom: 1px solid var(--color-border); border-radius: 20px; box-shadow: var(--shadow-sm); margin-bottom: 30px;">
+      <div class="container">
+        <div style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-end;">
+          <div>
+            <h2 class="kawachi-sec-title">Study &amp; Office</h2>
+            <p class="kawachi-sec-desc">Ergonomic smart tables, study frames, and office coordinates.</p>
+          </div>
+          <a href="#best-sellers" style="font-size: 14px; font-weight: 700; color: #1463FF; display: flex; align-items: center; gap: 4px; text-decoration: none;">
+            View All &rarr;
+          </a>
+        </div>
+        <div class="slider-container-outer" style="position: relative;">
+          <button class="slider-arrow-btn prev" aria-label="Previous Slide">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path></svg>
+          </button>
+          <button class="slider-arrow-btn next" aria-label="Next Slide">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+          </button>
+          <div class="product-slider-wrapper" style="overflow: hidden; padding: 12px 4px;">
+            <div class="product-slider-track" id="track-study-office" style="display: flex; gap: 24px; transition: transform 0.5s ease;">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10. Utility Products Strip (Horizontal product slider) -->
+    <section class="product-slider-section" id="utility-products" style="background-color: var(--color-bg-white); padding: 40px 0; border-bottom: 1px solid var(--color-border); border-radius: 20px; box-shadow: var(--shadow-sm); margin-bottom: 30px;">
+      <div class="container">
+        <div style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-end;">
+          <div>
+            <h2 class="kawachi-sec-title">Utility Products</h2>
+            <p class="kawachi-sec-desc">Aesthetic household active tools, laundry racks, and smart home tools.</p>
+          </div>
+          <a href="#best-sellers" style="font-size: 14px; font-weight: 700; color: #1463FF; display: flex; align-items: center; gap: 4px; text-decoration: none;">
+            View All &rarr;
+          </a>
+        </div>
+        <div class="slider-container-outer" style="position: relative;">
+          <button class="slider-arrow-btn prev" aria-label="Previous Slide">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path></svg>
+          </button>
+          <button class="slider-arrow-btn next" aria-label="Next Slide">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+          </button>
+          <div class="product-slider-wrapper" style="overflow: hidden; padding: 12px 4px;">
+            <div class="product-slider-track" id="track-utility-products" style="display: flex; gap: 24px; transition: transform 0.5s ease;">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div> <!-- Close centered-marketplace-layout -->
+
+  <!-- 11. Testimonials (Lovely Customer Reviews) -->
+  <section class="product-slider-section" id="testimonials" style="background-color: var(--color-bg-white); padding: 60px 16px; border-bottom: 1px solid var(--color-border); overflow: hidden; margin-bottom: 40px; box-shadow: var(--shadow-sm); box-sizing: border-box; width: 100%;">
+      <div style="margin-bottom: 32px; text-align: center;">
+        <h2 class="kawachi-sec-title">Our Lovely Customers</h2>
+      </div>
+      <div class="testimonials-scroll-track">
+        <div class="testimonials-scroll-inner" id="testimonials-scroll-inner">
+          <!-- Rendered dynamically by script below to avoid code duplication -->
+        </div>
+      </div>
+
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          var reviews = [
+            {
+              name: "Amit Patel",
+              role: "Mumbai • Verified Buyer",
+              avatar: "images/testimonials/indian_man_1.png",
+              text: "Laptop desk ki quality bohot hi mast hai! Bed pe baith kar kaam karna ab bilkul easy ho gaya hai. Frame bohot sturdy hai, shake nahi hota. Overall worth every rupee!"
+            },
+            {
+              name: "Neha Joshi",
+              role: "Delhi • Verified Buyer",
+              avatar: "images/testimonials/indian_woman_1.png",
+              text: "Sauna box is absolute bliss. Office ke stressful day ke baad isko use karti hu, body bilkul relax ho jaati hai. Space bhi zyada nahi leta. High quality fabric used."
+            },
+            {
+              name: "Rajesh Kumar",
+              role: "Bengaluru • Verified Buyer",
+              avatar: "images/testimonials/indian_man_2.png",
+              text: "Kitchen storage rack is very useful. Mere chote kitchen ke saare bartan aur microwave set ho gaye isme. Packing was top class."
+            },
+            {
+              name: "Priya Sharma",
+              role: "Pune • Verified Buyer",
+              avatar: "images/testimonials/indian_woman_2.png",
+              text: "Floating shelves bohot sundar lagte hain wall pe. Polish is very premium. Maine living room me showpieces lagane ke liye order kiya tha, matching completely with my home decor!"
+            }
+          ];
+
+          var innerContainer = document.getElementById('testimonials-scroll-inner');
+          if (!innerContainer) return;
+
+          function createGroupHTML() {
+            var html = '<div class="testimonials-scroll-group">';
+            reviews.forEach(function(rev) {
+              html += '<div class="testimonial-card-2026">' +
+                '<div class="testimonial-header-bar">' +
+                  '<img src="' + rev.avatar + '" alt="' + rev.name + '" class="testimonial-user-avatar">' +
+                  '<div>' +
+                    '<span class="testimonial-user-name">' + rev.name + '</span>' +
+                    '<span class="testimonial-user-role">' + rev.role + '</span>' +
+                    '<span class="testimonial-verified-badge">✓ Verified</span>' +
+                  '</div>' +
+                '</div>' +
+                '<div class="testimonial-body-content">' +
+                  '<div class="testimonial-stars">' +
+                    '<svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20" style="color: #FBBF24;"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>' +
+                    '<svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20" style="color: #FBBF24;"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>' +
+                    '<svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20" style="color: #FBBF24;"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>' +
+                    '<svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20" style="color: #FBBF24;"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>' +
+                    '<svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20" style="color: #FBBF24;"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>' +
+                  '</div>' +
+                  '<p class="testimonial-text">"' + rev.text + '"</p>' +
+                '</div>' +
+              '</div>';
+            });
+            html += '</div>';
+            return html;
+          }
+
+          // Duplicate three times for smooth loop
+          innerContainer.innerHTML = createGroupHTML() + createGroupHTML() + createGroupHTML();
+        });
+      </script>
+    </section>
+
+  <div class="centered-marketplace-layout"> <!-- Re-open centered-marketplace-layout -->
+
+    <!-- 12. FAQ Section -->
+    <section class="product-slider-section" id="faq" style="background-color: var(--color-bg-white); padding: 40px 0; border-bottom: 1px solid var(--color-border); border-radius: 20px; box-shadow: var(--shadow-sm); margin-bottom: 30px;">
+      <div class="container">
+        <div style="margin-bottom: 32px; text-align: center;">
+          <h2 class="kawachi-sec-title">Frequently Asked Questions</h2>
+          <p class="kawachi-sec-desc">Everything you need to know about our products, shipping, and returns policies.</p>
+        </div>
+        
+        <div class="faq-list-2026" style="max-width: 900px; margin: 0 auto;">
+          <!-- FAQ 1 -->
+          <div class="faq-item-2026">
+            <button class="faq-question-btn" onclick="toggleFaq(this)">
+              <span>What is the delivery timeline for my order?</span>
+              <svg class="faq-icon-svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path>
+              </svg>
+            </button>
+            <div class="faq-answer-panel">
+              <div class="faq-answer-content">
+                Orders are processed and dispatched within 24-48 hours. Delivery usually takes 3-5 business days for metropolitan areas and 5-7 business days for other parts of India. You will receive an SMS and email with tracking details as soon as your shipment leaves our warehouse.
+              </div>
+            </div>
+          </div>
+
+          <!-- FAQ 2 -->
+          <div class="faq-item-2026">
+            <button class="faq-question-btn" onclick="toggleFaq(this)">
+              <span>Do you offer cash on delivery (COD)?</span>
+              <svg class="faq-icon-svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path>
+              </svg>
+            </button>
+            <div class="faq-answer-panel">
+              <div class="faq-answer-content">
+                Yes, we offer Cash on Delivery (COD) across most pincodes in India, alongside secure online UPI, debit/credit cards, and NetBanking checkout options.
+              </div>
+            </div>
+          </div>
+
+          <!-- FAQ 3 -->
+          <div class="faq-item-2026">
+            <button class="faq-question-btn" onclick="toggleFaq(this)">
+              <span>What is your return policy?</span>
+              <svg class="faq-icon-svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path>
+              </svg>
+            </button>
+            <div class="faq-answer-panel">
+              <div class="faq-answer-content">
+                We offer a 7-day return and replacement policy on our flagship products. If you receive a damaged or incorrect product, contact us at crm@kawachigroup.com within 7 days of delivery, and we will coordinate a replacement.
+              </div>
+            </div>
+          </div>
+
+          <!-- FAQ 4 -->
+          <div class="faq-item-2026">
+            <button class="faq-question-btn" onclick="toggleFaq(this)">
+              <span>How do I contact customer support?</span>
+              <svg class="faq-icon-svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path>
+              </svg>
+            </button>
+            <div class="faq-answer-panel">
+              <div class="faq-answer-content">
+                You can reach our help desk by calling +91 9326-110-110 or emailing crm@kawachigroup.com. Our support hours are Monday to Saturday, 10 AM to 6 PM.
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // 1. Format Rupees helper
+      function formatRupees(amount) {
+        return "₹" + Number(amount).toLocaleString("en-IN", {
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0
+        });
+      }
+
+      // Products Array reference from window
+      const products = window.KawachiProducts || [];
+
+      // Rendering product cards helper
+      function renderCard(p, isSlide = false) {
+        if (!p) return "";
+        const savings = p.regular_price ? Math.round(((p.regular_price - p.price) / p.regular_price) * 100) : 0;
+        const savingsHtml = savings > 0 ? `<span class="product-badge sale">-${savings}%</span>` : "";
+        const slideClass = isSlide ? "product-slide-card" : "";
+
+        // Sales count badge
+        const salesCount = p.sales_count || p.orders_count || 0;
+        const salesHtml = salesCount > 0 ? `
+          <div class="product-sales-badge">
+            <svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+            <span>${salesCount.toLocaleString('en-IN')}+ bought</span>
+          </div>
+        ` : "";
+
+        return `
+          <article class="product-card ${slideClass}" onclick="if(!event.target.closest('button')) window.location.href='single-product.html?id=${p.id}'">
+            <div class="product-image-container">
+              ${savingsHtml}
+              <button class="product-wishlist-btn" aria-label="Add to Wishlist" onclick="event.stopPropagation();">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                </svg>
+              </button>
+              <img src="${p.image}" alt="${p.name}" class="product-image" loading="lazy">
+              <div class="product-card-actions">
+                <button class="product-action-btn add-to-cart-quick" data-id="${p.id}" data-name="${p.name}" data-price="${p.price}" aria-label="Add to Cart" onclick="event.stopPropagation();">
+                  <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="product-info">
+              <span class="product-category">${p.category}</span>
+              <h3 class="product-title" onclick="window.location.href='single-product.html?id=${p.id}'">${p.name}</h3>
+              <div class="product-rating" style="display: flex; gap: 2px; margin-bottom: 4px; color: var(--color-warning);">
+                <svg width="14" height="14" fill="currentColor" viewBox="0 0 20 20" style="color: #FBBF24;"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                <span style="font-size: 11px; font-weight: 700; color: var(--color-text-muted); margin-left: 4px;">${p.rating}</span>
+              </div>
+              ${salesHtml}
+              <div class="product-price-row">
+                <span class="price-current">${formatRupees(p.price)}</span>
+                ${p.regular_price ? `<span class="price-old">${formatRupees(p.regular_price)}</span>` : ""}
+              </div>
+            </div>
+          </article>
+        `;
+      }
+
+      // Hydrate Category Product Sliders
+      function hydrateSliders() {
+        if (!products.length) return;
+
+        // 1. Home Furniture
+        const furnitureTrack = document.getElementById("track-home-furniture");
+        if (furnitureTrack) {
+          const list = products.filter(p => p.category === "Home Furniture");
+          furnitureTrack.innerHTML = list.map(p => renderCard(p, true)).join("");
+        }
+
+        // 2. Kitchen Storage
+        const kitchenTrack = document.getElementById("track-kitchen-furniture");
+        if (kitchenTrack) {
+          const list = products.filter(p => p.category === "Kitchen Storage");
+          kitchenTrack.innerHTML = list.map(p => renderCard(p, true)).join("");
+        }
+
+        // 3. Study & Office
+        const studyTrack = document.getElementById("track-study-office");
+        if (studyTrack) {
+          const list = products.filter(p => 
+            p.category === "Home Furniture" || 
+            p.category === "Home Decor" || 
+            p.name.toLowerCase().includes("desk") || 
+            p.name.toLowerCase().includes("study")
+          );
+          studyTrack.innerHTML = list.map(p => renderCard(p, true)).join("");
+        }
+
+        // 4. Utility Products
+        const utilityTrack = document.getElementById("track-utility-products");
+        if (utilityTrack) {
+          const list = products.filter(p => 
+            p.category === "Utility Products" || 
+            p.name.toLowerCase().includes("trolley")
+          );
+          utilityTrack.innerHTML = list.map(p => renderCard(p, true)).join("");
+        }
+      }
+
+      // Hydrate Deals of the Day Carousel (6 items)
+      function hydrateDeals() {
+        const dealsTrack = document.getElementById("deals-slider-track");
+        if (!dealsTrack || !products.length) return;
+
+        // Take 6 featured products for the Deals row
+        const dealsList = [...products].slice(0, 6);
+        dealsTrack.innerHTML = dealsList.map(p => {
+          const savings = p.regular_price ? Math.round(((p.regular_price - p.price) / p.regular_price) * 100) : 0;
+          return `
+            <div class="deal-product-item-card" onclick="window.location.href='single-product.html?id=${p.id}'">
+              <span class="deal-discount-badge">${savings}% OFF</span>
+              <img src="${p.image}" alt="${p.name}" class="deal-product-image">
+              <h4 class="deal-product-title">${p.name}</h4>
+              <div class="deal-product-rating">
+                <span class="stars-fill">★</span>
+                <span class="rating-val">${p.rating}</span>
+                <span class="reviews-count">(${p.reviews})</span>
+              </div>
+              <div class="deal-price-line">
+                <span class="price-now">${formatRupees(p.price)}</span>
+                ${p.regular_price ? `<span class="price-was">${formatRupees(p.regular_price)}</span>` : ""}
+              </div>
+            </div>
+          `;
+        }).join("");
+      }
+
+      // Hydrate Best Sellers Side List
+      function hydrateBestSellersSplit() {
+        const container = document.getElementById("split-best-sellers-products-container");
+        if (!container || !products.length) return;
+
+        const bestList = [...products].sort((a,b) => b.sales_count - a.sales_count).slice(0, 4);
+        container.innerHTML = bestList.map(p => `
+          <a href="single-product.html?id=${p.id}" class="split-bestseller-item">
+            <img src="${p.image}" alt="${p.name}">
+            <div class="item-meta">
+              <span class="item-name">${p.name}</span>
+              <span class="item-category">${p.category}</span>
+              <div class="item-rating-row">
+                <span style="color: #FBBF24;">★</span>
+                <span>${p.rating}</span>
+              </div>
+              <span class="item-price">${formatRupees(p.price)}</span>
+            </div>
+          </a>
+        `).join("");
+      }
+
+      // Hero Carousel Autoslide Setup (5 seconds interval loop)
+      function initHeroCarousel() {
+        const track = document.getElementById("hero-slides-track");
+        const slides = track ? track.querySelectorAll(".carousel-slide") : [];
+        const dots = document.querySelectorAll("#hero-dots-indicator .carousel-dot-indicator");
+        const prevBtn = document.getElementById("hero-carousel-prev");
+        const nextBtn = document.getElementById("hero-carousel-next");
+        if (!track || !slides.length) return;
+
+        let activeIndex = 0;
+        let slideInterval;
+
+        function showSlide(index) {
+          slides.forEach((slide, i) => {
+            if (i === index) {
+              slide.classList.add("slide-active");
+            } else {
+              slide.classList.remove("slide-active");
+            }
+          });
+          dots.forEach((dot, i) => {
+            if (i === index) {
+              dot.classList.add("dot-active");
+            } else {
+              dot.classList.remove("dot-active");
+            }
+          });
+          activeIndex = index;
+        }
+
+        function nextSlide() {
+          const nextIndex = (activeIndex + 1) % slides.length;
+          showSlide(nextIndex);
+        }
+
+        function prevSlide() {
+          const prevIndex = (activeIndex - 1 + slides.length) % slides.length;
+          showSlide(prevIndex);
+        }
+
+        function startAutoplay() {
+          clearInterval(slideInterval);
+          slideInterval = setInterval(nextSlide, 5000);
+        }
+
+        if (nextBtn) nextBtn.addEventListener("click", () => {
+          nextSlide();
+          startAutoplay();
+        });
+        if (prevBtn) prevBtn.addEventListener("click", () => {
+          prevSlide();
+          startAutoplay();
+        });
+
+        dots.forEach((dot, index) => {
+          dot.addEventListener("click", () => {
+            showSlide(index);
+            startAutoplay();
+          });
+        });
+
+        startAutoplay();
+      }
+
+      // Deals of the Day Slow Auto-Slider Setup (transitions every 5 seconds)
+      function initDealsSlider() {
+        const track = document.getElementById("deals-slider-track");
+        const prevBtn = document.getElementById("deals-prev-btn");
+        const nextBtn = document.getElementById("deals-next-btn");
+        if (!track) return;
+
+        let currentIndex = 0;
+        let dealsInterval;
+
+        function getVisibleDeals() {
+          const w = window.innerWidth;
+          if (w >= 1200) return 6;
+          if (w >= 1024) return 5;
+          if (w >= 768) return 3;
+          return 2;
+        }
+
+        function getMaxIndex() {
+          const cards = track.querySelectorAll(".deal-product-item-card");
+          return Math.max(0, cards.length - getVisibleDeals());
+        }
+
+        function updateSlider() {
+          const cards = track.querySelectorAll(".deal-product-item-card");
+          if (cards.length === 0) return;
+          const cardWidth = cards[0].getBoundingClientRect().width;
+          const gap = 20; // 20px gap
+          const translation = currentIndex * (cardWidth + gap);
+          track.style.transform = `translateX(-${translation}px)`;
+        }
+
+        function autoSlideNext() {
+          const maxIdx = getMaxIndex();
+          if (currentIndex >= maxIdx) {
+            currentIndex = 0;
+          } else {
+            currentIndex++;
+          }
+          updateSlider();
+        }
+
+        function startAutoDeals() {
+          clearInterval(dealsInterval);
+          dealsInterval = setInterval(autoSlideNext, 5000);
+        }
+
+        if (nextBtn) nextBtn.addEventListener("click", () => {
+          const maxIdx = getMaxIndex();
+          if (currentIndex < maxIdx) {
+            currentIndex++;
+          } else {
+            currentIndex = 0;
+          }
+          updateSlider();
+          startAutoDeals();
+        });
+
+        if (prevBtn) prevBtn.addEventListener("click", () => {
+          if (currentIndex > 0) {
+            currentIndex--;
+          } else {
+            currentIndex = getMaxIndex();
+          }
+          updateSlider();
+          startAutoDeals();
+        });
+
+        window.addEventListener("resize", () => {
+          currentIndex = Math.min(currentIndex, getMaxIndex());
+          updateSlider();
+        });
+
+        startAutoDeals();
+        setTimeout(updateSlider, 200);
+      }
+
+      // Standard Product sliders setup
+      function initSliders() {
+        const sliders = document.querySelectorAll(".slider-container-outer");
+        sliders.forEach((sliderContainer) => {
+          // Skip the deals slider which has separate custom timing logic
+          if (sliderContainer.closest("#deals-of-the-day")) return;
+
+          const track = sliderContainer.querySelector(".product-slider-track");
+          if (!track) return;
+
+          const prevBtn = sliderContainer.querySelector(".slider-arrow-btn.prev");
+          const nextBtn = sliderContainer.querySelector(".slider-arrow-btn.next");
+          if (!prevBtn || !nextBtn) return;
+
+          let currentIndex = 0;
+
+          function getVisibleCards() {
+            const width = window.innerWidth;
+            if (width >= 1200) return 6;
+            if (width >= 1024) return 5;
+            if (width >= 768) return 3;
+            return 2;
+          }
+
+          function getMaxIndex() {
+            const cards = track.querySelectorAll(".product-card, .product-slide-card");
+            return Math.max(0, cards.length - getVisibleCards());
+          }
+
+          function updateSlider() {
+            const cards = track.querySelectorAll(".product-card, .product-slide-card");
+            if (cards.length === 0) return;
+            const cardWidth = cards[0].getBoundingClientRect().width;
+            const gap = 24; // gap: 24px
+            const translation = currentIndex * (cardWidth + gap);
+            track.style.transform = `translateX(-${translation}px)`;
+
+            prevBtn.disabled = currentIndex === 0;
+            nextBtn.disabled = currentIndex >= getMaxIndex();
+          }
+
+          const newPrevBtn = prevBtn.cloneNode(true);
+          const newNextBtn = nextBtn.cloneNode(true);
+          prevBtn.parentNode.replaceChild(newPrevBtn, prevBtn);
+          nextBtn.parentNode.replaceChild(newNextBtn, nextBtn);
+
+          newPrevBtn.addEventListener("click", () => {
+            currentIndex = Math.max(0, currentIndex - 1);
+            updateSlider();
+          });
+
+          newNextBtn.addEventListener("click", () => {
+            currentIndex = Math.min(getMaxIndex(), currentIndex + 1);
+            updateSlider();
+          });
+
+          window.addEventListener("resize", () => {
+            currentIndex = Math.min(currentIndex, getMaxIndex());
+            updateSlider();
+          });
+          
+          setTimeout(updateSlider, 200);
+        });
+      }
+
+      // Deals Countdown Clock (starts at 08 : 45 : 32 and ticks down)
+      function startDealsCountdown() {
+        const clockH = document.getElementById("clock-h");
+        const clockM = document.getElementById("clock-m");
+        const clockS = document.getElementById("clock-s");
+        if (!clockH || !clockM || !clockS) return;
+
+        let totalSeconds = 8 * 3600 + 45 * 60 + 32;
+
+        const updateClock = () => {
+          if (totalSeconds <= 0) {
+            totalSeconds = 8 * 3600 + 45 * 60 + 32; // Reset loop
+          }
+          totalSeconds--;
+          const hrs = Math.floor(totalSeconds / 3600);
+          const mins = Math.floor((totalSeconds % 3600) / 60);
+          const secs = totalSeconds % 60;
+
+          clockH.textContent = String(hrs).padStart(2, '0');
+          clockM.textContent = String(mins).padStart(2, '0');
+          clockS.textContent = String(secs).padStart(2, '0');
+        };
+
+        setInterval(updateClock, 1000);
+      }
+
+      // Hydrations & Init
+      hydrateSliders();
+      hydrateDeals();
+      hydrateBestSellersSplit();
+      initHeroCarousel();
+      initDealsSlider();
+      initSliders();
+      startDealsCountdown();
+    });
+  </script>
+</main>
+  <!-- 9. Side Drawer Cart Overlay Component -->
+  <div class="drawer-wrapper" id="cart-drawer-overlay">
+    <div class="drawer-backdrop" id="cart-drawer-backdrop"></div>
+    
+    <div class="drawer-sheet" id="cart-drawer-sheet" tabindex="-1" aria-modal="true" role="dialog" aria-labelledby="drawer-cart-title">
+      
+      <div class="drawer-header">
+        <h2 class="drawer-title" id="drawer-cart-title">Shopping Drawer</h2>
+        <button class="drawer-close-btn" id="cart-drawer-close" aria-label="Close Shopping Cart">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+
+      <div class="drawer-body" id="cart-drawer-items-body">
+        <!-- Rendered dynamically by CartSystem -->
+      </div>
+
+      <div class="drawer-footer">
+        <div class="cart-summary-row">
+          <span>Cart Subtotal</span>
+          <span id="cart-summary-subtotal-val">₹0.00</span>
+        </div>
+        <div class="cart-summary-row">
+          <span>Shipping Estimates</span>
+          <span style="font-weight: 500; color: var(--color-success);">Calculated at checkout</span>
+        </div>
+        <div class="cart-summary-row cart-summary-total">
+          <span>Estimated Total</span>
+          <span id="cart-summary-total-val" style="font-weight: 800; font-size: var(--text-md); color: var(--color-accent);">₹0.00</span>
+        </div>
+        <div style="margin-top: 24px; display: flex; flex-direction: column; gap: 12px;">
+          <a href="cart.html" class="btn btn-secondary btn-full">View Cart Details</a>
+          <a href="checkout.html" class="btn btn-primary btn-full">Checkout Order</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 13. Footer -->
+  <section class="partner-brands-section">
+    <div class="container">
+      <p class="partner-cloud-title">Our Partner Brands</p>
+      <div class="logo-scroll-track">
+        <!-- Populated dynamically by main-api.js -->
+      </div>
+    </div>
+  </section>
+
+  <footer class="main-footer">
+    <!-- Main Footer Body -->
+    <div class="container">
+      <div class="footer-main-layout">
+        
+        <!-- Left White Brand Column -->
+        <div class="footer-brand-column">
+          <!-- Logo -->
+          <a href="index.html" style="display: block; text-decoration: none;">
+            <div class="footer-logo-brand" style="display: flex; flex-direction: column; align-items: flex-start; gap: 0px;">
+              <span style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 32px; font-weight: 800; color: #0066FF; letter-spacing: -0.03em; line-height: 1; display: inline-flex; align-items: flex-start; position: relative; margin-bottom: 6.5px;"><span>K</span><span style="position: relative; display: inline-block;">awac<span style="position: absolute; left: 0; right: 0; bottom: -6.5px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 10px; font-weight: 700; color: #cbd5e1; letter-spacing: -0.02em; line-height: 1; text-align: justify; text-align-last: justify; display: block; white-space: nowrap;">life banaye easy</span></span><span>hi<sup style="font-size: 8px; font-weight: 700; color: #0066FF; margin-left: 0.5px; vertical-align: super;">&reg;</sup></span></span>
+            </div>
+          </a>
+          <!-- Description -->
+          <p class="footer-brand-text">
+            Established in 1992, Kawachi Group has since transformed to become one of the top online shopping websites offering what you'd love to have at the best price.
+          </p>
+        </div>
+
+        <!-- Right Side Nav Columns -->
+        <div class="footer-links-grid">
+          <!-- Column 1: Quick Links -->
+          <div>
+            <h4 class="footer-column-title">Quick Links</h4>
+            <ul class="footer-link-items">
+              <li><a href="about.html">About Us</a></li>
+              <li><a href="shipping-info.html">Shipping Information</a></li>
+              <li><a href="terms.html">Terms &amp; Conditions</a></li>
+              <li><a href="privacy.html">Privacy Policy</a></li>
+              <li><a href="vendor-login.html">Vendor Portal</a></li>
+            </ul>
+          </div>
+
+          <!-- Column 2: Customer Care -->
+          <div>
+            <h4 class="footer-column-title">Customer Care</h4>
+            <ul class="footer-link-items">
+              <li><a href="support-center.html">Support Center</a></li>
+              <li><a href="contact.html">Contact Us</a></li>
+              <li><a href="cancellation.html">Order Cancellation</a></li>
+              <li><a href="refund.html">Refund Policy</a></li>
+              <li><a href="returns-warranties.html">Returns &amp; Warranties</a></li>
+            </ul>
+          </div>
+
+          <!-- Column 3: Contact Coordinates -->
+          <div>
+            <h4 class="footer-column-title">Get In Touch</h4>
+            <div class="footer-contact-details" style="font-size: var(--text-xs); color: var(--color-text-muted); line-height: 1.6; display: grid; gap: 8px;">
+              <div><strong>Email:</strong> <a href="mailto:crm@kawachigroup.com" style="color: var(--color-primary); text-decoration: none;">crm@kawachigroup.com</a></div>
+              <div><strong>Phone:</strong> <a href="tel:+919326110110" style="color: var(--color-primary); text-decoration: none;">+91 9326-110-110</a></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom copyright bar -->
+    <div class="footer-bottom-bar">
+      <div class="container footer-bottom-flex">
+        <span>&copy; 2026 Kawachi Group. All rights reserved.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main-api.js?v=4.6"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // General drawer controls
+      const drawer = document.getElementById("cart-drawer-overlay");
+      const drawerSheet = document.getElementById("cart-drawer-sheet");
+      const openBtn = document.getElementById("cart-drawer-trigger");
+      const closeBtn = document.getElementById("cart-drawer-close");
+      const backdrop = document.getElementById("cart-drawer-backdrop");
+
+      function openDrawer() {
+        if (drawer && drawerSheet) {
+          drawer.classList.add("open");
+          if (openBtn) openBtn.setAttribute("aria-expanded", "true");
+          drawerSheet.focus();
+        }
+      }
+
+      function closeDrawer() {
+        if (drawer) {
+          drawer.classList.remove("open");
+          if (openBtn) openBtn.setAttribute("aria-expanded", "false");
+        }
+      }
+
+      if (openBtn) openBtn.addEventListener("click", openDrawer);
+      if (closeBtn) closeBtn.addEventListener("click", closeDrawer);
+      if (backdrop) backdrop.addEventListener("click", closeDrawer);
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeDrawer();
+      });
+    });
+  </script>
+</body>
+</html>

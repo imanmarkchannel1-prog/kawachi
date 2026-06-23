@@ -1,0 +1,8 @@
+<svg viewBox="0 0 160 35" xmlns="http://www.w3.org/2000/svg">
+  <g transform="translate(10, 6)">
+    <path d="M0 16 L6 4 L12 16 L9 16 L9 20 L3 20 L3 16 Z" fill="#7c3aed" transform="rotate(45, 6, 12)" />
+    <text x="22" y="16" font-family="'Inter', system-ui, -apple-system, sans-serif" font-weight="800" font-size="18" fill="#111827" letter-spacing="-0.02em">
+      ship<tspan fill="#7c3aed">rocket</tspan>
+    </text>
+  </g>
+</svg>
