@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Wishlist - Kawachi</title>
+  <meta name="description" content="Your Kawachi wishlist — products you love, saved for when the moment is right.">
+  <link rel="stylesheet" href="css/global-styles.css?v=6.28">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root { font-family: 'Inter', sans-serif; }
+    .wish-page { min-height: 80vh; padding: 48px 0 80px; }
+
+    .page-hero {
+      background: linear-gradient(135deg, #7c1048 0%, #be185d 70%);
+      border-radius: 20px; padding: 36px 40px; margin-bottom: 32px;
+      display: flex; align-items: center; justify-content: space-between; gap: 20px;
+    }
+    .page-hero h1 { font-size: 26px; font-weight: 800; color: #fff; margin: 0 0 6px; }
+    .page-hero p { font-size: 14px; color: rgba(255,255,255,0.75); margin: 0; }
+    .hero-icon { width: 64px; height: 64px; background: rgba(255,255,255,0.15); border-radius: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+    /* Gate */
+    .wish-gate {
+      max-width: 560px; margin: 0 auto; text-align: center;
+      background: #fff; border-radius: 20px; border: 1px solid #e2e8f0; padding: 56px 44px;
+    }
+    .gate-illustration { font-size: 64px; margin-bottom: 20px; line-height: 1; }
+    .wish-gate h2 { font-size: 22px; font-weight: 800; color: #0f172a; margin: 0 0 10px; }
+    .wish-gate p { font-size: 14.5px; color: #64748b; line-height: 1.7; margin: 0 0 28px; max-width: 380px; margin-left: auto; margin-right: auto; }
+    .gate-btn-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary-gate {
+      padding: 13px 28px; background: linear-gradient(135deg, #7c1048, #be185d);
+      color: #fff; border: none; border-radius: 12px; font-size: 14.5px;
+      font-weight: 700; cursor: pointer; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 8px;
+      transition: opacity 0.2s, transform 0.15s; font-family: inherit;
+    }
+    .btn-primary-gate:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-secondary-gate {
+      padding: 13px 28px; background: #fff; color: #0f172a;
+      border: 1.5px solid #e2e8f0; border-radius: 12px; font-size: 14.5px;
+      font-weight: 700; cursor: pointer; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 8px;
+      transition: border-color 0.2s; font-family: inherit;
+    }
+    .btn-secondary-gate:hover { border-color: #be185d; }
+
+    /* Wishlist grid */
+    .wish-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 18px; }
+    .wish-card {
+      background: #fff; border-radius: 16px; border: 1px solid #e2e8f0;
+      overflow: hidden; transition: all 0.22s; position: relative;
+    }
+    .wish-card:hover { box-shadow: 0 8px 28px rgba(0,0,0,0.10); transform: translateY(-3px); border-color: #fda4af; }
+    .wish-card-img { width: 100%; height: 200px; object-fit: contain; background: #f8fafc; padding: 16px; box-sizing: border-box; }
+    .wish-card-body { padding: 14px 16px 16px; }
+    .wish-card-cat { font-size: 11px; font-weight: 700; color: #be185d; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+    .wish-card-name { font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 6px; line-height: 1.4; }
+    .wish-card-price { font-size: 16px; font-weight: 800; color: #0f172a; margin-bottom: 12px; }
+    .wish-card-actions { display: flex; gap: 8px; }
+    .btn-add-cart {
+      flex: 1; padding: 8px; background: #0f2942; color: #fff;
+      border: none; border-radius: 8px; font-size: 12.5px; font-weight: 600;
+      cursor: pointer; transition: background 0.2s; font-family: inherit;
+    }
+    .btn-add-cart:hover { background: #1a4a7a; }
+    .btn-remove-wish {
+      width: 36px; height: 36px; border: 1.5px solid #fecdd3;
+      border-radius: 8px; background: #fff; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: background 0.2s, border-color 0.2s; color: #be185d;
+    }
+    .btn-remove-wish:hover { background: #fff1f2; border-color: #be185d; }
+
+    .btn-remove-badge {
+      position: absolute; top: 10px; right: 10px; width: 30px; height: 30px;
+      background: rgba(255,255,255,0.9); border: 1px solid #fecdd3; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: #be185d; backdrop-filter: blur(4px);
+      transition: background 0.2s;
+    }
+    .btn-remove-badge:hover { background: #fff1f2; }
+
+    .empty-state { text-align: center; padding: 64px 20px; }
+    .empty-state .empty-icon { font-size: 56px; margin-bottom: 16px; }
+    .empty-state h3 { font-size: 20px; font-weight: 700; color: #0f172a; margin: 0 0 8px; }
+    .empty-state p { font-size: 14px; color: #64748b; margin: 0 0 24px; }
+  </style>
+</head>
+<body>
+  <header class="main-header marketplace-header" id="site-header">
+    <div class="container header-container">
+      <div class="logo-group">
+        <a href="index.html" class="logo brand-logo white-logo" id="site-logo">
+          <span>K</span><span class="logo-body">awac<span class="logo-tagline">life banaye easy</span></span><span>hi<sup>&reg;</sup></span>
+        </a>
+      </div>
+      <div class="category-select-container">
+        <select class="all-categories-select" aria-label="All Categories" onchange="if(this.value && this.value !== '#') window.location.href=this.value;">
+          <option value="#">All Categories</option>
+          <option value="search.html?q=Furniture">Home Furniture</option>
+          <option value="search.html?q=Kitchen">Kitchen Storage</option>
+          <option value="search.html?q=Decor">Home Decor</option>
+          <option value="search.html?q=Beauty">Health &amp; Beauty</option>
+          <option value="search.html?q=Utility">Utility Products</option>
+        </select>
+      </div>
+      <div class="search-container">
+        <form action="search.html" method="GET" id="header-search-form" style="display:flex;align-items:center;width:100%;">
+          <div class="search-bar-inner">
+            <input type="text" class="search-input" name="q" placeholder="Search products, brands and categories..." aria-label="Search Products" autocomplete="off"/>
+            <button type="submit" class="search-submit-btn" aria-label="Submit Search">
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            </button>
+          </div>
+        </form>
+      </div>
+      <div class="header-utilities">
+        <a href="wishlist.html" class="utility-link">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" stroke="#FFFFFF" stroke-width="1.6"></path>
+            <path d="M19 1.5 L19.5 3.5 L21.5 4 L19.5 4.5 L19 6.5 L18.5 4.5 L16.5 4 L18.5 3.5 Z" fill="#FF2D55" stroke="#FF2D55" stroke-width="1"></path>
+          </svg>
+          <span>Wishlist</span>
+        </a>
+        <a href="account.html" class="utility-link">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 21v-1.5A2.5 2.5 0 0 0 15.5 17h-7A2.5 2.5 0 0 0 6 19.5V21" stroke="#FFFFFF" stroke-width="1.6"></path>
+            <circle cx="12" cy="10" r="3" stroke="#FFFFFF" stroke-width="1.6"></circle>
+            <path d="M8.2 8.5 A4.5 4.5 0 0 1 15.8 8.5" stroke="#00E5FF" stroke-width="1.6" stroke-dasharray="2 2"></path>
+          </svg>
+          <span>Account</span>
+        </a>
+        <a href="orders.html" class="utility-link">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" stroke="#FFFFFF" stroke-width="1.6"></path>
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96" stroke="#FFFFFF" stroke-width="1.4"></polyline>
+            <line x1="12" y1="22.08" x2="12" y2="12" stroke="#FFFFFF" stroke-width="1.4"></line>
+            <path d="M12 8.5 A3.5 3.5 0 1 1 8.5 12" stroke="#B800FF" stroke-width="1.8"></path>
+            <polyline points="10 10.5 8.5 12 7 10.5" stroke="#B800FF" stroke-width="1.8"></polyline>
+          </svg>
+          <span>Orders &amp; Returns</span>
+        </a>
+        <button id="cart-drawer-trigger" class="utility-link" aria-label="Open Shopping Cart" aria-expanded="false">
+          <div style="position:relative;display:flex;align-items:center;justify-content:center;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" stroke="#FFFFFF" stroke-width="1.6"></path>
+              <path d="M9 19c2 1.5 5 1.5 7 0" stroke="#00E5FF" stroke-width="1.8" stroke-linecap="round"></path>
+              <circle cx="9" cy="21" r="1" fill="#00E5FF" stroke="#00E5FF"></circle>
+              <circle cx="20" cy="21" r="1" fill="#00E5FF" stroke="#00E5FF"></circle>
+            </svg>
+            <span class="badge" id="cart-badge-count">0</span>
+          </div>
+          <span>Cart</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="wish-page">
+    <div class="container">
+
+      <!-- LOGGED OUT -->
+      <div id="wish-gate" style="display:none;">
+        <div class="wish-gate">
+          <div class="gate-illustration">💝</div>
+          <h2>Your wishlist is just one sign-in away</h2>
+          <p>Create your own curated collection of things you love. Save products, track price drops, and share your list with family — all after a quick sign-in. Your dream home is waiting.</p>
+          <div class="gate-btn-row">
+            <a href="account.html" class="btn-primary-gate">
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>
+              Sign In to View Wishlist
+            </a>
+            <a href="index.html" class="btn-secondary-gate">Browse Products</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- LOGGED IN -->
+      <div id="wish-content" style="display:none;">
+        <div class="page-hero">
+          <div>
+            <h1>My Wishlist</h1>
+            <p id="wish-summary">Loading your saved items...</p>
+          </div>
+          <div class="hero-icon">
+            <svg width="32" height="32" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </div>
+        </div>
+        <div class="wish-grid" id="wish-list"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="js/main-api.js?v=6.28"></script>
+  <script>
+    const AUTH_KEY = 'kawachi_user';
+    const WISH_KEY = 'kawachi_wishlist';
+
+    function getUser() { try { return JSON.parse(localStorage.getItem(AUTH_KEY)); } catch(e) { return null; } }
+    function getWishlist(email) { try { return JSON.parse(localStorage.getItem(WISH_KEY + '_' + email) || '[]'); } catch(e) { return []; } }
+    function saveWishlist(email, items) { localStorage.setItem(WISH_KEY + '_' + email, JSON.stringify(items)); }
+
+    function removeItem(email, id) {
+      let items = getWishlist(email);
+      items = items.filter(i => i.id != id);
+      saveWishlist(email, items);
+      renderWishlist(email);
+    }
+
+    function renderWishlist(email) {
+      const items = getWishlist(email);
+      const list = document.getElementById('wish-list');
+      const summary = document.getElementById('wish-summary');
+
+      if (items.length === 0) {
+        summary.textContent = '0 saved items';
+        list.innerHTML = `
+          <div class="empty-state" style="grid-column:1/-1;">
+            <div class="empty-icon">💔</div>
+            <h3>Your wishlist feels lonely</h3>
+            <p>Browse our catalogue and tap the heart icon on any product to save it here.</p>
+            <a href="index.html" class="btn-primary-gate" style="background:linear-gradient(135deg,#7c1048,#be185d);">Start Exploring</a>
+          </div>`;
+        return;
+      }
+
+      summary.textContent = `${items.length} item${items.length > 1 ? 's' : ''} saved`;
+      list.innerHTML = items.map(item => `
+        <div class="wish-card">
+          <button class="btn-remove-badge" onclick="removeItem('${email}', ${item.id})" title="Remove from wishlist">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+          </button>
+          <img src="${item.image || 'images/products/kitchen_rack.png'}" alt="${item.name}" class="wish-card-img" onerror="this.src='images/products/kitchen_rack.png'">
+          <div class="wish-card-body">
+            <div class="wish-card-cat">${item.category || 'Kawachi'}</div>
+            <div class="wish-card-name">${item.name}</div>
+            <div class="wish-card-price">₹${Number(item.price).toLocaleString('en-IN')}</div>
+            <div class="wish-card-actions">
+              <button class="btn-add-cart" onclick="window.KawachiCart && window.KawachiCart.addItem({id:${item.id}, name:'${item.name.replace(/'/g,"\\'")}', price:${item.price}, image:'${item.image}', category:'${item.category||'General'}', quantity:1}); alert('Added to cart!');">Add to Cart</button>
+              <button class="btn-remove-wish" onclick="removeItem('${email}', ${item.id})" title="Remove">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function seedDemoWishlist(email) {
+      const existing = getWishlist(email);
+      if (existing.length > 0) return;
+      // Seed with products from the product catalogue if available
+      const demo = window.KawachiProducts ? window.KawachiProducts.slice(0, 3).map(p => ({
+        id: p.id, name: p.name, price: p.price, image: p.image, category: p.category
+      })) : [];
+      saveWishlist(email, demo);
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Await WooCommerce live products loading before rendering wishlist
+      if (window.KawachiProductsPromise) {
+        try {
+          await window.KawachiProductsPromise;
+        } catch (err) {
+          console.warn("[WooCommerce Client] wishlist.html load await failed:", err);
+        }
+      }
+
+      const user = getUser();
+      if (!user) {
+        document.getElementById('wish-gate').style.display = 'block';
+      } else {
+        document.getElementById('wish-content').style.display = 'block';
+        setTimeout(() => {
+          seedDemoWishlist(user.email);
+          renderWishlist(user.email);
+        }, 100);
+      }
+    });
+  </script>
+</body>
+</html>

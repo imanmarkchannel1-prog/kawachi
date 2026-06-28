@@ -5,8 +5,411 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kawachi - Premium Headless WooCommerce Marketplace</title>
   <meta name="description" content="Explore a curated selection of lifestyle, wellness, home appliances, and smart gadgets at Kawachi. High-performance, premium utility shopping.">
-  <link rel="stylesheet" href="css/global-styles.css?v=4.6">
+  <link rel="stylesheet" href="css/global-styles.css?v=6.28">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@1,700;1,800&family=Bebas+Neue&family=Caveat:wght@700&family=Inter:wght@400;500;600;700;800;900&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
+  <style>
+    /* Influencer Video Spotlight Section Styles */
+    .video-spotlight-section {
+      background: linear-gradient(180deg, #f8f4ff 0%, #fff8f5 55%, #f0f7ff 100%) !important;
+      padding: 48px 0 40px 0 !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+      border: none !important;
+      border-top: 1px solid rgba(226,232,240,0.6) !important;
+      border-bottom: 1px solid rgba(226,232,240,0.6) !important;
+      position: relative !important;
+      width: 100vw !important;
+      left: 50% !important;
+      margin-left: -50vw !important;
+      margin-right: -50vw !important;
+      margin-top: 12px !important;
+      margin-bottom: 42px !important;
+    }
+    
+    .video-spotlight-header {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 10px !important;
+      margin-bottom: 24px !important;
+      padding: 0 20px !important;
+    }
+    
+    .video-spotlight-title {
+      font-size: 20px !important;
+      font-weight: 700 !important;
+      color: #0f172a !important;
+      margin: 0 !important;
+    }
+    
+    .video-spotlight-desc {
+      font-size: 13.5px !important;
+      color: #64748b !important;
+      margin-top: 4px !important;
+      margin-bottom: 0 !important;
+    }
+    
+    .video-spotlight-track-container {
+      position: relative !important;
+      width: 100% !important;
+      overflow: hidden !important;
+    }
+    
+    .video-spotlight-track {
+      display: flex !important;
+      gap: 16px !important;
+      overflow-x: auto !important;
+      scroll-behavior: smooth !important;
+      padding: 4px 24px 16px 24px !important; /* Spacing from screen corners for the list layout */
+      scrollbar-width: none !important; /* Hide Firefox scrollbar */
+    }
+    
+    .video-spotlight-track::-webkit-scrollbar {
+      display: none !important; /* Hide Chrome/Safari scrollbar */
+    }
+    
+    .video-card {
+      width: 100% !important;
+      aspect-ratio: 9/16 !important;
+      background-color: #0a0a0a !important;
+      border-radius: 8px !important; /* Premium slight curved corners */
+      overflow: hidden !important;
+      position: relative !important;
+      cursor: pointer !important;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.14) !important;
+      transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.28s ease !important;
+      border: none !important;
+    }
+
+    .video-card:hover {
+      transform: translateY(-3px) !important;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.22) !important;
+    }
+    
+    .video-card img,
+    .video-card video {
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover !important;
+      pointer-events: none !important;
+      position: absolute !important;
+      top: 0 !important;
+      left: 0 !important;
+    }
+    
+    /* No overlay inside video card — clean look */
+    .video-card-overlay { display: none !important; }
+
+    /* Play button: hidden by default, pure white on hover, no shadow */
+    /* Play button: premium orange triangle with drop shadow, no background circle */
+    .video-play-btn-circle {
+      position: absolute !important;
+      top: 50% !important;
+      left: 50% !important;
+      transform: translate(-50%, -50%) scale(0.85) !important;
+      background: transparent !important;
+      border: none !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      opacity: 0 !important;
+      transition: opacity 0.22s ease, transform 0.22s ease !important;
+      pointer-events: none !important;
+      filter: drop-shadow(0 4px 10px rgba(0,0,0,0.35)) !important; /* Drop shadow directly on the play triangle */
+      z-index: 3 !important;
+      box-shadow: none !important;
+    }
+
+    .video-play-btn-circle svg {
+      width: 60px !important;
+      height: 60px !important;
+      fill: #FF5E00 !important; /* Premium orange fill color */
+      margin-left: 0 !important;
+    }
+
+    .video-card:hover .video-play-btn-circle {
+      opacity: 1 !important;
+      transform: translate(-50%, -50%) scale(1) !important;
+    }
+
+    /* Caption below the card */
+    .video-card-wrap {
+      display: flex !important;
+      flex-direction: column !important;
+      flex: 0 0 250px !important;
+      width: 250px !important;
+      gap: 10px !important;
+    }
+
+    .video-card-caption {
+      padding: 0 4px !important;
+    }
+
+    .video-card-caption .vc-product-name {
+      font-size: 13px !important;
+      font-weight: 700 !important;
+      color: #0f172a !important;
+      margin: 0 0 3px !important;
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+      max-width: 250px !important;
+    }
+
+    .video-card-caption .vc-views {
+      font-size: 12px !important;
+      color: #334155 !important; /* Darker, more visible views count */
+      font-weight: 500 !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 5px !important;
+    }
+
+    /* Fullscreen Modal Player Overlay */
+    .video-modal-overlay {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      bottom: 0 !important;
+      background: rgba(15, 23, 42, 0.8) !important;
+      backdrop-filter: blur(12px) !important;
+      z-index: 10000 !important;
+      display: none !important;
+      align-items: center !important;
+      justify-content: center !important;
+      padding: 20px !important;
+      transition: all 0.3s ease !important;
+    }
+    
+    .video-modal-overlay.open {
+      display: flex !important;
+    }
+    
+    .video-modal-content {
+      background: #ffffff !important;
+      border-radius: 16px !important;
+      width: 100% !important;
+      max-width: 760px !important;
+      height: 560px !important;
+      display: flex !important;
+      overflow: hidden !important;
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5) !important;
+      position: relative !important;
+      border: 1px solid rgba(255,255,255,0.1) !important;
+      animation: modalFadeIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+    }
+    
+    @keyframes modalFadeIn {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    
+    .video-modal-left {
+      flex: 0 0 315px !important;
+      width: 315px !important;
+      background: #000000 !important;
+      height: 100% !important;
+      position: relative !important;
+    }
+
+    .video-modal-left iframe {
+      width: 100% !important;
+      height: 100% !important;
+      border: none !important;
+    }
+    
+    .video-modal-right {
+      flex: 0.9 !important;
+      padding: 32px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: space-between !important;
+      background: #ffffff !important;
+      height: 100% !important;
+      border-left: 1px solid #f1f5f9 !important;
+    }
+    
+    .video-modal-close-btn {
+      position: absolute !important;
+      top: 16px !important;
+      right: 16px !important;
+      width: 32px !important;
+      height: 32px !important;
+      border-radius: 50% !important;
+      background: rgba(15, 23, 42, 0.05) !important;
+      border: none !important;
+      cursor: pointer !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      color: #64748b !important;
+      z-index: 10 !important;
+      transition: all 0.2s ease !important;
+    }
+    
+    .video-modal-close-btn:hover {
+      background: rgba(239, 68, 68, 0.1) !important;
+      color: #ef4444 !important;
+      transform: rotate(90deg) !important;
+    }
+    
+    .modal-product-card {
+      border: 1px solid #e2e8f0 !important;
+      border-radius: 14px !important;
+      padding: 12px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 12px !important;
+      align-items: stretch !important;
+      background: #f8fafc !important;
+      margin-top: 10px !important;
+    }
+    
+    .modal-product-img {
+      width: 100% !important;
+      height: 180px !important;
+      object-fit: contain !important;
+      background: #ffffff !important;
+      border: 1px solid #e2e8f0 !important;
+      border-radius: 10px !important;
+      padding: 8px !important;
+      box-sizing: border-box !important;
+    }
+    
+    .modal-product-info {
+      display: flex !important;
+      flex-direction: row !important;
+      justify-content: space-between !important;
+      align-items: center !important;
+      padding: 0 4px !important;
+    }
+    
+    .modal-product-title {
+      font-size: 15px !important;
+      font-weight: 700 !important;
+      color: #0f172a !important;
+      line-height: 1.35 !important;
+    }
+    
+    .modal-product-price {
+      font-size: 17px !important;
+      font-weight: 800 !important;
+      color: #003366 !important;
+    }
+
+    /* Navigation: large hazy rectangular buttons */
+    .video-spotlight-nav {
+      position: absolute !important;
+      top: 50% !important;
+      transform: translateY(-50%) !important;
+      width: 58px !important;
+      height: 140px !important;
+      border-radius: 4px !important;
+      background: rgba(255,255,255,0.72) !important; /* clearly visible at rest */
+      border: 1px solid rgba(255,255,255,0.5) !important;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.10) !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      cursor: pointer !important;
+      z-index: 5 !important;
+      opacity: 0.82 !important; /* visible but still slightly soft */
+      transition: background 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease !important;
+      color: #1e293b !important;
+      backdrop-filter: blur(6px) !important;
+      -webkit-backdrop-filter: blur(6px) !important;
+    }
+    .video-spotlight-nav:hover {
+      background: rgba(255,255,255,0.97) !important;
+      opacity: 1 !important;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.18) !important;
+      color: #1e293b !important; /* stays dark — NOT orange */
+    }
+    .video-spotlight-nav:active {
+      background: rgba(220,228,240,0.97) !important; /* slight blue-grey press tint */
+      opacity: 1 !important;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12) !important;
+      transform: translateY(-50%) scale(0.97) !important;
+      color: #334155 !important;
+    }
+    .video-spotlight-nav svg {
+      width: 26px !important;
+      height: 26px !important;
+      stroke-width: 2.5 !important;
+    }
+    .video-spotlight-nav.left {
+      left: 0 !important;
+      border-radius: 0 12px 12px 0 !important;
+    }
+    .video-spotlight-nav.right {
+      right: 0 !important;
+      border-radius: 12px 0 0 12px !important;
+    }
+
+    @media (max-width: 768px) {
+      .video-modal-content {
+        flex-direction: column !important;
+        height: auto !important;
+        max-height: 90vh !important;
+        overflow-y: auto !important;
+      }
+      .video-modal-left {
+        aspect-ratio: 9/16 !important;
+        max-height: 320px !important;
+      }
+      .video-modal-right {
+        padding: 20px !important;
+      }
+      /* Responsive optimizations for mobile video spotlight section */
+      .spotlight-eyebrow {
+        font-size: 8.5px !important;
+        letter-spacing: 0.12em !important;
+      }
+      .spotlight-title-main {
+        font-size: 22px !important;
+      }
+      .spotlight-title-script {
+        font-size: 22px !important;
+        padding-bottom: 2px !important;
+      }
+      .spotlight-title-emoji {
+        font-size: 18px !important;
+      }
+      .spotlight-subtitle {
+        display: none !important; /* Hide subtitle completely on mobile */
+      }
+      .video-card-wrap {
+        flex: 0 0 145px !important; /* Make cards much smaller on mobile */
+        width: 145px !important;
+        gap: 6px !important;
+      }
+      .video-card-caption .vc-product-name {
+        font-size: 11px !important;
+        max-width: 145px !important;
+      }
+      .video-card-caption .vc-views {
+        font-size: 10px !important;
+      }
+      .video-spotlight-nav {
+        width: 32px !important;
+        height: 80px !important;
+      }
+      .video-spotlight-nav svg {
+        width: 16px !important;
+        height: 16px !important;
+      }
+      .video-spotlight-section {
+        padding: 24px 0 20px 0 !important;
+        margin-top: 10px !important;
+        margin-bottom: 20px !important;
+      }
+      .video-spotlight-header {
+        margin-bottom: 16px !important;
+      }
+    }
+  </style>
 </head>
 <body>
   <!-- 2. Header -->
@@ -48,29 +451,35 @@
 
       <!-- Utilities (Wishlist, Account, Orders & Returns, Cart) -->
       <div class="header-utilities">
-        <a href="search.html?q=Wishlist" class="utility-link">
-          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+        <a href="wishlist.html" class="utility-link">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
           </svg>
           <span>Wishlist</span>
         </a>
-        <a href="support-center.html" class="utility-link">
-          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+        <a href="account.html" class="utility-link">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="8" r="5"></circle>
+            <path d="M20 21a8 8 0 0 0-16 0"></path>
           </svg>
           <span>Account</span>
         </a>
-        <a href="returns-warranties.html" class="utility-link">
-          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+        <a href="orders.html" class="utility-link">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 8v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8"></path>
+            <path d="M21 8H3V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            <path d="M8 14h6a2 2 0 0 0 2-2v0a2 2 0 0 0-2-2H9.5"></path>
+            <polyline points="11.5 8 9.5 10 11.5 12"></polyline>
           </svg>
           <span>Orders &amp; Returns</span>
         </a>
         <!-- Cart Trigger -->
         <button id="cart-drawer-trigger" class="utility-link" aria-label="Open Shopping Cart" aria-expanded="false">
           <div style="position: relative; display: flex; align-items: center; justify-content: center;">
-            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="9" cy="21" r="1"></circle>
+              <circle cx="20" cy="21" r="1"></circle>
+              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
             </svg>
             <span class="badge" id="cart-badge-count">0</span>
           </div>
@@ -84,16 +493,14 @@
     <div class="sub-navbar-redesign">
       <div class="container sub-nav-container">
         <div class="sub-nav-left">
-          <a href="#" class="sub-nav-link all-menu">
-            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" style="margin-right: 4px; display: inline-block; vertical-align: middle;">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path>
-            </svg>
-            <strong>All</strong>
+          <a href="index.html" class="sub-nav-link">
+            <strong>Home</strong>
           </a>
-          <a href="#home-furniture" class="sub-nav-link">Home Furniture</a>
-          <a href="#kitchen-storage" class="sub-nav-link">Kitchen Storage</a>
-          <a href="#study-office" class="sub-nav-link">Study &amp; Office</a>
-          <a href="#utility-products" class="sub-nav-link">Utility Products</a>
+          <a href="search.html?q=Furniture" class="sub-nav-link">Furniture</a>
+          <a href="search.html?q=Kitchen" class="sub-nav-link">Kitchen</a>
+          <a href="search.html?q=Storage" class="sub-nav-link">Storage</a>
+          <a href="search.html?q=Hot" class="sub-nav-link">Hot</a>
+          <a href="search.html?q=Office" class="sub-nav-link">Office</a>
           <a href="search.html?q=new" class="sub-nav-link">New Arrivals</a>
           <a href="#deals-of-the-day" class="sub-nav-link highlighted-link">Deals</a>
           <a href="contact.html?type=bulk" class="sub-nav-link">Bulk Orders</a>
@@ -107,11 +514,11 @@
 <main id="main-content">
   <!-- Centered container layout wrapper for Amazon/Flipkart styling -->
   <div class="centered-marketplace-layout">
-    
+
     <!-- 1. Hero Auto-Scrolling Banner Carousel -->
     <section class="hero-carousel-section">
       <div class="carousel-container-inner">
-        <!-- Navigation Arrows -->
+        <!-- Navigation Arrows (sit outside the clip box) -->
         <button class="carousel-arrow prev" id="hero-carousel-prev" aria-label="Previous Slide">
           <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
@@ -122,6 +529,9 @@
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>
           </svg>
         </button>
+
+        <!-- Clip box: overflow:hidden + border-radius here clips slide backgrounds cleanly -->
+        <div class="carousel-clip-box">
 
         <!-- Carousel Track -->
         <div class="carousel-slides-track" id="hero-slides-track">
@@ -179,8 +589,198 @@
           <span class="carousel-dot-indicator" data-slide-index="1"></span>
           <span class="carousel-dot-indicator" data-slide-index="2"></span>
         </div>
+
+        </div><!-- /.carousel-clip-box -->
       </div>
     </section>
+    <!-- Influencer Video Spotlight Slider Section -->
+    <section class="video-spotlight-section">
+      <div class="video-spotlight-header" style="margin-bottom: 32px !important; display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important; gap: 10px !important; text-align: center !important;">
+        <!-- Eyebrow: editorial divider style, no box -->
+        <div style="display: inline-flex; align-items: center; gap: 12px;">
+          <span style="display: block; width: 36px; height: 1.5px; background: linear-gradient(90deg, transparent, #FF5E00);"></span>
+          <span class="spotlight-eyebrow" style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: #FF5E00; font-family: 'Plus Jakarta Sans', sans-serif; opacity: 0.85;">✦ Real Customer Stories ✦</span>
+          <span style="display: block; width: 36px; height: 1.5px; background: linear-gradient(90deg, #FF5E00, transparent);"></span>
+        </div>
+        <!-- Main heading: split so key emotional word uses a warmer style -->
+        <div style="display: flex; align-items: center; flex-wrap: wrap; justify-content: center; gap: 10px;">
+          <span class="spotlight-title-main" style="font-size: 40px; font-weight: 900; font-style: italic; color: #0f172a; font-family: 'Plus Jakarta Sans', 'Inter', sans-serif; letter-spacing: -0.03em; line-height: 1.05;">Made with love,</span>
+          <span class="spotlight-title-script" style="font-size: 40px; font-weight: 900; font-style: italic; font-family: 'Pacifico', cursive; background: linear-gradient(135deg, #FF5E00, #FF9A3C); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1.3; padding: 0 4px 10px 4px; display: inline-block;">shared by you</span>
+          <span class="spotlight-title-emoji" style="font-size: 32px; line-height: 1;">💙</span>
+        </div>
+        <!-- Subtitle -->
+        <p class="spotlight-subtitle" style="font-size: 15px; color: #64748b; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 400; max-width: 480px; line-height: 1.6; margin: 0;">Real moments from real people &mdash; see how our community lives, loves, and transforms their homes.</p>
+      </div>
+      
+      <div class="video-spotlight-track-container">
+        <!-- Navigation Buttons -->
+        <button class="video-spotlight-nav left" id="video-track-prev" aria-label="Scroll left">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+        </button>
+        <button class="video-spotlight-nav right" id="video-track-next" aria-label="Scroll right">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+        </button>
+
+        <div class="video-spotlight-track" id="video-spotlight-track">
+
+          <!-- Card 1: Steam Sauna Box -->
+          <div class="video-card-wrap">
+            <div class="video-card" data-product-id="104" data-influencer="@wellness_guru" data-title="Sauna Box Experience" data-video-src="https://www.youtube.com/embed/TIZ4LZUVWZQ?autoplay=1&mute=1&loop=1&playlist=TIZ4LZUVWZQ" data-product-name="Portable Steam Sauna Box" data-product-price="₹6,799" data-product-image="images/products/steam_sauna.png">
+              <img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=600&q=80" alt="Sauna Box Experience" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;">
+              <div class="video-play-btn-circle"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+            </div>
+            <div class="video-card-caption">
+              <p class="vc-product-name">Portable Steam Sauna Box</p>
+              <span class="vc-views" data-views="42000">
+                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                42.4k views
+              </span>
+            </div>
+          </div>
+
+          <!-- Card 2: Laptop Study Desk -->
+          <div class="video-card-wrap">
+            <div class="video-card" data-product-id="101" data-influencer="@tech_spaces" data-title="Smart Desk Setup" data-video-src="https://www.youtube.com/embed/YJVmu6yttiw?autoplay=1&mute=1&loop=1&playlist=YJVmu6yttiw" data-product-name="Foldable Laptop Study Table" data-product-price="₹1,690" data-product-image="images/products/laptop_desk.png">
+              <img src="https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?auto=format&fit=crop&w=600&q=80" alt="Desk Setup" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;">
+              <div class="video-play-btn-circle"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+            </div>
+            <div class="video-card-caption">
+              <p class="vc-product-name">Foldable Laptop Study Table</p>
+              <span class="vc-views">
+                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                2.8k views
+              </span>
+            </div>
+          </div>
+
+          <!-- Card 3: Meditation Chair -->
+          <div class="video-card-wrap">
+            <div class="video-card" data-product-id="105" data-influencer="@body_mind_spirit" data-title="Meditation Posture Review" data-video-src="https://www.youtube.com/embed/inpok4MKVLM?autoplay=1&mute=1&loop=1&playlist=inpok4MKVLM" data-product-name="Meditation Floor Chair" data-product-price="₹2,099" data-product-image="images/products/meditation_chair.png">
+              <img src="https://images.unsplash.com/photo-1545205597-3d9d02c29597?auto=format&fit=crop&w=600&q=80" alt="Meditation Chair" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;">
+              <div class="video-play-btn-circle"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+            </div>
+            <div class="video-card-caption">
+              <p class="vc-product-name">Meditation Floor Chair</p>
+              <span class="vc-views">
+                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                5.1k views
+              </span>
+            </div>
+          </div>
+
+          <!-- Card 4: Kitchen Storage Rack -->
+          <div class="video-card-wrap">
+            <div class="video-card" data-product-id="102" data-influencer="@kitchen_pro" data-title="Kitchen Organization Hack" data-video-src="https://www.youtube.com/embed/o6UIHxvwBUI?autoplay=1&mute=1&loop=1&playlist=o6UIHxvwBUI" data-product-name="3 Tier Kitchen Storage Rack" data-product-price="₹2,099" data-product-image="images/products/kitchen_rack.png">
+              <img src="https://images.unsplash.com/photo-1595341888016-a392ef81b7de?auto=format&fit=crop&w=600&q=80" alt="Kitchen Rack" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;">
+              <div class="video-play-btn-circle"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+            </div>
+            <div class="video-card-caption">
+              <p class="vc-product-name">3 Tier Kitchen Storage Rack</p>
+              <span class="vc-views">
+                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                3.7k views
+              </span>
+            </div>
+          </div>
+
+          <!-- Card 5: Adjustable Sofa Couch -->
+          <div class="video-card-wrap">
+            <div class="video-card" data-product-id="103" data-influencer="@home_comfort" data-title="Sofa Comfort Test" data-video-src="https://www.youtube.com/embed/IUN664s7N-c?autoplay=1&mute=1&loop=1&playlist=IUN664s7N-c" data-product-name="Adjustable Sofa Couch" data-product-price="₹8,499" data-product-image="images/products/sofa_couch.png">
+              <img src="https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?auto=format&fit=crop&w=600&q=80" alt="Sofa Couch" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;">
+              <div class="video-play-btn-circle"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+            </div>
+            <div class="video-card-caption">
+              <p class="vc-product-name">Adjustable Sofa Couch</p>
+              <span class="vc-views">
+                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                6.4k views
+              </span>
+            </div>
+          </div>
+
+          <!-- Card 6: Compact Wardrobe -->
+          <div class="video-card-wrap">
+            <div class="video-card" data-product-id="106" data-influencer="@space_saver" data-title="Smart Storage Wardrobe" data-video-src="https://www.youtube.com/embed/VzYiQ2Gu7JE?autoplay=1&mute=1&loop=1&playlist=VzYiQ2Gu7JE" data-product-name="Compact Fabric Wardrobe" data-product-price="₹3,299" data-product-image="images/products/wardrobe.png">
+              <img src="https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&w=600&q=80" alt="Wardrobe" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;">
+              <div class="video-play-btn-circle"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+            </div>
+            <div class="video-card-caption">
+              <p class="vc-product-name">Compact Fabric Wardrobe</p>
+              <span class="vc-views">
+                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                1.9k views
+              </span>
+            </div>
+          </div>
+
+          <!-- Card 7: Recliner Chair -->
+          <div class="video-card-wrap">
+            <div class="video-card" data-product-id="107" data-influencer="@relax_vibes" data-title="Recliner Chair Review" data-video-src="https://www.youtube.com/embed/TTKXQ2j2TDo?autoplay=1&mute=1&loop=1&playlist=TTKXQ2j2TDo" data-product-name="Luxury Recliner Chair" data-product-price="₹12,999" data-product-image="images/products/recliner.png">
+              <img src="https://images.unsplash.com/photo-1592078615290-033ee584e267?auto=format&fit=crop&w=600&q=80" alt="Recliner Chair" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;">
+              <div class="video-play-btn-circle"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+            </div>
+            <div class="video-card-caption">
+              <p class="vc-product-name">Luxury Recliner Chair</p>
+              <span class="vc-views" data-views="83000">
+                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                83.4k views
+              </span>
+            </div>
+          </div>
+
+          <!-- Card 8: Bedside Table with Charging -->
+          <div class="video-card-wrap">
+            <div class="video-card" data-product-id="108" data-influencer="@bedroom_inspo" data-title="Bedside Setup Essentials" data-video-src="https://www.youtube.com/embed/ODE2UQKN_lA?autoplay=1&mute=1&loop=1&playlist=ODE2UQKN_lA" data-product-name="Bedside Table with Charging" data-product-price="₹4,199" data-product-image="images/products/bedside_table.png">
+              <img src="https://images.unsplash.com/photo-1532372320572-cda25653a26d?auto=format&fit=crop&w=600&q=80" alt="Bedside Table" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;">
+              <div class="video-play-btn-circle"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+            </div>
+            <div class="video-card-caption">
+              <p class="vc-product-name">Bedside Table with Charging</p>
+              <span class="vc-views">
+                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                3.1k views
+              </span>
+            </div>
+          </div>
+
+        </div>
+
+
+      </div>
+    </section>
+
+    <!-- Influencer Video Modal Player Component -->
+    <div class="video-modal-overlay" id="influencer-video-modal">
+      <div class="video-modal-content">
+        <button class="video-modal-close-btn" id="video-modal-close" aria-label="Close video player">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+        <!-- Left: Video in 9:16 -->
+        <div class="video-modal-left" id="modal-video-container">
+          <!-- iframe injected here by JS -->
+        </div>
+        <!-- Right: Product info -->
+        <div class="video-modal-right">
+          <div>
+            <span style="font-size: 11px; font-weight: 700; color: #FF5E00; text-transform: uppercase; letter-spacing: 0.8px;">Customer Review</span>
+            <h3 id="modal-video-title" style="font-size: 20px; font-weight: 800; color: #0f172a; margin: 8px 0 6px; line-height: 1.25;">Review Title</h3>
+            <p id="modal-video-influencer" style="font-size: 13px; font-weight: 600; color: #64748b; margin-bottom: 20px;">@username</p>
+            <p style="font-size: 13px; color: #334155; line-height: 1.65; font-weight: 500;">Watch how this product fits into your real lifestyle. Click to shop directly.</p>
+          </div>
+          <div>
+            <p style="font-size: 11px; font-weight: 700; color: #003366; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px;">Featured Product</p>
+            <div class="modal-product-card">
+              <img id="modal-product-img" src="" alt="Product Image" class="modal-product-img">
+              <div class="modal-product-info">
+                <span id="modal-product-name" class="modal-product-title">Product Name</span>
+                <span id="modal-product-price" class="modal-product-price">₹0</span>
+              </div>
+            </div>
+            <a id="modal-product-shop-link" href="#" class="btn btn-primary" style="display:block;text-align:center;margin-top:16px;padding:13px;border-radius:8px;font-weight:700;font-size:14px;text-decoration:none;">Shop This Product →</a>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- 2. 4-Box Discovery Grid (Trending, Bestsellers, Home Makeover, Utility Hacks) -->
     <section class="discovery-grid-section">
@@ -190,7 +790,7 @@
         <div class="discovery-card">
           <h3 class="discovery-card-title">Trending Now</h3>
           <p class="discovery-card-subtitle">Most popular items right now</p>
-          <div class="discovery-card-2x2">
+          <div class="discovery-card-2x2" id="discovery-trending-grid">
             <a href="single-product.html?id=105" class="discovery-grid-item">
               <img src="images/products/meditation_chair.png" alt="Meditation Chair">
               <span>Floor Chair</span>
@@ -215,7 +815,7 @@
         <div class="discovery-card">
           <h3 class="discovery-card-title">Bestsellers</h3>
           <p class="discovery-card-subtitle">Top picks by our customers</p>
-          <div class="discovery-card-2x2">
+          <div class="discovery-card-2x2" id="discovery-bestsellers-grid">
             <a href="single-product.html?id=102" class="discovery-grid-item">
               <img src="images/products/kitchen_rack.png" alt="Kitchen Rack">
               <span>Kitchen Rack</span>
@@ -240,7 +840,7 @@
         <div class="discovery-card">
           <h3 class="discovery-card-title">Home Makeover</h3>
           <p class="discovery-card-subtitle">Style your space</p>
-          <div class="discovery-card-2x2">
+          <div class="discovery-card-2x2" id="discovery-makeover-grid">
             <a href="single-product.html?id=103" class="discovery-grid-item">
               <img src="images/products/wall_shelves.png" alt="Wall Mounted Shelves">
               <span>Wall Shelves</span>
@@ -265,7 +865,7 @@
         <div class="discovery-card">
           <h3 class="discovery-card-title">Smart Utilities</h3>
           <p class="discovery-card-subtitle">Clever household hacks</p>
-          <div class="discovery-card-2x2">
+          <div class="discovery-card-2x2" id="discovery-utilities-grid">
             <a href="single-product.html?id=113" class="discovery-grid-item">
               <img src="images/products/trolley_organizer.png" alt="Storage Trolley">
               <span>Storage Trolley</span>
@@ -409,7 +1009,7 @@
         
         <!-- Left Side: Shop by Category bubbles (60% width) -->
         <div class="bubble-categories-card" style="padding: 0 !important; overflow: hidden; display: flex; flex-direction: column;">
-          <div class="split-card-header" style="padding: 18px 20px; background-color: #ffffff;">
+          <div class="split-card-header" style="padding: 18px 20px;">
             <h3 class="split-section-title" style="margin: 0 !important;">Shop by Category</h3>
           </div>
           <div class="split-card-body" style="padding: 24px 20px; flex-grow: 1; display: flex; flex-direction: column; gap: 24px;">
@@ -488,14 +1088,14 @@
 
         <!-- Right Side: Best Sellers cards (40% width) -->
         <div class="list-best-sellers-card" style="padding: 0 !important; overflow: hidden; display: flex; flex-direction: column;">
-          <div class="split-card-header" style="padding: 18px 20px; background-color: #ffffff;">
+          <div class="split-card-header" style="padding: 18px 20px;">
             <div class="list-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0 !important;">
               <h3 class="split-section-title" style="margin: 0 !important;">Best Sellers</h3>
               <a href="#best-sellers" class="list-view-all">View all &rarr;</a>
             </div>
           </div>
           <div class="split-card-body" style="padding: 24px 20px; flex-grow: 1;">
-            <p class="split-section-subtitle" style="margin: 0 0 16px 0 !important; position: static !important; display: block !important;">Most loved by customers</p>
+            <p class="split-section-subtitle" style="margin: 0 0 16px 0 !important; position: static !important;">Most loved by customers</p>
             <div class="split-best-sellers-products" id="split-best-sellers-products-container">
               <!-- Populated dynamically with 4 products -->
             </div>
@@ -506,7 +1106,7 @@
     </section>
 
     <!-- 6. Home Furniture Strip (Horizontal product slider) -->
-    <section class="product-slider-section" id="home-furniture" style="background-color: var(--color-bg-white); padding: 40px 0; border-bottom: 1px solid var(--color-border); border-radius: 20px; box-shadow: var(--shadow-sm); margin-bottom: 30px;">
+    <section class="product-slider-section" id="home-furniture" style="background-color: var(--color-bg-white); padding: 40px 24px; border-bottom: 1px solid var(--color-border); border-radius: 20px; box-shadow: var(--shadow-sm); margin-bottom: 30px;">
       <div class="container">
         <div style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-end;">
           <div>
@@ -534,7 +1134,7 @@
     </section>
 
     <!-- 7. Kitchen Storage Strip (Horizontal product slider) -->
-    <section class="product-slider-section" id="kitchen-storage" style="background-color: var(--color-bg-white); padding: 40px 0; border-bottom: 1px solid var(--color-border); border-radius: 20px; box-shadow: var(--shadow-sm); margin-bottom: 30px;">
+    <section class="product-slider-section" id="kitchen-storage" style="background-color: var(--color-bg-white); padding: 40px 24px; border-bottom: 1px solid var(--color-border); border-radius: 20px; box-shadow: var(--shadow-sm); margin-bottom: 30px;">
       <div class="container">
         <div style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-end;">
           <div>
@@ -563,7 +1163,7 @@
 
     <!-- 8. Three Promo Banners Row (Up to 50% off) -->
     <section class="promo-banners-triple-section">
-      <div class="promo-banners-triple-row">
+      <div class="promo-banners-triple-row" id="promo-banners-row">
         
         <!-- Banner 1: Up to 50% Off -->
         <div class="promo-box-triple" style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: #ffffff;">
@@ -608,7 +1208,7 @@
     </section>
 
     <!-- 9. Study & Office Strip (Horizontal product slider) -->
-    <section class="product-slider-section" id="study-office" style="background-color: var(--color-bg-white); padding: 40px 0; border-bottom: 1px solid var(--color-border); border-radius: 20px; box-shadow: var(--shadow-sm); margin-bottom: 30px;">
+    <section class="product-slider-section" id="study-office" style="background-color: var(--color-bg-white); padding: 40px 24px; border-bottom: 1px solid var(--color-border); border-radius: 20px; box-shadow: var(--shadow-sm); margin-bottom: 30px;">
       <div class="container">
         <div style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-end;">
           <div>
@@ -636,7 +1236,7 @@
     </section>
 
     <!-- 10. Utility Products Strip (Horizontal product slider) -->
-    <section class="product-slider-section" id="utility-products" style="background-color: var(--color-bg-white); padding: 40px 0; border-bottom: 1px solid var(--color-border); border-radius: 20px; box-shadow: var(--shadow-sm); margin-bottom: 30px;">
+    <section class="product-slider-section" id="utility-products" style="background-color: var(--color-bg-white); padding: 40px 24px; border-bottom: 1px solid var(--color-border); border-radius: 20px; box-shadow: var(--shadow-sm); margin-bottom: 30px;">
       <div class="container">
         <div style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-end;">
           <div>
@@ -745,7 +1345,7 @@
   <div class="centered-marketplace-layout"> <!-- Re-open centered-marketplace-layout -->
 
     <!-- 12. FAQ Section -->
-    <section class="product-slider-section" id="faq" style="background-color: var(--color-bg-white); padding: 40px 0; border-bottom: 1px solid var(--color-border); border-radius: 20px; box-shadow: var(--shadow-sm); margin-bottom: 30px;">
+    <section class="product-slider-section" id="faq" style="background-color: var(--color-bg-white); padding: 40px 24px; border-bottom: 1px solid var(--color-border); border-radius: 20px; box-shadow: var(--shadow-sm); margin-bottom: 30px;">
       <div class="container">
         <div style="margin-bottom: 32px; text-align: center;">
           <h2 class="kawachi-sec-title">Frequently Asked Questions</h2>
@@ -820,13 +1420,22 @@
   </div>
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener("DOMContentLoaded", async () => {
       // 1. Format Rupees helper
       function formatRupees(amount) {
         return "₹" + Number(amount).toLocaleString("en-IN", {
           minimumFractionDigits: 0,
           maximumFractionDigits: 0
         });
+      }
+
+      // Await WooCommerce live products loading before rendering elements
+      if (window.KawachiProductsPromise) {
+        try {
+          await window.KawachiProductsPromise;
+        } catch (err) {
+          console.warn("[WooCommerce Client] index.html load await failed:", err);
+        }
       }
 
       // Products Array reference from window
@@ -921,6 +1530,52 @@
             p.name.toLowerCase().includes("trolley")
           );
           utilityTrack.innerHTML = list.map(p => renderCard(p, true)).join("");
+        }
+      }
+
+      // Hydrate 4-Box Category Discovery Grids Dynamically
+      function hydrateDiscoveryGrid() {
+        if (!products.length) return;
+
+        // Helper to format category items
+        function renderGridItem(p) {
+          const shortName = p.name.split(' ').slice(0, 2).join(' ');
+          return `
+            <a href="single-product.html?id=${p.id}" class="discovery-grid-item">
+              <img src="${p.image}" alt="${p.name}">
+              <span>${shortName}</span>
+            </a>
+          `;
+        }
+
+        // 1. Trending Now (first 4 items)
+        const trendingGrid = document.getElementById("discovery-trending-grid");
+        if (trendingGrid) {
+          const list = products.slice(0, 4);
+          trendingGrid.innerHTML = list.map(renderGridItem).join("");
+        }
+
+        // 2. Bestsellers (sort by sales or slice 4 to 8)
+        const bestsellersGrid = document.getElementById("discovery-bestsellers-grid");
+        if (bestsellersGrid) {
+          const list = [...products].sort((a, b) => b.sales_count - a.sales_count).slice(0, 4);
+          bestsellersGrid.innerHTML = list.map(renderGridItem).join("");
+        }
+
+        // 3. Home Makeover (Home Furniture category or slice 8 to 12)
+        const makeoverGrid = document.getElementById("discovery-makeover-grid");
+        if (makeoverGrid) {
+          let list = products.filter(p => p.category === "Home Furniture").slice(0, 4);
+          if (list.length < 4) list = products.slice(4, 8);
+          makeoverGrid.innerHTML = list.map(renderGridItem).join("");
+        }
+
+        // 4. Smart Utilities (Utility Products category or slice 12 to 16)
+        const utilitiesGrid = document.getElementById("discovery-utilities-grid");
+        if (utilitiesGrid) {
+          let list = products.filter(p => p.category === "Utility Products" || p.category === "Kitchen Storage").slice(0, 4);
+          if (list.length < 4) list = products.slice(8, 12);
+          utilitiesGrid.innerHTML = list.map(renderGridItem).join("");
         }
       }
 
@@ -1065,7 +1720,8 @@
           const cards = track.querySelectorAll(".deal-product-item-card");
           if (cards.length === 0) return;
           const cardWidth = cards[0].getBoundingClientRect().width;
-          const gap = 20; // 20px gap
+          const isMobile = window.innerWidth < 768;
+          const gap = isMobile ? 12 : 20;
           const translation = currentIndex * (cardWidth + gap);
           track.style.transform = `translateX(-${translation}px)`;
         }
@@ -1110,6 +1766,23 @@
           currentIndex = Math.min(currentIndex, getMaxIndex());
           updateSlider();
         });
+
+        // Mobile touch swipe gestures support
+        let startX = 0;
+        track.addEventListener("touchstart", (e) => {
+          startX = e.touches[0].clientX;
+        }, { passive: true });
+        track.addEventListener("touchend", (e) => {
+          const endX = e.changedTouches[0].clientX;
+          const diffX = startX - endX;
+          if (Math.abs(diffX) > 40) {
+            if (diffX > 0) {
+              if (nextBtn) nextBtn.click();
+            } else {
+              if (prevBtn) prevBtn.click();
+            }
+          }
+        }, { passive: true });
 
         startAutoDeals();
         setTimeout(updateSlider, 200);
@@ -1210,10 +1883,14 @@
       hydrateSliders();
       hydrateDeals();
       hydrateBestSellersSplit();
+      hydrateDiscoveryGrid();
       initHeroCarousel();
       initDealsSlider();
       initSliders();
       startDealsCountdown();
+
+      // Export initHeroCarousel for dynamic ACF banner hydrations
+      window.initHeroCarousel = initHeroCarousel;
     });
   </script>
 </main>
@@ -1333,7 +2010,7 @@
     </div>
   </footer>
 
-  <script src="js/main-api.js?v=4.6"></script>
+  <script src="js/main-api.js?v=6.28"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       // General drawer controls
@@ -1358,13 +2035,263 @@
         }
       }
 
-      if (openBtn) openBtn.addEventListener("click", openDrawer);
+      // Cart trigger redirects to cart.html (drawer only opens via quick-add)
+      if (openBtn) openBtn.addEventListener("click", (e) => { e.preventDefault(); window.location.href = "cart.html"; });
       if (closeBtn) closeBtn.addEventListener("click", closeDrawer);
       if (backdrop) backdrop.addEventListener("click", closeDrawer);
 
       document.addEventListener("keydown", (e) => {
         if (e.key === "Escape") closeDrawer();
       });
+    });
+  </script>
+
+  <!-- Video spotlight control script -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const track = document.getElementById("video-spotlight-track");
+      const prevBtn = document.getElementById("video-track-prev");
+      const nextBtn = document.getElementById("video-track-next");
+      const videoCards = document.querySelectorAll(".video-card");
+      
+      const modal = document.getElementById("influencer-video-modal");
+      const modalVideo = document.getElementById("modal-video-player");
+      const modalTitle = document.getElementById("modal-video-title");
+      const modalInfluencer = document.getElementById("modal-video-influencer");
+      const modalProductImg = document.getElementById("modal-product-img");
+      const modalProductName = document.getElementById("modal-product-name");
+      const modalProductPrice = document.getElementById("modal-product-price");
+      const modalShopLink = document.getElementById("modal-product-shop-link");
+      const modalClose = document.getElementById("video-modal-close");
+      
+      // 1. Auto-scroll animation logic
+      let autoScrollTimer = null;
+      
+      function startAutoScroll() {
+        autoScrollTimer = setInterval(() => {
+          if (!track) return;
+          const maxScroll = track.scrollWidth - track.clientWidth;
+          if (track.scrollLeft >= maxScroll - 10) {
+            track.scrollTo({ left: 0, behavior: "smooth" });
+          } else {
+            track.scrollBy({ left: 200, behavior: "smooth" });
+          }
+        }, 3000);
+      }
+      
+      function stopAutoScroll() {
+        if (autoScrollTimer) {
+          clearInterval(autoScrollTimer);
+          autoScrollTimer = null;
+        }
+      }
+      
+      if (track) {
+        startAutoScroll();
+
+        // ---- Pause on hover over ANY video card, resume when mouse leaves ----
+        let isHovering = false;
+        const cardWraps = document.querySelectorAll(".video-card-wrap");
+        cardWraps.forEach(wrap => {
+          wrap.addEventListener("mouseenter", () => {
+            isHovering = true;
+            stopAutoScroll();
+          });
+          wrap.addEventListener("mouseleave", () => {
+            isHovering = false;
+            if (!isDown) startAutoScroll();
+          });
+        });
+        
+        // Prev / Next button actions
+        if (prevBtn) {
+          prevBtn.addEventListener("click", () => {
+            track.scrollBy({ left: -250, behavior: "smooth" });
+          });
+        }
+        if (nextBtn) {
+          nextBtn.addEventListener("click", () => {
+            track.scrollBy({ left: 250, behavior: "smooth" });
+          });
+        }
+
+        // Mouse Drag to Scroll (Thread)
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        track.addEventListener("mousedown", (e) => {
+          isDown = true;
+          track.style.cursor = "grabbing";
+          startX = e.pageX - track.offsetLeft;
+          scrollLeft = track.scrollLeft;
+          stopAutoScroll();
+        });
+
+        track.addEventListener("mouseleave", () => {
+          if (isDown) {
+            isDown = false;
+            track.style.cursor = "grab";
+            if (!isHovering) startAutoScroll();
+          }
+        });
+
+        track.addEventListener("mouseup", () => {
+          isDown = false;
+          track.style.cursor = "grab";
+          if (!isHovering) startAutoScroll();
+        });
+
+        track.addEventListener("mousemove", (e) => {
+          if (!isDown) return;
+          e.preventDefault();
+          const x = e.pageX - track.offsetLeft;
+          const walk = (x - startX) * 1.5; // Drag sensitivity
+          track.scrollLeft = scrollLeft - walk;
+        });
+
+        // Set initial grab style
+        track.style.cursor = "grab";
+      }
+      
+      // 2. Hover play/pause preview disabled (using high-quality static thumbnail preview)
+
+      // 3. Click to open modal popup and play (using event delegation to support dynamic shoppable video additions)
+      document.addEventListener("click", (e) => {
+        const card = e.target.closest(".video-card");
+        if (card) {
+          const productId = card.getAttribute("data-product-id");
+          const influencer = card.getAttribute("data-influencer");
+          const title = card.getAttribute("data-title");
+          const videoSrc = card.getAttribute("data-video-src");
+          const productName = card.getAttribute("data-product-name");
+          const productPrice = card.getAttribute("data-product-price");
+          const productImage = card.getAttribute("data-product-image");
+          
+          if (modal) {
+            const container = document.getElementById("modal-video-container");
+            if (container) {
+              if (videoSrc.includes("youtube.com") || videoSrc.includes("youtu.be") || videoSrc.includes("/embed/")) {
+                let videoId = "";
+                if (videoSrc.includes("watch?v=")) {
+                  videoId = videoSrc.split("v=")[1].split("&")[0];
+                } else if (videoSrc.includes("/embed/")) {
+                  videoId = videoSrc.split("/embed/")[1].split("?")[0];
+                } else {
+                  videoId = videoSrc.substring(videoSrc.lastIndexOf('/') + 1);
+                }
+                const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&enablejsapi=1&rel=0&playsinline=1`;
+                container.innerHTML = `<iframe src="${embedUrl}" style="width:100%;height:100%;border:none;" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>`;
+              } else if (videoSrc.includes("instagram.com")) {
+                let embedUrl = videoSrc;
+                if (!videoSrc.endsWith("/embed/")) {
+                  embedUrl = videoSrc.replace(/\/?$/, "/embed/");
+                }
+                container.innerHTML = `<iframe src="${embedUrl}" style="width: 100%; height: 100%; border: none;" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+              } else {
+                const vid = document.createElement("video");
+                vid.muted = true;
+                vid.volume = 0;
+                vid.controls = true;
+                vid.loop = true;
+                vid.setAttribute("playsinline", "");
+                vid.setAttribute("preload", "auto");
+                vid.style.cssText = "width:100%;height:100%;object-fit:contain;background:#000;";
+                
+                const source = document.createElement("source");
+                source.src = videoSrc;
+                source.type = "video/mp4";
+                vid.appendChild(source);
+                
+                container.innerHTML = "";
+                container.appendChild(vid);
+                vid.play().catch(err => console.log("Inline autoplay prevented:", err));
+              }
+            }
+            
+            if (modalTitle) modalTitle.textContent = title;
+            if (modalInfluencer) modalInfluencer.textContent = influencer;
+            
+            let resolvedImage = productImage;
+            if (productImage && !productImage.startsWith("http")) {
+              resolvedImage = window.location.origin + "/" + productImage;
+            }
+            
+            const imageFallbacks = {
+              'images/products/meditation_chair.png': 'https://images.unsplash.com/photo-1545205597-3d9d02c29597?auto=format&fit=crop&w=300&q=80',
+              'images/products/laptop_desk.png': 'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?auto=format&fit=crop&w=300&q=80',
+              'images/products/kitchen_rack.png': 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=300&q=80'
+            };
+            
+            modalProductImg.style.display = '';
+            modalProductImg.src = resolvedImage;
+            modalProductImg.onerror = () => {
+              modalProductImg.src = imageFallbacks[productImage] ||
+                'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=300&q=80';
+            };
+            modalProductName.textContent = productName;
+            modalProductPrice.textContent = productPrice;
+            modalShopLink.href = `single-product.html?id=${productId}`;
+            
+            modal.classList.add("open");
+            stopAutoScroll();
+          }
+        }
+      });
+      
+      // 4. Modal close triggers
+      function closeModal() {
+        if (modal) {
+          modal.classList.remove("open");
+          const container = document.getElementById("modal-video-container");
+          if (container) {
+            container.innerHTML = `<video id="modal-video-player" controls loop style="width: 100%; height: 100%; object-fit: contain;"></video>`;
+          }
+          startAutoScroll();
+        }
+      }
+      
+      if (modalClose) {
+        modalClose.addEventListener("click", closeModal);
+      }
+      
+      if (modal) {
+        modal.addEventListener("click", (e) => {
+          if (e.target === modal) {
+            closeModal();
+          }
+        });
+      }
+      
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          closeModal();
+        }
+      });
+      // 5. Auto-detect views > 20k and add 🔥 fire emoji
+      document.querySelectorAll(".vc-views").forEach(el => {
+        let viewCount = 0;
+        const dataViews = el.getAttribute("data-views");
+        if (dataViews) {
+          viewCount = parseInt(dataViews, 10);
+        } else {
+          const text = el.textContent.trim();
+          const match = text.match(/([\d.]+)\s*k/i);
+          if (match) viewCount = parseFloat(match[1]) * 1000;
+          else {
+            const numMatch = text.match(/[\d,]+/);
+            if (numMatch) viewCount = parseInt(numMatch[0].replace(/,/g, ''), 10);
+          }
+        }
+        if (viewCount > 20000 && !el.querySelector(".fire-emoji")) {
+          const fire = document.createElement("span");
+          fire.className = "fire-emoji";
+          fire.textContent = " 🔥";
+          fire.style.cssText = "font-size:13px; margin-left:2px;";
+          el.appendChild(fire);
+        }
+      });
+
     });
   </script>
 </body>

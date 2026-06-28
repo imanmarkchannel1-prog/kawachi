@@ -5,8 +5,54 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Checkout Order - Kawachi</title>
   <meta name="description" content="Provide shipping information and complete transaction utilizing credit card forms or local UPI gateways.">
-  <link rel="stylesheet" href="css/global-styles.css?v=4.6">
+  <link rel="stylesheet" href="css/global-styles.css?v=6.28">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <style>
+    body, main#main-content {
+      background-color: #f8fafc !important;
+    }
+    
+    @media (max-width: 767px) {
+      .checkout-layout-grid {
+        grid-template-columns: 1fr !important;
+        gap: 24px !important;
+      }
+      .checkout-form-container {
+        padding: 20px !important;
+      }
+      /* First & Last Name Grid */
+      .checkout-form-container div[style*="grid-template-columns: 1fr 1fr"] {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+      }
+      /* City, State Grid */
+      .city-state-grid {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+      }
+      
+      @keyframes pulse {
+        from { opacity: 0.5; }
+        to { opacity: 1; }
+      }
+      
+      /* Make inputs larger and more finger-friendly on mobile */
+      .form-input {
+        padding: 12px 14px !important;
+        font-size: 14px !important;
+      }
+      .form-label {
+        font-size: 13px !important;
+        margin-bottom: 6px !important;
+      }
+      
+      /* Order summary box padding on mobile */
+      .checkout-box {
+        padding: 20px !important;
+        position: static !important; /* disable sticky layout on mobile to stack naturally */
+      }
+    }
+  </style>
 </head>
 <body>
   <!-- 2. Header -->
@@ -48,19 +94,19 @@
 
       <!-- Utilities (Wishlist, Account, Orders & Returns, Cart) -->
       <div class="header-utilities">
-        <a href="search.html?q=Wishlist" class="utility-link">
+        <a href="wishlist.html" class="utility-link">
           <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
           </svg>
           <span>Wishlist</span>
         </a>
-        <a href="support-center.html" class="utility-link">
+        <a href="account.html" class="utility-link">
           <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
           </svg>
           <span>Account</span>
         </a>
-        <a href="returns-warranties.html" class="utility-link">
+        <a href="orders.html" class="utility-link">
           <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
           </svg>
@@ -92,7 +138,7 @@
           </a>
           <a href="#home-furniture" class="sub-nav-link">Home Furniture</a>
           <a href="#kitchen-storage" class="sub-nav-link">Kitchen Storage</a>
-          <a href="#study-office" class="sub-nav-link">Study &amp; Office</a>
+          <a href="search.html?q=Hot" class="sub-nav-link">Hot</a>
           <a href="#utility-products" class="sub-nav-link">Utility Products</a>
           <a href="search.html?q=new" class="sub-nav-link">New Arrivals</a>
           <a href="#deals-of-the-day" class="sub-nav-link highlighted-link">Deals</a>
@@ -124,7 +170,8 @@
           <form id="checkout-payment-form">
             
             <h3 style="font-family: var(--font-display); font-size: 18px; font-weight: 800; color: var(--color-charcoal); margin-bottom: 20px;">1. Shipping Address</h3>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+            <!-- Name block (always 40% First Name / 60% Last Name in one line) -->
+            <div style="display: grid; grid-template-columns: 4fr 6fr; gap: 16px; margin-bottom: 16px;">
               <div class="form-group">
                 <label class="form-label" for="shipping-first-name">First Name *</label>
                 <input type="text" id="shipping-first-name" class="form-input" required>
@@ -135,27 +182,39 @@
               </div>
             </div>
             
+            <!-- Email (Optional) -->
             <div class="form-group" style="margin-bottom: 16px;">
-              <label class="form-label" for="shipping-email">Email Address *</label>
-              <input type="email" id="shipping-email" class="form-input" required autocomplete="email">
+              <label class="form-label" for="shipping-email">Email Address (Optional)</label>
+              <input type="email" id="shipping-email" class="form-input" autocomplete="email">
             </div>
 
+            <!-- Phone Number -->
             <div class="form-group" style="margin-bottom: 16px;">
               <label class="form-label" for="shipping-phone">Phone Number *</label>
               <input type="tel" id="shipping-phone" class="form-input" required autocomplete="tel">
             </div>
 
+            <!-- ZIP / Pincode (First) -->
+            <div class="form-group" style="margin-bottom: 16px; position: relative;">
+              <label class="form-label" for="shipping-pincode">ZIP / Pincode *</label>
+              <input type="text" id="shipping-pincode" class="form-input" placeholder="e.g. 400001 (Auto-fills City & State)" required maxlength="6">
+              <span id="pincode-loader" style="position: absolute; right: 12px; top: 38px; font-size: 11px; font-weight: 700; color: #0066ff; display: none; animation: pulse 1s infinite alternate;">Fetching Address...</span>
+            </div>
+
+            <!-- Street Address -->
             <div class="form-group" style="margin-bottom: 16px;">
               <label class="form-label" for="shipping-address-1">Street Address *</label>
               <input type="text" id="shipping-address-1" class="form-input" placeholder="House number and street name" required>
             </div>
 
+            <!-- Apartment -->
             <div class="form-group" style="margin-bottom: 16px;">
               <label class="form-label" for="shipping-address-2">Apartment, Suite, Unit etc. (optional)</label>
               <input type="text" id="shipping-address-2" class="form-input" placeholder="Apartment, suite, unit, etc. (optional)">
             </div>
 
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 32px;">
+            <!-- City & State Grid -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px;" class="city-state-grid">
               <div class="form-group">
                 <label class="form-label" for="shipping-city">Town / City *</label>
                 <input type="text" id="shipping-city" class="form-input" required>
@@ -164,10 +223,6 @@
                 <label class="form-label" for="shipping-state">State *</label>
                 <input type="text" id="shipping-state" class="form-input" required>
               </div>
-              <div class="form-group">
-                <label class="form-label" for="shipping-pincode">ZIP / Pincode *</label>
-                <input type="text" id="shipping-pincode" class="form-input" required>
-              </div>
             </div>
 
             <h3 style="font-family: var(--font-display); font-size: 18px; font-weight: 800; color: var(--color-charcoal); margin-bottom: 20px;">2. Payment Method</h3>
@@ -175,13 +230,49 @@
             <div class="gateways-container" style="display: grid; gap: 16px; margin-bottom: 32px;">
               
               <!-- Gateway 1: Razorpay UPI / Card -->
-              <div class="gateway-item active" style="border: 1.5px solid var(--color-primary); border-radius: var(--radius-md); padding: 16px; background: var(--color-bg-alt);">
-                <label style="display: flex; align-items: center; gap: 10px; font-weight: 700; cursor: pointer; font-size: var(--text-sm);">
-                  <input type="radio" name="payment_method" value="razorpay" checked style="accent-color: var(--color-primary);">
-                  <span>Razorpay Secure Checkout</span>
+              <div class="gateway-item active" style="border: 1.5px solid var(--color-primary); border-radius: var(--radius-md); padding: 18px; background: #f8fafc; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
+                <label style="display: flex; align-items: center; justify-content: space-between; font-weight: 700; cursor: pointer; font-size: var(--text-sm); width: 100%;">
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <input type="radio" name="payment_method" value="razorpay" checked style="accent-color: var(--color-primary);">
+                    <!-- Official Razorpay SVG style Logo with Emblem -->
+                    <span style="display: inline-flex; align-items: center; gap: 8px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 900; font-size: 19px; color: #0029FF; letter-spacing: -0.5px;">
+                      <svg width="22" height="22" viewBox="0 0 50 50" fill="none" style="vertical-align: middle;">
+                        <path d="M25 0L5 38h20L25 0z" fill="#0029FF"/>
+                        <path d="M38 38h12L38 0h-8l8 38z" fill="#00D2FF"/>
+                      </svg>
+                      Razorpay
+                    </span>
+                  </div>
+                  <span style="font-size: 10px; font-weight: 800; color: #ffffff; background: #1F7D44; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 2px 4px rgba(31,125,68,0.2);">Secure</span>
                 </label>
-                <div style="margin-top: 12px; font-size: var(--text-xs); color: var(--color-text-muted); line-height: 1.5;">
-                  Pay securely using Credit Cards, Debit Cards, NetBanking, UPI Wallets (GPay, PhonePe, Paytm). You will be redirected to the secure gateway window.
+                
+                <!-- Payment methods details list -->
+                <div style="margin-top: 14px; font-size: 12.5px; color: #475569; font-weight: 600; line-height: 1.6;">
+                  Pay using:
+                  <ul style="margin: 6px 0 12px 18px; padding: 0; list-style-type: disc; display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+                    <li style="color: #334155;">Credit Card</li>
+                    <li style="color: #334155;">Debit Card</li>
+                    <li style="color: #334155;">NetBanking</li>
+                    <li style="color: #334155;">UPI (GPay/Paytm)</li>
+                    <li style="color: #334155;">PhonePe</li>
+                    <li style="color: #334155;">Paytm</li>
+                  </ul>
+                </div>
+                
+                <!-- Payment methods icons row (highly professional badges) -->
+                <div style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 14px;">
+                  <span style="background: #1a1f71; color: #ffffff; border-radius: 6px; padding: 4px 8px; font-size: 10px; font-weight: 800; font-family: sans-serif; letter-spacing: 0.5px; box-shadow: 0 2px 4px rgba(0,0,0,0.08);">VISA</span>
+                  <span style="background: #eb001b; color: #ffffff; border-radius: 6px; padding: 4px 8px; font-size: 10px; font-weight: 800; font-family: sans-serif; letter-spacing: 0.5px; box-shadow: 0 2px 4px rgba(0,0,0,0.08); display: inline-flex; align-items: center; gap: 3px;">
+                    <span style="width: 8px; height: 8px; background: #ff5f00; border-radius: 50%; display: inline-block;"></span>
+                    Mastercard
+                  </span>
+                  <span style="background: #002b66; color: #ffffff; border-radius: 6px; padding: 4px 8px; font-size: 10px; font-weight: 800; font-family: sans-serif; letter-spacing: 0.5px; box-shadow: 0 2px 4px rgba(0,0,0,0.08);">RuPay</span>
+                  <span style="background: #097939; color: #ffffff; border-radius: 6px; padding: 4px 8px; font-size: 10px; font-weight: 800; font-family: sans-serif; letter-spacing: 0.5px; box-shadow: 0 2px 4px rgba(0,0,0,0.08); display: inline-flex; align-items: center; gap: 2px;">
+                    UPI
+                  </span>
+                  <span style="background: #475569; color: #ffffff; border-radius: 6px; padding: 4px 8px; font-size: 10px; font-weight: 700; font-family: sans-serif; letter-spacing: 0.5px; box-shadow: 0 2px 4px rgba(0,0,0,0.08);">NetBanking</span>
+                  <span style="background: #5f259f; color: #ffffff; border-radius: 6px; padding: 4px 8px; font-size: 10px; font-weight: 800; font-family: sans-serif; letter-spacing: 0.5px; box-shadow: 0 2px 4px rgba(0,0,0,0.08);">PhonePe</span>
+                  <span style="background: #00b9f5; color: #ffffff; border-radius: 6px; padding: 4px 8px; font-size: 10px; font-weight: 800; font-family: sans-serif; letter-spacing: 0.5px; box-shadow: 0 2px 4px rgba(0,0,0,0.08);">Paytm</span>
                 </div>
               </div>
 
@@ -191,7 +282,7 @@
                   <input type="radio" name="payment_method" value="cod" style="accent-color: var(--color-primary);">
                   <span>Cash on Delivery (COD)</span>
                 </label>
-                <div style="margin-top: 12px; font-size: var(--text-xs); color: var(--color-text-muted); line-height: 1.5;">
+                <div style="margin-top: 10px; font-size: var(--text-xs); color: var(--color-text-muted); line-height: 1.5;">
                   Pay in physical cash upon package delivery. Extra handling fees may apply.
                 </div>
               </div>
@@ -205,8 +296,8 @@
 
         <!-- Right Side: Order summary -->
         <div>
-          <div class="checkout-box" style="background: var(--color-bg-alt); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: 32px; position: sticky; top: 120px;">
-            <h3 class="checkout-box-title" style="margin-top: 0; margin-bottom: 24px; font-family: var(--font-display); font-size: 18px; font-weight: 800;">Your Order Summary</h3>
+          <div class="checkout-box" style="background: #ffffff; border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: 32px; position: sticky; top: 120px; box-shadow: 0 4px 10px rgba(0,0,0,0.03);">
+            <h3 class="checkout-box-title" style="margin-top: 0; margin-bottom: 24px; font-family: var(--font-display); font-size: 18px; font-weight: 800; color: #0f172a;">Your Order Summary</h3>
             
             <div class="order-review-table">
               <!-- Rendered dynamically by main-api.js -->
@@ -333,7 +424,7 @@
     </div>
   </footer>
 
-  <script src="js/main-api.js?v=4.6"></script>
+  <script src="js/main-api.js?v=6.28"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       // General drawer controls
@@ -385,6 +476,85 @@
           }
         });
       });
+
+      // Pincode auto-population logic
+      const pincodeInput = document.getElementById("shipping-pincode");
+      const cityInput = document.getElementById("shipping-city");
+      const stateInput = document.getElementById("shipping-state");
+      const loader = document.getElementById("pincode-loader");
+
+      if (pincodeInput && cityInput && stateInput) {
+        pincodeInput.addEventListener("input", async (e) => {
+          const val = e.target.value.trim();
+          if (/^\d{6}$/.test(val)) {
+            if (loader) loader.style.display = "inline";
+            pincodeInput.style.borderColor = "var(--color-primary)";
+            
+            try {
+              const res = await fetch(`https://api.postalpincode.in/pincode/${val}`);
+              const data = await res.json();
+              if (data && data[0] && data[0].Status === "Success") {
+                const postOffice = data[0].PostOffice[0];
+                if (postOffice) {
+                  cityInput.value = postOffice.District || postOffice.Name || "";
+                  stateInput.value = postOffice.State || "";
+                  pincodeInput.style.borderColor = "#1F7D44";
+                }
+              } else {
+                performLocalFallback(val);
+              }
+            } catch (err) {
+              console.warn("Pincode API failed, using fallback:", err);
+              performLocalFallback(val);
+            } finally {
+              if (loader) loader.style.display = "none";
+            }
+          }
+        });
+      }
+
+      function performLocalFallback(pincode) {
+        const zone = pincode.charAt(0);
+        const subzone = pincode.substring(0, 2);
+        let state = "";
+        let city = "";
+        
+        if (zone === "1") {
+          state = "Delhi/Haryana/Punjab";
+          if (subzone === "11") { state = "Delhi"; city = "New Delhi"; }
+        } else if (zone === "2") {
+          state = "Uttar Pradesh/Uttarakhand";
+        } else if (zone === "3") {
+          state = "Rajasthan/Gujarat";
+          if (subzone === "38" || subzone === "39") { state = "Gujarat"; city = "Ahmedabad"; }
+          else if (subzone === "30") { state = "Rajasthan"; city = "Jaipur"; }
+        } else if (zone === "4") {
+          state = "Maharashtra/Madhya Pradesh/Goa";
+          if (subzone === "40") { state = "Maharashtra"; city = "Mumbai"; }
+          else if (subzone === "41") { state = "Maharashtra"; city = "Pune"; }
+        } else if (zone === "5") {
+          state = "Andhra Pradesh/Karnataka/Telangana";
+          if (subzone === "56") { state = "Karnataka"; city = "Bengaluru"; }
+          else if (subzone === "50" || subzone === "51") { state = "Telangana"; city = "Hyderabad"; }
+        } else if (zone === "6") {
+          state = "Tamil Nadu/Kerala";
+          if (subzone === "60") { state = "Tamil Nadu"; city = "Chennai"; }
+          else if (subzone === "68" || subzone === "69") { state = "Kerala"; city = "Kochi"; }
+        } else if (zone === "7") {
+          state = "West Bengal/Odisha/North East";
+          if (subzone === "70") { state = "West Bengal"; city = "Kolkata"; }
+        } else if (zone === "8") {
+          state = "Bihar/Jharkhand";
+        }
+
+        if (state) {
+          stateInput.value = state;
+          if (city) cityInput.value = city;
+          pincodeInput.style.borderColor = "#1F7D44";
+        } else {
+          pincodeInput.style.borderColor = "var(--color-border)";
+        }
+      }
 
       // Handle checkout submission
       const checkoutForm = document.getElementById("checkout-payment-form");
