@@ -1745,50 +1745,112 @@ window.loadHomepageACFSettings = async function() {
       if (env.VITE_WOO_CONSUMER_SECRET) consumerSecret = env.VITE_WOO_CONSUMER_SECRET;
     }
     const cleanBaseUrl = apiUrl.replace(/\/wp-json\/wc\/v3\/?$/, '').replace(/\/$/, '');
-    const acfUrl = `${cleanBaseUrl}/wp-json/custom/v1/homepage`;
-
-    // Append credentials to REST fetch request for secure authorization
-    const url = new URL(acfUrl);
+    
+    // We will query the standard WordPress Pages API first for slug 'home'
+    const pagesUrl = `${cleanBaseUrl}/wp-json/wp/v2/pages?slug=home`;
+    const url = new URL(pagesUrl);
     if (consumerKey && consumerSecret) {
       url.searchParams.append("consumer_key", consumerKey);
       url.searchParams.append("consumer_secret", consumerSecret);
     }
 
-    console.log(`[ACF Settings Client] Fetching custom homepage settings from: ${url.pathname}`);
-    const response = await fetch(url.toString());
-    if (!response.ok) {
-      throw new Error(`ACF settings fetch failed: ${response.statusText}`);
+    console.log(`[ACF Settings Client] Fetching standard WordPress page data from: ${url.pathname}`);
+    let pages = [];
+    try {
+      const response = await fetch(url.toString());
+      if (response.ok) {
+        pages = await response.json();
+        console.log(`[ACF Settings Client] Raw Pages API Response (slug=home):`, pages);
+      }
+    } catch (err) {
+      console.warn("[ACF Settings Client] Standard Pages API request failed:", err);
     }
-    const data = await response.json();
-    console.log(`[ACF Settings Client] Loaded homepage settings successfully:`, data);
-    
-    if (data) {
-      // Collect active banners from page-level custom fields: top_banner_1, top_banner_2, top_banner_3
-      const pageBanners = [];
-      if (data.top_banner_1) pageBanners.push(data.top_banner_1);
-      if (data.top_banner_2) pageBanners.push(data.top_banner_2);
-      if (data.top_banner_3) pageBanners.push(data.top_banner_3);
 
-      const formattedBanners = pageBanners.map(b => {
-        if (typeof b === 'string') {
-          return { banner_image: b, banner_link: '#' };
+    let acfData = null;
+    if (pages && pages.length > 0) {
+      const homePage = pages[0];
+      if (homePage.acf) {
+        acfData = homePage.acf;
+        console.log(`[ACF Settings Client] Extracted ACF fields from Home page object:`, acfData);
+      }
+    }
+
+    // Fallback: if pages API doesn't return ACF fields, query our custom endpoint
+    if (!acfData) {
+      const customUrl = new URL(`${cleanBaseUrl}/wp-json/custom/v1/homepage`);
+      if (consumerKey && consumerSecret) {
+        customUrl.searchParams.append("consumer_key", consumerKey);
+        customUrl.searchParams.append("consumer_secret", consumerSecret);
+      }
+      console.log(`[ACF Settings Client] Fallback: Fetching from custom endpoint: ${customUrl.pathname}`);
+      try {
+        const customResp = await fetch(customUrl.toString());
+        if (customResp.ok) {
+          acfData = await customResp.json();
+          console.log(`[ACF Settings Client] Raw Custom Endpoint Response:`, acfData);
         }
-        return {
-          banner_image: b.banner_image || b.image || (typeof b === 'object' && b.url ? b.url : ''),
-          banner_link: b.banner_link || b.link || '#'
-        };
-      }).filter(b => b.banner_image); // Skip empty slots dynamically!
+      } catch (err) {
+        console.warn("[ACF Settings Client] Custom endpoint fallback failed:", err);
+      }
+    }
+
+    if (acfData) {
+      // Collect dynamic banners: top_banner_1, top_banner_2, top_banner_3
+      const pageBanners = [];
+      if (acfData.top_banner_1) pageBanners.push(acfData.top_banner_1);
+      if (acfData.top_banner_2) pageBanners.push(acfData.top_banner_2);
+      if (acfData.top_banner_3) pageBanners.push(acfData.top_banner_3);
+
+      // Extract image URL dynamically from both raw URL string or Image Object/Array return structures
+      const extractImageUrl = (field) => {
+        if (!field) return "";
+        if (typeof field === "string") return field;
+        if (typeof field === "object") {
+          if (field.url) return field.url;
+          if (field.banner_image) {
+            if (typeof field.banner_image === "string") return field.banner_image;
+            if (field.banner_image.url) return field.banner_image.url;
+          }
+          if (field.sizes && field.sizes.large) return field.sizes.large;
+        }
+        return "";
+      };
+
+      const extractLinkUrl = (field) => {
+        if (!field) return "#";
+        if (typeof field === "string") return field;
+        if (typeof field === "object") {
+          if (field.url) return field.url;
+          if (field.banner_link) {
+            if (typeof field.banner_link === "string") return field.banner_link;
+            if (field.banner_link.url) return field.banner_link.url;
+          }
+        }
+        return "#";
+      };
+
+      const formattedBanners = pageBanners.map(b => ({
+        banner_image: extractImageUrl(b),
+        banner_link: extractLinkUrl(b)
+      })).filter(b => b.banner_image); // Skip empty slots dynamically!
 
       if (formattedBanners.length > 0) {
+        console.log(`[ACF Settings Client] Rendering dynamic hero banners from page fields:`, formattedBanners);
         window.renderHeroBanners(formattedBanners);
-      } else if (data.top_banners && data.top_banners.length > 0) {
-        window.renderHeroBanners(data.top_banners);
+      } else if (acfData.top_banners && acfData.top_banners.length > 0) {
+        // Fallback to options page repeater top_banners
+        const formattedOptions = acfData.top_banners.map(b => ({
+          banner_image: extractImageUrl(b),
+          banner_link: extractLinkUrl(b)
+        })).filter(b => b.banner_image);
+        console.log(`[ACF Settings Client] Rendering dynamic hero banners from options page repeater:`, formattedOptions);
+        window.renderHeroBanners(formattedOptions);
       }
 
-      if (data.shoppable_video && data.shoppable_video.video_url) window.renderShoppableVideo(data.shoppable_video);
-      if (data.promo_banners && data.promo_banners.length > 0) window.renderPromoBanners(data.promo_banners);
+      if (acfData.shoppable_video && acfData.shoppable_video.video_url) window.renderShoppableVideo(acfData.shoppable_video);
+      if (acfData.promo_banners && acfData.promo_banners.length > 0) window.renderPromoBanners(acfData.promo_banners);
     }
-    return data;
+    return acfData;
   } catch (error) {
     console.warn('[ACF Settings Client] Failed to load dynamic settings from WordPress backend:', error);
     return null;
