@@ -203,3 +203,34 @@ function get_kawachi_homepage_acf_data( $request ) {
 
     return new WP_REST_Response( $payload, 200 );
 }
+
+// 3. Enable CORS for WordPress REST API requests
+add_action( 'init', 'handle_kawachi_cors_headers' );
+function handle_kawachi_cors_headers() {
+    if ( isset( $_SERVER['HTTP_ORIGIN'] ) ) {
+        $origin = $_SERVER['HTTP_ORIGIN'];
+        // Allow origin dynamically (perfect for localhost, staging and production frontends)
+        header( "Access-Control-Allow-Origin: $origin" );
+        header( 'Access-Control-Allow-Credentials: true' );
+        header( 'Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, Cache-Control, Pragma, Expires, X-WP-Nonce' );
+        header( 'Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE' );
+        
+        // Return immediately on OPTIONS preflight check
+        if ( 'OPTIONS' === $_SERVER['REQUEST_METHOD'] ) {
+            status_header( 200 );
+            exit;
+        }
+    }
+}
+
+add_filter( 'rest_pre_serve_request', 'kawachi_rest_send_cors_headers', 10, 4 );
+function kawachi_rest_send_cors_headers( $served, $result, $request, $server ) {
+    if ( isset( $_SERVER['HTTP_ORIGIN'] ) ) {
+        $origin = $_SERVER['HTTP_ORIGIN'];
+        $server->send_header( "Access-Control-Allow-Origin", $origin );
+        $server->send_header( "Access-Control-Allow-Credentials", "true" );
+        $server->send_header( "Access-Control-Allow-Headers", "Authorization, Content-Type, X-WP-Nonce, Origin, Accept" );
+        $server->send_header( "Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE" );
+    }
+    return $served;
+}
