@@ -13,7 +13,7 @@ export default function FeaturedBannersGrid() {
     async function fetchBanners() {
       try {
         // Load API configuration from Vite environment variables
-        const apiUrl = import.meta.env.VITE_WOO_API_URL || 'http://62.72.31.43/wp-json/wc/v3';
+        const apiUrl = import.meta.env.VITE_WOO_API_URL || 'https://udaanxai.online/wp-json/wc/v3';
         const consumerKey = import.meta.env.VITE_WOO_CONSUMER_KEY;
         const consumerSecret = import.meta.env.VITE_WOO_CONSUMER_SECRET;
 
