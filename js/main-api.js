@@ -131,17 +131,11 @@ class WooCommerceClient {
     const headers = new Headers(options.headers || {});
     headers.set('Content-Type', 'application/json');
 
-    // WooCommerce REST API restricts HTTP Basic Auth over non-SSL connections (returns 401).
-    // In that case, we pass consumer_key and consumer_secret as URL query parameters.
+    // WooCommerce REST API: pass consumer_key and consumer_secret in the URL query parameters
+    // directly instead of using Authorization headers to prevent server-level header stripping.
     if (!this.useProxy) {
-      const isHttps = this.baseUrl.toLowerCase().startsWith('https:');
-      if (isHttps) {
-        const credentials = btoa(`${this.consumerKey}:${this.consumerSecret}`);
-        headers.set('Authorization', `Basic ${credentials}`);
-      } else {
-        const separator = targetUrl.includes('?') ? '&' : '?';
-        targetUrl = `${targetUrl}${separator}consumer_key=${this.consumerKey}&consumer_secret=${this.consumerSecret}`;
-      }
+      const separator = targetUrl.includes('?') ? '&' : '?';
+      targetUrl = `${targetUrl}${separator}consumer_key=${this.consumerKey}&consumer_secret=${this.consumerSecret}`;
     }
 
     const fetchOptions = {
