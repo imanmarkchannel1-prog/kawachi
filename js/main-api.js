@@ -87,6 +87,115 @@ async function loadLiveWooCommerceProducts() {
     }
   } catch (error) {
     console.error('[WooCommerce REST Client] Live product fetch failed. Operating on fallback mock data:', error);
+    const fallbackCatalog = [
+      {
+        id: 101,
+        name: "Foldable Laptop Desk Study Table",
+        price: 1690,
+        regular_price: 2450,
+        category: "Home Furniture",
+        image: "images/products/laptop_desk.png",
+        rating: "4.6",
+        reviews: "124",
+        sales_count: 1500,
+        weekly_sales: 120,
+        orders_count: 1450,
+        featured: true,
+        limited_time_deal: true
+      },
+      {
+        id: 102,
+        name: "3 Tier Kitchen Storage Rack",
+        price: 2099,
+        regular_price: 2999,
+        category: "Kitchen Storage",
+        image: "images/products/kitchen_rack.png",
+        rating: "4.5",
+        reviews: "88",
+        sales_count: 950,
+        weekly_sales: 85,
+        orders_count: 920,
+        featured: true,
+        limited_time_deal: false
+      },
+      {
+        id: 103,
+        name: "Wall Mounted Floating Shelves",
+        price: 899,
+        regular_price: 1499,
+        category: "Home Furniture",
+        image: "images/products/wall_shelves.png",
+        rating: "4.4",
+        reviews: "56",
+        sales_count: 420,
+        weekly_sales: 38,
+        orders_count: 410,
+        featured: false,
+        limited_time_deal: false
+      },
+      {
+        id: 104,
+        name: "Portable Steam Sauna Box",
+        price: 6799,
+        regular_price: 9999,
+        category: "Wellness",
+        image: "images/products/steam_sauna.png",
+        rating: "4.7",
+        reviews: "210",
+        sales_count: 1800,
+        weekly_sales: 140,
+        orders_count: 1750,
+        featured: true,
+        limited_time_deal: true
+      },
+      {
+        id: 105,
+        name: "Meditation Floor Chair Cushion",
+        price: 2099,
+        regular_price: 3499,
+        category: "Home Furniture",
+        image: "images/products/meditation_chair.png",
+        rating: "4.6",
+        reviews: "95",
+        sales_count: 610,
+        weekly_sales: 52,
+        orders_count: 590,
+        featured: false,
+        limited_time_deal: false
+      },
+      {
+        id: 106,
+        name: "Compact Fabric Wardrobe Organizer",
+        price: 3299,
+        regular_price: 4999,
+        category: "Home Furniture",
+        image: "images/products/wardrobe.png",
+        rating: "4.3",
+        reviews: "72",
+        sales_count: 530,
+        weekly_sales: 45,
+        orders_count: 510,
+        featured: false,
+        limited_time_deal: false
+      },
+      {
+        id: 113,
+        name: "Multipurpose Storage Trolley Cart",
+        price: 2499,
+        regular_price: 3999,
+        category: "Utility Products",
+        image: "images/products/trolley_organizer.png",
+        rating: "4.5",
+        reviews: "112",
+        sales_count: 1200,
+        weekly_sales: 98,
+        orders_count: 1150,
+        featured: true,
+        limited_time_deal: false
+      }
+    ];
+    window.KawachiProducts = fallbackCatalog;
+    return fallbackCatalog;
   }
   return window.KawachiProducts;
 }
@@ -1846,8 +1955,34 @@ window.loadHomepageACFSettings = async function() {
     }
     return acfData;
   } catch (error) {
-    console.warn('[ACF Settings Client] Failed to load dynamic settings from WordPress backend:', error);
-    return null;
+    console.warn('[ACF Settings Client] Failed to load dynamic settings from WordPress backend. Operating on local fallback:', error);
+    const fallbackData = {
+      top_banner_1: { banner_image: "images/products/meditation_chair.png", banner_link: "search.html?q=Furniture" },
+      top_banner_2: { banner_image: "images/products/laptop_desk.png", banner_link: "search.html?q=Kitchen" },
+      top_banner_3: { banner_image: "images/products/trolley_organizer.png", banner_link: "search.html?q=Storage" },
+      top_banners: [],
+      shoppable_video: {
+        video_url: "https://www.w3schools.com/html/mov_bbb.mp4",
+        linked_product: 104
+      },
+      promo_banners: [
+        { banner_image: "images/products/meditation_chair.png", banner_link: "#home-furniture" },
+        { banner_image: "images/products/trolley_organizer.png", banner_link: "#kitchen-storage" },
+        { banner_image: "images/products/wall_shelves.png", banner_link: "search.html?q=new" }
+      ]
+    };
+    
+    // Render fallbacks
+    const pageBanners = [fallbackData.top_banner_1, fallbackData.top_banner_2, fallbackData.top_banner_3];
+    const formatted = pageBanners.map(b => ({
+      banner_image: b.banner_image,
+      banner_link: b.banner_link
+    }));
+    window.renderHeroBanners(formatted);
+    window.renderShoppableVideo(fallbackData.shoppable_video);
+    window.renderPromoBanners(fallbackData.promo_banners);
+    
+    return fallbackData;
   }
 };
 
