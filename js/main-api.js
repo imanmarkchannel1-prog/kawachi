@@ -55,42 +55,80 @@ async function loadLiveWooCommerceProducts() {
       consumerSecret: consumerSecret
     });
 
-    console.log(`[WooCommerce REST Client] Fetching catalog from live database URL: ${cleanBaseUrl}`);
-    const liveProducts = await client.fetchProducts({ per_page: 20 });
-    
-    if (Array.isArray(liveProducts) && liveProducts.length > 0) {
-      console.log(`[WooCommerce REST Client] Loaded ${liveProducts.length} live products successfully.`);
-      
-      const mappedProducts = liveProducts.map(p => {
-        const regularPrice = parseFloat(p.regular_price) || parseFloat(p.price) || 0;
-        const currentPrice = parseFloat(p.price) || 0;
-        
-        return {
-          id: p.id,
-          name: p.name,
-          price: currentPrice,
-          regular_price: regularPrice > currentPrice ? regularPrice : null,
-          category: p.categories && p.categories.length > 0 ? p.categories[0].name : "Wellness",
-          image: p.images && p.images.length > 0 ? p.images[0].src : "images/products/laptop_desk.png",
-          rating: p.average_rating || "4.5",
-          reviews: String(p.rating_count || 12),
-          sales_count: p.total_sales || 100,
-          weekly_sales: Math.round((p.total_sales || 100) / 4),
-          description: p.description || p.short_description || "",
-          short_description: p.short_description || "",
-          featured: p.featured || false
-        };
-      });
+    console.log(`[WooCommerce REST Client] Fetching catalog and rows dynamically in parallel...`);
 
-      window.KawachiProducts = mappedProducts;
-      return mappedProducts;
+    const mapWooProduct = (p) => {
+      const regularPrice = parseFloat(p.regular_price) || parseFloat(p.price) || 0;
+      const currentPrice = parseFloat(p.price) || 0;
+      return {
+        id: p.id,
+        name: p.name,
+        price: currentPrice,
+        regular_price: regularPrice > currentPrice ? regularPrice : null,
+        category: p.categories && p.categories.length > 0 ? p.categories[0].name : "Wellness",
+        image: p.images && p.images.length > 0 ? p.images[0].src : "",
+        images: p.images || [],
+        rating: p.average_rating || "4.5",
+        reviews: String(p.rating_count || 12),
+        sales_count: p.total_sales || 100,
+        weekly_sales: Math.round((p.total_sales || 100) / 4),
+        description: p.description || p.short_description || "",
+        short_description: p.short_description || "",
+        featured: p.featured || false
+      };
+    };
+
+    // 1. Fetch categories first to resolve slugs to IDs dynamically
+    let categories = [];
+    try {
+      categories = await client.fetchCategories({ per_page: 50 });
+      console.log(`[WooCommerce REST Client] Resolved ${categories.length} categories.`);
+    } catch (err) {
+      console.warn("[WooCommerce REST Client] Failed to fetch categories:", err);
     }
+
+    const homeFurnitureCat = categories.find(c => c.slug === 'home-furniture' || c.name.toLowerCase() === 'home furniture');
+    const kitchenStorageCat = categories.find(c => c.slug === 'kitchen-storage' || c.name.toLowerCase() === 'kitchen storage');
+
+    // 2. Fetch rows in parallel using standard WooCommerce API query params
+    const [bestSellersRaw, trendingRaw, furnitureRaw, kitchenRaw] = await Promise.all([
+      client.fetchProducts({ orderby: 'popularity', order: 'desc', per_page: 8 }),
+      client.fetchProducts({ orderby: 'date', order: 'desc', per_page: 8 }),
+      homeFurnitureCat ? client.fetchProducts({ category: homeFurnitureCat.id, per_page: 8 }) : Promise.resolve([]),
+      kitchenStorageCat ? client.fetchProducts({ category: kitchenStorageCat.id, per_page: 8 }) : Promise.resolve([])
+    ]);
+
+    const bestSellers = bestSellersRaw.map(mapWooProduct);
+    const trendingNow = trendingRaw.map(mapWooProduct);
+    const furniture = furnitureRaw.map(mapWooProduct);
+    const kitchen = kitchenRaw.map(mapWooProduct);
+
+    // Save specific rows globally
+    window.KawachiBestSellers = bestSellers;
+    window.KawachiTrendingNow = trendingNow;
+    window.KawachiFurniture = furniture;
+    window.KawachiKitchen = kitchen;
+
+    // Combine and deduplicate for search and general loops
+    const allProducts = [
+      ...bestSellers,
+      ...trendingNow,
+      ...furniture,
+      ...kitchen
+    ];
+
+    const uniqueProducts = allProducts.filter((p, index, self) => 
+      self.findIndex(t => t.id === p.id) === index
+    );
+
+    window.KawachiProducts = uniqueProducts;
+    console.log(`[WooCommerce REST Client] Loaded dynamic product rows successfully. Unique count: ${uniqueProducts.length}`);
+    return uniqueProducts;
   } catch (error) {
-    console.error('[WooCommerce REST Client] Live product fetch failed:', error);
+    console.error('[WooCommerce REST Client] Dynamic loading failed:', error);
     window.KawachiProducts = [];
     return [];
   }
-  return window.KawachiProducts;
 }
 
 // Start products retrieval immediately on script parse
@@ -1238,53 +1276,16 @@ function hydrateDetailPage() {
       const skuEl = document.getElementById("meta-sku");
       if (skuEl) skuEl.textContent = `KW-${product.category.toUpperCase().replace(/[^A-Z0-9]/g, '')}-${product.id}`;
 
-      // Build rich custom gallery for all products depending on category
+      // Build rich custom gallery for all products depending on WooCommerce images
       const thumbnailRow = document.querySelector(".thumbnail-row");
       if (thumbnailRow) {
-        let galleryImages = [product.image];
-
-        if (categoryKeywords.includes("furniture")) {
-          galleryImages.push(
-            "https://images.unsplash.com/photo-1592078615290-033ee584e267?q=80&w=800&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1581539250439-c96689b516dd?q=80&w=800&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1503602642458-232111445657?q=80&w=800&auto=format&fit=crop"
-          );
-        } else if (categoryKeywords.includes("kitchen")) {
-          galleryImages.push(
-            "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?q=80&w=800&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=800&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1556912173-3bb406ef7e77?q=80&w=800&auto=format&fit=crop"
-          );
-        } else if (categoryKeywords.includes("study") || categoryKeywords.includes("office") || product.name.toLowerCase().includes("desk") || product.name.toLowerCase().includes("table")) {
-          galleryImages.push(
-            "https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?q=80&w=800&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?q=80&w=800&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?q=80&w=800&auto=format&fit=crop"
-          );
-        } else if (categoryKeywords.includes("wellness") || categoryKeywords.includes("beauty") || product.name.toLowerCase().includes("sauna")) {
-          galleryImages.push(
-            "https://images.unsplash.com/photo-1515377905703-c4788e51af15?q=80&w=800&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?q=80&w=800&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=800&auto=format&fit=crop"
-          );
-        } else if (categoryKeywords.includes("utility") || product.name.toLowerCase().includes("trolley") || product.name.toLowerCase().includes("cart")) {
-          galleryImages.push(
-            "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=800&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1595428774223-ef52624120d2?q=80&w=800&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1600585154526-990dced4db0d?q=80&w=800&auto=format&fit=crop"
-          );
-        } else if (categoryKeywords.includes("decor") || product.name.toLowerCase().includes("shelf") || product.name.toLowerCase().includes("shelves")) {
-          galleryImages.push(
-            "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?q=80&w=800&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1538688525198-9b88f6f53126?q=80&w=800&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=800&auto=format&fit=crop"
-          );
+        let galleryImages = [];
+        if (product.images && product.images.length > 0) {
+          galleryImages = product.images.map(img => img.src);
+        } else if (product.image) {
+          galleryImages = [product.image];
         } else {
-          galleryImages.push(
-            "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=800&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=800&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?q=80&w=800&auto=format&fit=crop"
-          );
+          galleryImages = ["https://via.placeholder.com/600/ffffff/0f172a?text=No+Image"];
         }
 
         thumbnailRow.innerHTML = galleryImages.map((imgUrl, index) => `
@@ -2582,18 +2583,9 @@ function hydrateStaticProductMarquees() {
   if (!trendingTrack && !bestsellerTrack) return;
 
   function createFullCardHtml(p) {
-    // Secondary image switcher compatibility
-    const allImages = [
-      "images/products/laptop_desk.png",
-      "images/products/kitchen_rack.png",
-      "images/products/wall_shelves.png",
-      "images/products/steam_sauna.png",
-      "images/products/meditation_chair.png",
-      "images/products/bedside_table.png",
-      "images/products/trolley_organizer.png"
-    ];
-    const idx = allImages.indexOf(p.image);
-    const hoverImg = idx !== -1 ? allImages[(idx + 1) % allImages.length] : allImages[0];
+    // Secondary image switcher compatibility dynamically from WooCommerce
+    const mainImg = p.image || (p.images && p.images.length > 0 ? p.images[0].src : "https://via.placeholder.com/600/ffffff/0f172a?text=No+Image");
+    const hoverImg = (p.images && p.images.length > 1) ? p.images[1].src : mainImg;
 
     return `
       <div class="product-card marquee-product-card" data-gallery-count="2" onclick="if(!event.target.closest('button')) window.location.href='single-product.html?id=${p.id}'">
