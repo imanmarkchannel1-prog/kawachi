@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kawachi - Premium Headless WooCommerce Marketplace</title>
   <meta name="description" content="Explore a curated selection of lifestyle, wellness, home appliances, and smart gadgets at Kawachi. High-performance, premium utility shopping.">
-  <link rel="stylesheet" href="css/global-styles.css?v=6.33">
+  <link rel="stylesheet" href="css/global-styles.css?v=6.34">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@1,700;1,800&family=Bebas+Neue&family=Caveat:wght@700&family=Inter:wght@400;500;600;700;800;900&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
   <style>
@@ -350,17 +350,29 @@
 
     @media (max-width: 768px) {
       .video-modal-content {
-        flex-direction: column !important;
+        flex-direction: column-reverse !important;
         height: auto !important;
         max-height: 90vh !important;
         overflow-y: auto !important;
+        max-width: 92vw !important;
       }
       .video-modal-left {
+        flex: none !important;
+        width: 100% !important;
         aspect-ratio: 9/16 !important;
-        max-height: 320px !important;
+        max-height: 280px !important;
+        border-radius: 0 0 16px 16px !important;
       }
       .video-modal-right {
         padding: 20px !important;
+        border-left: none !important;
+        border-bottom: 1px solid #f1f5f9 !important;
+      }
+      .video-modal-close-btn {
+        top: 8px !important;
+        right: 8px !important;
+        z-index: 20 !important;
+        background: rgba(255,255,255,0.9) !important;
       }
       /* Responsive optimizations for mobile video spotlight section */
       .spotlight-eyebrow {
@@ -2010,7 +2022,7 @@
     </div>
   </footer>
 
-  <script src="js/main-api.js?v=6.33"></script>
+  <script src="js/main-api.js?v=6.34"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       // General drawer controls
