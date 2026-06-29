@@ -9950,13 +9950,15 @@ main.static-page-card .btn-primary-marquee:hover,
 /* Hero carousel layout customization */
 .hero-carousel-section {
   position: relative !important;
-  margin-top: 0 !important;
-  margin-bottom: 0px !important;
+  margin-top: 20px !important;
+  margin-bottom: 30px !important;
   width: 100% !important;
-  max-width: 100% !important;
-  border-radius: 0 !important;
+  max-width: 1400px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding: 0 16px !important;
+  box-sizing: border-box !important;
   overflow: visible !important;
-  box-shadow: none !important;
 }
 
 /* Clip box: clips the slide backgrounds with rounded corners */
@@ -9964,9 +9966,9 @@ main.static-page-card .btn-primary-marquee:hover,
   position: relative !important;
   width: 100% !important;
   height: 100% !important;
-  border-radius: 0 !important;
+  border-radius: 20px !important;
   overflow: hidden !important;
-  box-shadow: none !important;
+  box-shadow: var(--shadow-md) !important;
 }
 
 .carousel-container-inner {
@@ -11093,6 +11095,7 @@ main.static-page-card .btn-primary-marquee:hover,
   .hero-carousel-section {
     max-width: 100% !important;
     margin: 0 !important;
+    padding: 0 !important;
     overflow: visible !important;
     box-shadow: none !important;
   }
