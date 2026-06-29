@@ -10005,6 +10005,14 @@ main.static-page-card .btn-primary-marquee:hover,
   z-index: 2 !important;
 }
 
+/* Remove default dark gradient shadow filter on the left-hand side of hero banners */
+.hero-carousel-section .carousel-slide::before {
+  content: none !important;
+  display: none !important;
+  background: none !important;
+  background-image: none !important;
+}
+
 .carousel-slide .slide-content {
   max-width: 50% !important;
   color: #FFFFFF !important;
