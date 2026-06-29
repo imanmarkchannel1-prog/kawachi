@@ -36,7 +36,7 @@ async function loadLiveWooCommerceProducts() {
     const env = await loadEnv();
     
     // Fallback/Default variables if env fails
-    let apiUrl = "https://udaanxai.online/wp-json/wc/v3";
+    let apiUrl = "http://62.72.31.43/wp-json/wc/v3";
     let consumerKey = "ck_328b6ab3dece8f9fac4212856dfdfdb40041f184";
     let consumerSecret = "cs_158917602b69a694092d377e5ef1605eb38b2399";
 
@@ -1825,7 +1825,7 @@ window.renderPromoBanners = function(banners) {
 window.loadHomepageACFSettings = async function() {
   try {
     const env = await loadEnv();
-    let apiUrl = "https://udaanxai.online/wp-json/wc/v3";
+    let apiUrl = "http://62.72.31.43/wp-json/wc/v3";
     let consumerKey = "";
     let consumerSecret = "";
     if (env) {
