@@ -1425,12 +1425,23 @@ function initImageZoom() {
 
   if (!container || !img || !lens || !result || !resultImg) return;
 
+  let clickZoomed = false;
+
   // Sync result image src with main image (and keep in sync on thumbnail changes)
   function syncResultSrc() {
     resultImg.src = img.src;
     // Reset zoom image size so it will be recalculated on next mouseenter
     resultImg.style.width = "";
     resultImg.style.height = "";
+    
+    // Auto-reset click zoom state when swapping images
+    if (clickZoomed) {
+      clickZoomed = false;
+      img.style.transform = "scale(1) translate(0, 0)";
+      img.style.zIndex = "1";
+      img.style.cursor = "zoom-in";
+      container.style.overflow = "hidden";
+    }
   }
   syncResultSrc();
 
@@ -1562,6 +1573,37 @@ function initImageZoom() {
 
   img.addEventListener("touchend", resetZoom);
   img.addEventListener("touchcancel", resetZoom);
+
+  // Mobile Click-to-Zoom Toggle Handler
+  img.addEventListener("click", (e) => {
+    if (window.innerWidth > 768) return;
+    
+    // Ignore click events if they were part of a pinch gesture
+    if (isPinching) return;
+
+    clickZoomed = !clickZoomed;
+    if (clickZoomed) {
+      img.style.transition = "transform 0.25s ease-out";
+      img.style.transform = "scale(2.5)";
+      img.style.zIndex = "100";
+      container.style.overflow = "auto";
+      img.style.cursor = "zoom-out";
+      
+      // Auto-scroll parent container to center the enlarged image
+      setTimeout(() => {
+        container.scrollLeft = (img.offsetWidth * 2.5 - container.offsetWidth) / 2;
+        container.scrollTop = (img.offsetHeight * 2.5 - container.offsetHeight) / 2;
+      }, 50);
+    } else {
+      img.style.transition = "transform 0.25s ease-out";
+      img.style.transform = "scale(1) translate(0, 0)";
+      img.style.zIndex = "1";
+      img.style.cursor = "zoom-in";
+      setTimeout(() => {
+        container.style.overflow = "hidden";
+      }, 250);
+    }
+  });
 }
 
 function initUnifiedSearchBar() {
