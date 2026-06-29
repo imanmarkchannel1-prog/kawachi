@@ -68,6 +68,7 @@ async function loadLiveWooCommerceProducts() {
         category: p.categories && p.categories.length > 0 ? p.categories[0].name : "Wellness",
         image: p.images && p.images.length > 0 ? p.images[0].src : "",
         images: p.images || [],
+        attributes: p.attributes || [],
         rating: p.average_rating || "4.5",
         reviews: String(p.rating_count || 12),
         sales_count: p.total_sales || 100,
@@ -1262,13 +1263,45 @@ function hydrateDetailPage() {
         tabSpecsTable.innerHTML = specsHtml;
       }
 
-      // Hide/show variations
+      // Render attributes/variations dynamically from WooCommerce if available
       const variationSections = document.querySelectorAll(".variation-section");
       variationSections.forEach(sec => {
-        if (product.id !== 104) {
-          sec.style.display = "none";
-        } else {
+        if (product.attributes && product.attributes.length > 0) {
           sec.style.display = "block";
+          const label = sec.querySelector("label");
+          const container = sec.querySelector("div");
+          
+          if (label && container) {
+            const attr = product.attributes[0];
+            label.textContent = `Select ${attr.name}:`;
+            
+            container.innerHTML = attr.options.map((opt, idx) => {
+              const isActive = idx === 0 ? "active" : "";
+              const activeStyle = idx === 0 ? "border: 1px solid #007185; background: #E7F4F5; color: #0F1111;" : "";
+              return `
+                <button class="btn btn-secondary ${isActive}" style="padding: 8px 16px; font-size: 12px; font-weight: 700; border-radius: 4px; ${activeStyle}">${opt}</button>
+              `;
+            }).join("");
+
+            // Add click listeners to switch variations
+            const buttons = container.querySelectorAll("button");
+            buttons.forEach(btn => {
+              btn.addEventListener("click", () => {
+                buttons.forEach(b => {
+                  b.classList.remove("active");
+                  b.style.border = "";
+                  b.style.background = "";
+                  b.style.color = "";
+                });
+                btn.classList.add("active");
+                btn.style.border = "1px solid #007185";
+                btn.style.background = "#E7F4F5";
+                btn.style.color = "#0F1111";
+              });
+            });
+          }
+        } else {
+          sec.style.display = "none";
         }
       });
 
@@ -1748,10 +1781,18 @@ window.renderHeroBanners = function(banners) {
   const dots = document.getElementById("hero-dots-indicator");
   if (!track || !banners || !banners.length) return;
 
-  track.innerHTML = banners.map((b, idx) => `
-    <div class="carousel-slide ${idx === 0 ? 'slide-active' : ''}" onclick="window.location.href='${b.banner_link || '#'}'" style="background-image: url('${b.banner_image}'); background-size: 100% 100%; background-position: center; cursor: pointer; height: 100%; position: relative;">
-    </div>
-  `).join("");
+  track.innerHTML = banners.map((b, idx) => {
+    const desktopImg = b.desktop_image || b.banner_image;
+    const mobileImg = b.mobile_image || desktopImg;
+    return `
+      <div class="carousel-slide ${idx === 0 ? 'slide-active' : ''}" onclick="window.location.href='${b.banner_link || '#'}'" style="cursor: pointer; height: 100%; position: relative; width: 100%; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+        <picture style="width: 100%; height: 100%; display: block;">
+          <source media="(max-width: 768px)" srcset="${mobileImg}">
+          <img src="${desktopImg}" alt="Hero Slide ${idx + 1}" style="width: 100%; height: 100%; object-fit: fill; display: block;">
+        </picture>
+      </div>
+    `;
+  }).join("");
 
   if (dots) {
     dots.innerHTML = banners.map((_, idx) => `
@@ -1765,35 +1806,41 @@ window.renderHeroBanners = function(banners) {
   }
 };
 
-window.renderShoppableVideo = function(videoData) {
+window.renderShoppableVideos = function(videos) {
   const track = document.getElementById("video-spotlight-track");
-  if (!track || !videoData || !videoData.video_url) return;
+  if (!track || !videos || !videos.length || !window.KawachiProducts) return;
 
-  const productId = parseInt(videoData.linked_product, 10);
-  if (isNaN(productId) || !window.KawachiProducts) return;
+  const cardsHtml = videos.map(videoData => {
+    const productId = parseInt(videoData.linked_product, 10);
+    if (isNaN(productId)) return "";
 
-  const product = window.KawachiProducts.find(p => p.id === productId);
-  if (!product) return;
+    const product = window.KawachiProducts.find(p => p.id === productId);
+    if (!product) return "";
 
-  const videoSrc = videoData.video_url;
-  
-  const cardHtml = `
-    <div class="video-card-wrap">
-      <div class="video-card" data-product-id="${product.id}" data-influencer="@kawachi_live" data-title="Featured Spotlight" data-video-src="${videoSrc}" data-product-name="${product.name}" data-product-price="₹${product.price}" data-product-image="${product.image}">
-        <img src="${product.image}" alt="${product.name}" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;">
-        <div class="video-play-btn-circle"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+    const videoSrc = videoData.video_url;
+    const influencer = videoData.influencer || "@kawachi_live";
+    const title = videoData.title || "Customer Review";
+
+    return `
+      <div class="video-card-wrap">
+        <div class="video-card" data-product-id="${product.id}" data-influencer="${influencer}" data-title="${title}" data-video-src="${videoSrc}" data-product-name="${product.name}" data-product-price="₹${product.price}" data-product-image="${product.image}">
+          <img src="${product.image}" alt="${product.name}" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;">
+          <div class="video-play-btn-circle"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+        </div>
+        <div class="video-card-caption">
+          <p class="vc-product-name">${product.name}</p>
+          <span class="vc-views">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            ${title}
+          </span>
+        </div>
       </div>
-      <div class="video-card-caption">
-        <p class="vc-product-name">${product.name}</p>
-        <span class="vc-views">
-          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-          Featured Spotlight
-        </span>
-      </div>
-    </div>
-  `;
-  // Prepend the live dynamic shoppable video card to the front of the track
-  track.insertAdjacentHTML('afterbegin', cardHtml);
+    `;
+  }).filter(html => html).join("");
+
+  if (cardsHtml) {
+    track.insertAdjacentHTML('afterbegin', cardsHtml);
+  }
 };
 
 window.renderPromoBanners = function(banners) {
@@ -1807,12 +1854,18 @@ window.renderPromoBanners = function(banners) {
       'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)'
     ];
     const gradient = gradients[idx % gradients.length];
+    
+    // Extract dynamic texts configured by the owner in the WordPress options panel
+    const badge = b.badge_tag || b.promo_badge || "OFFER";
+    const title = b.title || b.promo_title || "Deal Spotlight";
+    const text = b.text || b.promo_text || "Featured Choice";
+
     return `
       <div class="promo-box-triple" style="background: ${gradient}; color: #ffffff;">
         <div class="promo-box-left">
-          <span class="promo-badge-tag">OFFER</span>
-          <h3 class="promo-title">Deal Spotlight</h3>
-          <p class="promo-text">Featured Choice</p>
+          <span class="promo-badge-tag">${badge}</span>
+          <h3 class="promo-title">${title}</h3>
+          <p class="promo-text">${text}</p>
           <a href="${b.banner_link || '#'}" class="promo-btn-white" style="text-decoration: none;">Shop Now &rarr;</a>
         </div>
         <div class="promo-box-right">
@@ -1920,9 +1973,10 @@ window.loadHomepageACFSettings = async function() {
       };
 
       const formattedBanners = pageBanners.map(b => ({
-        banner_image: extractImageUrl(b),
-        banner_link: extractLinkUrl(b)
-      })).filter(b => b.banner_image); // Skip empty slots dynamically!
+        desktop_image: extractImageUrl(b.desktop_image) || extractImageUrl(b.banner_image) || extractImageUrl(b),
+        mobile_image: extractImageUrl(b.mobile_image) || extractImageUrl(b.banner_image_mobile) || extractImageUrl(b.banner_image) || extractImageUrl(b),
+        banner_link: extractLinkUrl(b.banner_link) || extractLinkUrl(b)
+      })).filter(b => b.desktop_image); // Skip empty slots dynamically!
 
       if (formattedBanners.length > 0) {
         console.log(`[ACF Settings Client] Rendering dynamic hero banners from page fields:`, formattedBanners);
@@ -1930,15 +1984,45 @@ window.loadHomepageACFSettings = async function() {
       } else if (acfData.top_banners && acfData.top_banners.length > 0) {
         // Fallback to options page repeater top_banners
         const formattedOptions = acfData.top_banners.map(b => ({
-          banner_image: extractImageUrl(b),
-          banner_link: extractLinkUrl(b)
-        })).filter(b => b.banner_image);
+          desktop_image: extractImageUrl(b.desktop_image) || extractImageUrl(b.banner_image) || extractImageUrl(b),
+          mobile_image: extractImageUrl(b.mobile_image) || extractImageUrl(b.banner_image_mobile) || extractImageUrl(b.banner_image) || extractImageUrl(b),
+          banner_link: extractLinkUrl(b.banner_link) || extractLinkUrl(b)
+        })).filter(b => b.desktop_image);
         console.log(`[ACF Settings Client] Rendering dynamic hero banners from options page repeater:`, formattedOptions);
         window.renderHeroBanners(formattedOptions);
       }
 
-      if (acfData.shoppable_video && acfData.shoppable_video.video_url) window.renderShoppableVideo(acfData.shoppable_video);
+      // Collect all shoppable videos dynamically
+      const dynamicVideos = [];
+      if (acfData.shoppable_videos && Array.isArray(acfData.shoppable_videos)) {
+        dynamicVideos.push(...acfData.shoppable_videos);
+      }
+      if (acfData.shoppable_video && acfData.shoppable_video.video_url) {
+        dynamicVideos.push(acfData.shoppable_video);
+      }
+      if (dynamicVideos.length > 0) {
+        window.renderShoppableVideos(dynamicVideos);
+      }
+
       if (acfData.promo_banners && acfData.promo_banners.length > 0) window.renderPromoBanners(acfData.promo_banners);
+
+      // Bind global text interfaces dynamically from WordPress settings (if configured)
+      if (acfData.video_spotlight_title) {
+        const titleEl = document.querySelector(".video-spotlight-title");
+        if (titleEl) titleEl.textContent = acfData.video_spotlight_title;
+      }
+      if (acfData.video_spotlight_desc) {
+        const descEl = document.querySelector(".video-spotlight-desc");
+        if (descEl) descEl.textContent = acfData.video_spotlight_desc;
+      }
+      if (acfData.transform_title) {
+        const heading = document.querySelector(".spotlight-eyebrow");
+        if (heading) heading.textContent = acfData.transform_title;
+      }
+      if (acfData.transform_text) {
+        const subtitle = document.querySelector(".spotlight-subtitle");
+        if (subtitle) subtitle.textContent = acfData.transform_text;
+      }
     }
     return acfData;
   } catch (error) {

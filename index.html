@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kawachi - Premium Headless WooCommerce Marketplace</title>
   <meta name="description" content="Explore a curated selection of lifestyle, wellness, home appliances, and smart gadgets at Kawachi. High-performance, premium utility shopping.">
-  <link rel="stylesheet" href="css/global-styles.css?v=6.51">
+  <link rel="stylesheet" href="css/global-styles.css?v=6.52">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@1,700;1,800&family=Bebas+Neue&family=Caveat:wght@700&family=Inter:wght@400;500;600;700;800;900&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
   <style>
@@ -1154,7 +1154,7 @@
             <h2 class="kawachi-sec-title">Best Sellers</h2>
             <p class="kawachi-sec-desc">Our most popular products loved by customers.</p>
           </div>
-          <a href="#best-sellers-section" style="font-size: 14px; font-weight: 700; color: #1463FF; display: flex; align-items: center; gap: 4px; text-decoration: none;">
+          <a href="search.html?orderby=popularity" style="font-size: 14px; font-weight: 700; color: #1463FF; display: flex; align-items: center; gap: 4px; text-decoration: none;">
             View All &rarr;
           </a>
         </div>
@@ -1182,7 +1182,7 @@
             <h2 class="kawachi-sec-title">Trending Now</h2>
             <p class="kawachi-sec-desc">Discover our latest arrivals and newest additions automatically.</p>
           </div>
-          <a href="#trending-now-section" style="font-size: 14px; font-weight: 700; color: #1463FF; display: flex; align-items: center; gap: 4px; text-decoration: none;">
+          <a href="search.html?orderby=date" style="font-size: 14px; font-weight: 700; color: #1463FF; display: flex; align-items: center; gap: 4px; text-decoration: none;">
             View All &rarr;
           </a>
         </div>
@@ -1256,7 +1256,7 @@
             <h2 class="kawachi-sec-title">Home Furniture</h2>
             <p class="kawachi-sec-desc">Space-saving study desks, laptop tables, and support units.</p>
           </div>
-          <a href="#best-sellers-section" style="font-size: 14px; font-weight: 700; color: #1463FF; display: flex; align-items: center; gap: 4px; text-decoration: none;">
+          <a href="search.html?category=home-furniture" style="font-size: 14px; font-weight: 700; color: #1463FF; display: flex; align-items: center; gap: 4px; text-decoration: none;">
             View All &rarr;
           </a>
         </div>
@@ -1284,7 +1284,7 @@
             <h2 class="kawachi-sec-title">Kitchen Storage</h2>
             <p class="kawachi-sec-desc">Premium multi-tier organizers, microwave racks, and mobile trolleys.</p>
           </div>
-          <a href="#best-sellers-section" style="font-size: 14px; font-weight: 700; color: #1463FF; display: flex; align-items: center; gap: 4px; text-decoration: none;">
+          <a href="search.html?category=kitchen-storage" style="font-size: 14px; font-weight: 700; color: #1463FF; display: flex; align-items: center; gap: 4px; text-decoration: none;">
             View All &rarr;
           </a>
         </div>
@@ -1589,18 +1589,24 @@
           bestsellersGrid.innerHTML = list.map(renderGridItem).join("");
         }
 
-        // 3. Home Makeover (Home Furniture category or slice 8 to 12)
+        // 3. Home Makeover (Home Furniture category or slice 4 to 8)
         const makeoverGrid = document.getElementById("discovery-makeover-grid");
         if (makeoverGrid) {
-          let list = products.filter(p => p.category === "Home Furniture").slice(0, 4);
+          let list = products.filter(p => {
+            const cat = (p.category || "").toLowerCase();
+            return cat.includes("furniture") || cat.includes("home");
+          }).slice(0, 4);
           if (list.length < 4) list = products.slice(4, 8);
           makeoverGrid.innerHTML = list.map(renderGridItem).join("");
         }
 
-        // 4. Smart Utilities (Utility Products category or slice 12 to 16)
+        // 4. Smart Utilities (Utility Products category or slice 8 to 12)
         const utilitiesGrid = document.getElementById("discovery-utilities-grid");
         if (utilitiesGrid) {
-          let list = products.filter(p => p.category === "Utility Products" || p.category === "Kitchen Storage").slice(0, 4);
+          let list = products.filter(p => {
+            const cat = (p.category || "").toLowerCase();
+            return cat.includes("kitchen") || cat.includes("storage") || cat.includes("utility");
+          }).slice(0, 4);
           if (list.length < 4) list = products.slice(8, 12);
           utilitiesGrid.innerHTML = list.map(renderGridItem).join("");
         }
@@ -2038,7 +2044,7 @@
     </div>
   </footer>
 
-  <script src="js/main-api.js?v=6.51"></script>
+  <script src="js/main-api.js?v=6.52"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       // General drawer controls
@@ -2240,26 +2246,45 @@
             if (modalTitle) modalTitle.textContent = title;
             if (modalInfluencer) modalInfluencer.textContent = influencer;
             
-            let resolvedImage = productImage;
-            if (productImage && !productImage.startsWith("http")) {
-              resolvedImage = window.location.origin + "/" + productImage;
-            }
-            
-            const imageFallbacks = {
-              'images/products/meditation_chair.png': 'https://images.unsplash.com/photo-1545205597-3d9d02c29597?auto=format&fit=crop&w=300&q=80',
-              'images/products/laptop_desk.png': 'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?auto=format&fit=crop&w=300&q=80',
-              'images/products/kitchen_rack.png': 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=300&q=80'
-            };
-            
-            modalProductImg.style.display = '';
-            modalProductImg.src = resolvedImage;
-            modalProductImg.onerror = () => {
-              modalProductImg.src = imageFallbacks[productImage] ||
-                'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=300&q=80';
-            };
-            modalProductName.textContent = productName;
-            modalProductPrice.textContent = productPrice;
-            modalShopLink.href = `single-product.html?id=${productId}`;
+            // Set initial loading states
+            if (modalProductName) modalProductName.textContent = "Loading details...";
+            if (modalProductPrice) modalProductPrice.textContent = "";
+            if (modalProductImg) modalProductImg.style.display = 'none';
+            if (modalShopLink) modalShopLink.href = `single-product.html?id=${productId}`;
+
+            // Make a rapid dynamic API fetch directly to the database in real-time
+            const env = window.KawachiEnv || {};
+            const apiBase = (env.VITE_WOO_API_URL || "http://62.72.31.43/wp-json/wc/v3").replace(/\/$/, "");
+            const consumerKey = env.VITE_WOO_CONSUMER_KEY || "ck_328b6ab3dece8f9fac4212856dfdfdb40041f184";
+            const consumerSecret = env.VITE_WOO_CONSUMER_SECRET || "cs_158917602b69a694092d377e5ef1605eb38b2399";
+            const requestUrl = `${apiBase}/products/${productId}?consumer_key=${consumerKey}&consumer_secret=${consumerSecret}`;
+
+            fetch(requestUrl)
+              .then(res => {
+                if (!res.ok) throw new Error("API Error");
+                return res.json();
+              })
+              .then(product => {
+                if (modalProductName) modalProductName.textContent = product.name;
+                const currentPrice = parseFloat(product.price) || 0;
+                if (modalProductPrice) modalProductPrice.textContent = "₹" + currentPrice.toLocaleString('en-IN');
+                
+                const liveImg = product.images && product.images.length > 0 ? product.images[0].src : "";
+                if (liveImg && modalProductImg) {
+                  modalProductImg.src = liveImg;
+                  modalProductImg.style.display = '';
+                }
+              })
+              .catch(err => {
+                console.warn("[WooCommerce Client] Real-time modal details fetch failed:", err);
+                // Fallback to static values parsed from card attributes
+                if (modalProductName) modalProductName.textContent = productName;
+                if (modalProductPrice) modalProductPrice.textContent = productPrice;
+                if (modalProductImg) {
+                  modalProductImg.src = productImage;
+                  modalProductImg.style.display = '';
+                }
+              });
             
             modal.classList.add("open");
             stopAutoScroll();

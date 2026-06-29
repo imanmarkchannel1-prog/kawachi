@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Search Results - Kawachi</title>
   <meta name="description" content="Search products and categories on our headless WooCommerce catalog.">
-  <link rel="stylesheet" href="css/global-styles.css?v=6.51">
+  <link rel="stylesheet" href="css/global-styles.css?v=6.52">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <style>
     body, #main-content {
@@ -371,7 +371,7 @@
     </div>
   </footer>
 
-  <script src="js/main-api.js?v=6.51"></script>
+  <script src="js/main-api.js?v=6.52"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       // General drawer controls
@@ -419,13 +419,41 @@
 
       const urlParams = new URLSearchParams(window.location.search);
       const query = urlParams.get("q") ? urlParams.get("q").trim() : "";
+      const categoryParam = urlParams.get("category") ? urlParams.get("category").trim() : "";
+      const orderbyParam = urlParams.get("orderby") ? urlParams.get("orderby").trim() : "";
       
       const summaryText = document.getElementById("search-summary-text");
       const resultsGrid = document.getElementById("search-results-grid");
       
       if (!summaryText || !resultsGrid) return;
       
-      if (!query) {
+      let matches = window.KawachiProducts ? [...window.KawachiProducts] : [];
+      
+      if (categoryParam) {
+        summaryText.innerHTML = `Showing products in category <span class="query-highlight">"${categoryParam.replace('-', ' ')}"</span>`;
+        matches = matches.filter(p => 
+          p.category.toLowerCase().replace(/[^a-z0-9]/g, '-').includes(categoryParam.toLowerCase()) ||
+          p.category.toLowerCase().includes(categoryParam.toLowerCase())
+        );
+      } else if (orderbyParam) {
+        if (orderbyParam === "popularity") {
+          summaryText.innerHTML = `Showing <span class="query-highlight">"Best Sellers"</span> catalog`;
+          matches = window.KawachiBestSellers && window.KawachiBestSellers.length > 0 ? window.KawachiBestSellers : matches.sort((a, b) => (b.sales_count || 0) - (a.sales_count || 0));
+        } else if (orderbyParam === "date") {
+          summaryText.innerHTML = `Showing <span class="query-highlight">"New Arrivals"</span> catalog`;
+          matches = window.KawachiTrendingNow && window.KawachiTrendingNow.length > 0 ? window.KawachiTrendingNow : matches;
+        }
+      } else if (query) {
+        summaryText.innerHTML = `Showing search results for <span class="query-highlight">"${query}"</span>`;
+        if (query.toLowerCase() === 'ddd') {
+          matches = matches.filter(p => [101, 104, 105].includes(p.id));
+        } else {
+          matches = matches.filter(p => 
+            p.name.toLowerCase().includes(query.toLowerCase()) || 
+            p.category.toLowerCase().includes(query.toLowerCase())
+          );
+        }
+      } else {
         summaryText.innerHTML = "Please enter a search term in the header search box.";
         resultsGrid.innerHTML = `
           <div style="grid-column: 1 / -1; padding: 64px 32px; text-align: center; background: #f8fafc; border-radius: 12px; border: 1px dashed #cbd5e1; max-width: 600px; margin: 0 auto;">
@@ -437,20 +465,6 @@
           </div>
         `;
         return;
-      }
-      
-      summaryText.innerHTML = `Showing search results for <span class="query-highlight">"${query}"</span>`;
-      
-      // Filter products - with fallback support for "ddd" queries
-      let matches = [];
-      if (query.toLowerCase() === 'ddd') {
-        // Return Table, Sauna, Chair
-        matches = window.KawachiProducts.filter(p => [101, 104, 105].includes(p.id));
-      } else {
-        matches = window.KawachiProducts.filter(p => 
-          p.name.toLowerCase().includes(query.toLowerCase()) || 
-          p.category.toLowerCase().includes(query.toLowerCase())
-        );
       }
       
       if (matches.length === 0) {
