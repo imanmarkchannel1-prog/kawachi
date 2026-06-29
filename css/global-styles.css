@@ -9942,7 +9942,7 @@ main.static-page-card .btn-primary-marquee:hover,
 .centered-marketplace-layout {
   max-width: 1400px !important;
   margin: 0 auto !important;
-  padding: 20px 16px !important;
+  padding: 0px 16px 20px 16px !important;
   box-sizing: border-box !important;
   width: 100% !important;
 }
@@ -9951,12 +9951,25 @@ main.static-page-card .btn-primary-marquee:hover,
 .hero-carousel-section {
   position: relative !important;
   margin-top: 0 !important;
-  margin-bottom: 30px !important;
+  margin-bottom: 0px !important;
   width: 100% !important;
   max-width: 100% !important;
   border-radius: 0 !important;
   overflow: visible !important;
   box-shadow: none !important;
+}
+
+/* Subtle left and right vignette gradient overlay to frame banner content */
+.hero-carousel-section::before {
+  content: "" !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.12) 0%, transparent 10%, transparent 90%, rgba(0, 0, 0, 0.12) 100%) !important;
+  pointer-events: none !important;
+  z-index: 5 !important;
 }
 
 /* Clip box: clips the slide backgrounds with rounded corners */
@@ -10135,26 +10148,27 @@ main.static-page-card .btn-primary-marquee:hover,
 
 .carousel-dots-indicator {
   position: absolute !important;
-  bottom: 20px !important;
+  bottom: 24px !important;
   left: 50% !important;
   transform: translateX(-50%) !important;
   display: flex !important;
-  gap: 8px !important;
+  gap: 6px !important;
   z-index: 10 !important;
 }
 
 .carousel-dot-indicator {
-  width: 10px !important;
-  height: 10px !important;
-  border-radius: 50% !important;
-  background-color: rgba(255, 255, 255, 0.4) !important;
+  width: 24px !important;
+  height: 3px !important;
+  border-radius: 2px !important;
+  background-color: rgba(255, 255, 255, 0.3) !important;
   cursor: pointer !important;
-  transition: all 0.25s ease !important;
+  transition: background-color 0.25s ease !important;
 }
 
 .carousel-dot-indicator.dot-active {
-  width: 10px !important;
-  border-radius: 50% !important;
+  width: 24px !important;
+  height: 3px !important;
+  border-radius: 2px !important;
   background-color: #FFFFFF !important;
 }
 
@@ -11082,7 +11096,7 @@ main.static-page-card .btn-primary-marquee:hover,
   }
   .hero-carousel-section {
     max-width: 100% !important;
-    margin: 0 0 25px 0 !important;
+    margin: 0 !important;
     overflow: visible !important;
     box-shadow: none !important;
   }
