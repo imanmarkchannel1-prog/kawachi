@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kawachi - Premium Headless WooCommerce Marketplace</title>
   <meta name="description" content="Explore a curated selection of lifestyle, wellness, home appliances, and smart gadgets at Kawachi. High-performance, premium utility shopping.">
-  <link rel="stylesheet" href="css/global-styles.css?v=6.39">
+  <link rel="stylesheet" href="css/global-styles.css?v=6.40">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@1,700;1,800&family=Bebas+Neue&family=Caveat:wght@700&family=Inter:wght@400;500;600;700;800;900&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
   <style>
@@ -586,73 +586,37 @@
     <div class="search-backdrop" id="search-backdrop"></div>
   </header>
 <main id="main-content">
-  <!-- Centered container layout wrapper for Amazon/Flipkart styling -->
-  <div class="centered-marketplace-layout">
+  <!-- 1. Hero Auto-Scrolling Banner Carousel (Moved outside to be full bleed/edge-to-edge) -->
+  <section class="hero-carousel-section full-bleed">
+    <div class="carousel-container-inner">
+      <!-- Navigation Arrows (sit outside the clip box) -->
+      <button class="carousel-arrow prev" id="hero-carousel-prev" aria-label="Previous Slide">
+        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
+        </svg>
+      </button>
+      <button class="carousel-arrow next" id="hero-carousel-next" aria-label="Next Slide">
+        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </button>
 
-    <!-- 1. Hero Auto-Scrolling Banner Carousel -->
-    <section class="hero-carousel-section">
-      <div class="carousel-container-inner">
-        <!-- Navigation Arrows (sit outside the clip box) -->
-        <button class="carousel-arrow prev" id="hero-carousel-prev" aria-label="Previous Slide">
-          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
-          </svg>
-        </button>
-        <button class="carousel-arrow next" id="hero-carousel-next" aria-label="Next Slide">
-          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>
-          </svg>
-        </button>
-
-        <!-- Clip box: overflow:hidden + border-radius here clips slide backgrounds cleanly -->
-        <div class="carousel-clip-box">
+      <!-- Clip box: overflow:hidden + border-radius here clips slide backgrounds cleanly -->
+      <div class="carousel-clip-box">
 
         <!-- Carousel Track -->
         <div class="carousel-slides-track" id="hero-slides-track">
           
-          <!-- Slide 1: Upgrade Your Home -->
-          <div class="carousel-slide slide-active" style="background: linear-gradient(135deg, #091e3a 0%, #10346c 100%);">
-            <div class="slide-content">
-              <span class="slide-badge">LATEST SMART DESKS &amp; CHAIRS</span>
-              <h2 class="slide-title">Upgrade Your Home,<br><span class="highlight">Elevate Your Life</span></h2>
-              <p class="slide-subtitle">Smart storage, space-saving furniture &amp; innovative solutions for modern living.</p>
-              <a href="#home-furniture" class="slide-btn">Explore Now</a>
-            </div>
-            <div class="slide-images-group">
-              <img src="images/products/meditation_chair.png" alt="Floor Chair" class="slide-img-1">
-              <img src="images/products/laptop_desk.png" alt="Laptop Table" class="slide-img-2">
-              <img src="images/products/trolley_organizer.png" alt="Trolley Rack" class="slide-img-3">
-            </div>
+          <!-- Slide 1 -->
+          <div class="carousel-slide slide-active" style="background-image: url('banners%20/banner%20test1.png'); background-size: cover; background-position: center; cursor: pointer;">
           </div>
 
-          <!-- Slide 2: Kitchen Organizers -->
-          <div class="carousel-slide" style="background: linear-gradient(135deg, #062f1b 0%, #0d5c36 100%);">
-            <div class="slide-content">
-              <span class="slide-badge">KITCHEN DE-CLUTTER SALE</span>
-              <h2 class="slide-title">Organize Your Kitchen,<br><span class="highlight">Organize Your Mind</span></h2>
-              <p class="slide-subtitle">Multi-tier microwave racks, slide-out trolleys, and modern steel basket systems.</p>
-              <a href="#kitchen-storage" class="slide-btn">Shop Kitchen</a>
-            </div>
-            <div class="slide-images-group">
-              <img src="images/products/kitchen_rack.png" alt="Kitchen Rack" class="slide-img-1">
-              <img src="images/products/trolley_organizer.png" alt="Trolley Organizer" class="slide-img-2">
-              <img src="images/products/wall_shelves.png" alt="Wall Shelf" class="slide-img-3">
-            </div>
+          <!-- Slide 2 -->
+          <div class="carousel-slide" style="background-image: url('banners%20/banner%20test2.png'); background-size: cover; background-position: center; cursor: pointer;">
           </div>
 
-          <!-- Slide 3: Smart Office -->
-          <div class="carousel-slide" style="background: linear-gradient(135deg, #2a0845 0%, #6441a5 100%);">
-            <div class="slide-content">
-              <span class="slide-badge">WORK &amp; STUDY EFFICIENCY</span>
-              <h2 class="slide-title">Smart Work From Home,<br><span class="highlight">Enhanced Focus</span></h2>
-              <p class="slide-subtitle">Premium adjustable study desks, ergonomic chairs, and laptop bed tables.</p>
-              <a href="#study-office" class="slide-btn">Explore Office</a>
-            </div>
-            <div class="slide-images-group">
-              <img src="images/products/laptop_desk.png" alt="Laptop Bed Table" class="slide-img-1">
-              <img src="images/products/bedside_table.png" alt="Bedside Drawer" class="slide-img-2">
-              <img src="images/products/wall_shelves.png" alt="Office Shelf" class="slide-img-3">
-            </div>
+          <!-- Slide 3 -->
+          <div class="carousel-slide" style="background-image: url('banners%20/banner%20test3.png'); background-size: cover; background-position: center; cursor: pointer;">
           </div>
 
         </div>
@@ -664,9 +628,12 @@
           <span class="carousel-dot-indicator" data-slide-index="2"></span>
         </div>
 
-        </div><!-- /.carousel-clip-box -->
-      </div>
-    </section>
+      </div><!-- /.carousel-clip-box -->
+    </div>
+  </section>
+
+  <!-- Centered container layout wrapper for Amazon/Flipkart styling -->
+  <div class="centered-marketplace-layout">
     <!-- Influencer Video Spotlight Slider Section -->
     <section class="video-spotlight-section">
       <div class="video-spotlight-header" style="margin-bottom: 32px !important; display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important; gap: 10px !important; text-align: center !important;">
@@ -1716,6 +1683,7 @@
         let slideInterval;
 
         function showSlide(index) {
+          track.style.transform = `translateX(-${index * 100}%)`;
           slides.forEach((slide, i) => {
             if (i === index) {
               slide.classList.add("slide-active");
@@ -2084,7 +2052,7 @@
     </div>
   </footer>
 
-  <script src="js/main-api.js?v=6.39"></script>
+  <script src="js/main-api.js?v=6.40"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       // General drawer controls

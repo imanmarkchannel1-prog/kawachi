@@ -1748,7 +1748,7 @@ window.renderHeroBanners = function(banners) {
   if (!track || !banners || !banners.length) return;
 
   track.innerHTML = banners.map((b, idx) => `
-    <div class="carousel-slide ${idx === 0 ? 'slide-active' : ''}" onclick="window.location.href='${b.banner_link || '#'}'" style="background-image: url('${b.banner_image}'); background-size: cover; background-position: center; min-height: 480px; position: relative; cursor: pointer; border-radius: 16px;">
+    <div class="carousel-slide ${idx === 0 ? 'slide-active' : ''}" onclick="window.location.href='${b.banner_link || '#'}'" style="background-image: url('${b.banner_image}'); background-size: cover; background-position: center; cursor: pointer; height: 100%; position: relative;">
     </div>
   `).join("");
 
