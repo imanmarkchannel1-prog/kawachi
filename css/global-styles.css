@@ -10111,40 +10111,41 @@ main.static-page-card .btn-primary-marquee:hover,
   position: absolute !important;
   top: 50% !important;
   transform: translateY(-50%) !important;
-  width: 80px !important;
-  height: 150px !important;
-  background-color: transparent !important;
-  backdrop-filter: none !important;
-  border: 2px solid transparent !important;
-  color: rgba(255, 255, 255, 0.65) !important;
-  border-radius: 4px !important;
+  width: 44px !important;
+  height: 44px !important;
+  background-color: #FFFFFF !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  color: #0F172A !important;
+  border-radius: 50% !important;
   cursor: pointer !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   z-index: 10 !important;
-  transition: all 0.2s ease !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1) !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 .carousel-arrow svg {
-  width: 38px !important;
-  height: 38px !important;
-  stroke-width: 1.5px !important;
+  width: 20px !important;
+  height: 20px !important;
+  stroke-width: 2.5px !important;
 }
 
 .carousel-arrow:hover {
-  border-color: #FFFFFF !important;
+  background-color: #FF5E00 !important;
   color: #FFFFFF !important;
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25) !important;
-  background-color: rgba(255, 255, 255, 0.05) !important;
+  border-color: #FF5E00 !important;
+  box-shadow: 0 6px 14px rgba(255, 94, 0, 0.3) !important;
+  transform: translateY(-50%) scale(1.05) !important;
 }
 
 .carousel-arrow.prev {
-  left: 10px !important;
+  left: -22px !important;
 }
 
 .carousel-arrow.next {
-  right: 10px !important;
+  right: -22px !important;
 }
 
 .carousel-dots-indicator {
@@ -11223,37 +11224,37 @@ main.static-page-card .btn-primary-marquee:hover,
   }
   /* Carousel arrows mobile adjustments - positioned outside banner card */
   .carousel-arrow {
-    width: 20px !important;
-    height: 40px !important;
-    background-color: transparent !important; /* Completely transparent */
-    border: none !important; /* No box border */
-    box-shadow: none !important;
-    color: #0F1E36 !important; /* High contrast dark arrow stroke */
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
+    width: 32px !important;
+    height: 32px !important;
+    background-color: rgba(255, 255, 255, 0.8) !important;
+    border: none !important;
+    border-radius: 50% !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12) !important;
+    color: #0F1E36 !important;
+    backdrop-filter: blur(4px) !important;
+    -webkit-backdrop-filter: blur(4px) !important;
     z-index: 10 !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    transition: color 0.2s ease !important;
+    transition: all 0.2s ease !important;
   }
   .carousel-arrow svg {
-    width: 20px !important;
-    height: 20px !important;
-    stroke-width: 2.5px !important; /* Slightly thicker stroke for high crispness */
+    width: 16px !important;
+    height: 16px !important;
+    stroke-width: 2.5px !important;
   }
   .carousel-arrow:hover,
   .carousel-arrow:active {
-    background-color: transparent !important; /* No hover background boxes */
-    color: var(--color-primary) !important; /* Primary orange highlight on hover/tap */
-    box-shadow: none !important;
-    border: none !important;
+    background-color: #FFFFFF !important;
+    color: #FF5E00 !important;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2) !important;
   }
   .carousel-arrow.prev {
-    left: -15px !important; /* Positioned outside the banner box in the left margin gap */
+    left: 10px !important;
   }
   .carousel-arrow.next {
-    right: -15px !important; /* Positioned outside the banner box in the right margin gap */
+    right: 10px !important;
   }
   .discovery-grid {
     grid-template-columns: repeat(2, 1fr) !important; /* 2x2 Category Layout on mobile */
