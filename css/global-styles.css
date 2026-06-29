@@ -10147,37 +10147,32 @@ main.static-page-card .btn-primary-marquee:hover,
 
 .carousel-dots-indicator {
   position: absolute !important;
-  bottom: 24px !important;
+  bottom: 15px !important;
   left: 50% !important;
   transform: translateX(-50%) !important;
   display: flex !important;
   align-items: center !important;
-  gap: 10px !important;
+  gap: 8px !important;
   z-index: 10 !important;
-  background: rgba(15, 23, 42, 0.18) !important;
-  backdrop-filter: blur(8px) !important;
-  -webkit-backdrop-filter: blur(8px) !important;
-  padding: 6px 14px !important;
-  border-radius: 30px !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
 
 .carousel-dot-indicator {
-  width: 8px !important;
-  height: 8px !important;
+  width: 6px !important;
+  height: 6px !important;
   border-radius: 50% !important;
-  background-color: rgba(255, 255, 255, 0.5) !important;
-  cursor: pointer !important;
+  background-color: rgba(255, 255, 255, 0.45) !important;
+  cursor: default !important;
+  pointer-events: none !important;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 .carousel-dot-indicator.dot-active {
-  width: 8px !important;
-  height: 8px !important;
+  width: 6px !important;
+  height: 6px !important;
   border-radius: 50% !important;
-  background-color: #FF5E00 !important;
-  transform: scale(1.25) !important;
-  box-shadow: 0 0 6px rgba(255, 94, 0, 0.6) !important;
+  background-color: #FFFFFF !important;
+  transform: scale(1.15) !important;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.8) !important;
 }
 
 /* 4-Box Discovery Grid */
