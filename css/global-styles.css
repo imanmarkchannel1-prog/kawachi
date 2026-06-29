@@ -10111,55 +10111,57 @@ main.static-page-card .btn-primary-marquee:hover,
   position: absolute !important;
   top: 50% !important;
   transform: translateY(-50%) !important;
-  width: 60px !important;
-  height: 150px !important;
-  background-color: #FFFFFF !important;
-  border: 1px solid rgba(0, 0, 0, 0.08) !important;
-  color: #0F172A !important;
-  border-radius: 12px !important;
+  width: 68px !important;
+  height: 170px !important;
+  background-color: rgba(248, 250, 252, 0.4) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(0, 0, 0, 0.04) !important;
+  color: rgba(15, 23, 42, 0.45) !important;
+  border-radius: 16px !important;
   cursor: pointer !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   z-index: 10 !important;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08) !important;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 .carousel-arrow svg {
-  width: 28px !important;
-  height: 28px !important;
-  stroke-width: 2px !important;
+  width: 32px !important;
+  height: 32px !important;
+  stroke-width: 1.8px !important;
 }
 
 .carousel-arrow:hover {
-  background-color: #FF5E00 !important;
-  color: #FFFFFF !important;
-  border-color: #FF5E00 !important;
-  box-shadow: 0 10px 28px rgba(255, 94, 0, 0.25) !important;
-  transform: translateY(-50%) scale(1.03) !important;
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  color: #FF5E00 !important;
+  border-color: rgba(255, 94, 0, 0.2) !important;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(255, 94, 0, 0.05) !important;
+  transform: translateY(-50%) scale(1.02) !important;
 }
 
 .carousel-arrow.prev {
-  left: -75px !important;
+  left: -80px !important;
 }
 
 .carousel-arrow.next {
-  right: -75px !important;
+  right: -80px !important;
 }
 
 /* Responsive fallback to slide arrows inside on narrow desktop viewports */
 @media (min-width: 769px) and (max-width: 1560px) {
   .carousel-arrow.prev {
-    left: 15px !important;
+    left: 20px !important;
   }
   .carousel-arrow.next {
-    right: 15px !important;
+    right: 20px !important;
   }
   .carousel-arrow {
-    background-color: rgba(255, 255, 255, 0.85) !important;
-    backdrop-filter: blur(8px) !important;
-    -webkit-backdrop-filter: blur(8px) !important;
+    background-color: rgba(248, 250, 252, 0.6) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
   }
 }
 
@@ -11237,39 +11239,9 @@ main.static-page-card .btn-primary-marquee:hover,
     transform: translateX(45px) translateY(8px) scale(0.9) !important;
     opacity: 0.85 !important;
   }
-  /* Carousel arrows mobile adjustments - positioned outside banner card */
+  /* Hide carousel navigation arrows on mobile viewports */
   .carousel-arrow {
-    width: 32px !important;
-    height: 32px !important;
-    background-color: rgba(255, 255, 255, 0.8) !important;
-    border: none !important;
-    border-radius: 50% !important;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12) !important;
-    color: #0F1E36 !important;
-    backdrop-filter: blur(4px) !important;
-    -webkit-backdrop-filter: blur(4px) !important;
-    z-index: 10 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    transition: all 0.2s ease !important;
-  }
-  .carousel-arrow svg {
-    width: 16px !important;
-    height: 16px !important;
-    stroke-width: 2.5px !important;
-  }
-  .carousel-arrow:hover,
-  .carousel-arrow:active {
-    background-color: #FFFFFF !important;
-    color: #FF5E00 !important;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2) !important;
-  }
-  .carousel-arrow.prev {
-    left: 10px !important;
-  }
-  .carousel-arrow.next {
-    right: 10px !important;
+    display: none !important;
   }
   .discovery-grid {
     grid-template-columns: repeat(2, 1fr) !important; /* 2x2 Category Layout on mobile */
