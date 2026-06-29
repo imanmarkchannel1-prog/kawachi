@@ -1438,23 +1438,18 @@ function initImageZoom() {
   observer.observe(img, { attributes: true, attributeFilter: ["src"] });
 
   function updateZoomImageSize() {
-    // Use getBoundingClientRect to get the ACTUAL rendered pixel size of the image
-    // (image may be smaller than container due to object-fit: contain)
     const imgRect = img.getBoundingClientRect();
     const renderedW = imgRect.width;
     const renderedH = imgRect.height;
 
     if (renderedW === 0 || renderedH === 0) return;
 
-    // result window dimensions
     const resultW = result.offsetWidth;
     const resultH = result.offsetHeight;
 
-    // Zoom ratio = how much the result preview magnifies vs the lens area
     const cx = resultW / lens.offsetWidth;
     const cy = resultH / lens.offsetHeight;
 
-    // The zoomed image must be large enough to fill result at that ratio
     resultImg.style.width = (renderedW * cx) + "px";
     resultImg.style.height = (renderedH * cy) + "px";
   }
@@ -1475,22 +1470,17 @@ function initImageZoom() {
     if (window.innerWidth <= 768) return;
     e.preventDefault();
 
-    // Get actual image bounding rect (the rendered image area, not the container)
     const imgRect = img.getBoundingClientRect();
 
-    // Mouse position relative to the image's rendered area
     let x = e.clientX - imgRect.left;
     let y = e.clientY - imgRect.top;
 
-    // Clamp to image bounds
     x = Math.max(0, Math.min(x, imgRect.width));
     y = Math.max(0, Math.min(y, imgRect.height));
 
-    // Lens half-dimensions
     const lensHalfW = lens.offsetWidth / 2;
     const lensHalfH = lens.offsetHeight / 2;
 
-    // Center lens on cursor, clamped within image
     let lensX = x - lensHalfW;
     let lensY = y - lensHalfH;
     if (lensX < 0) lensX = 0;
@@ -1498,19 +1488,80 @@ function initImageZoom() {
     if (lensY < 0) lensY = 0;
     if (lensY > imgRect.height - lens.offsetHeight) lensY = imgRect.height - lens.offsetHeight;
 
-    // Position lens relative to the .main-image-container
-    // img.offsetLeft = position of img within its parent container (accounting for padding)
     lens.style.left = (img.offsetLeft + lensX) + "px";
     lens.style.top  = (img.offsetTop  + lensY) + "px";
 
-    // Compute zoom ratio
     const cx = result.offsetWidth  / lens.offsetWidth;
     const cy = result.offsetHeight / lens.offsetHeight;
 
-    // Scroll result image to show the portion under the lens
     resultImg.style.left = "-" + (lensX * cx) + "px";
     resultImg.style.top  = "-" + (lensY * cy) + "px";
   });
+
+  // Mobile Pinch-to-Zoom & Pan Gesture Handler
+  let initialDistance = 0;
+  let initialMidX = 0;
+  let initialMidY = 0;
+  let isPinching = false;
+
+  img.addEventListener("touchstart", (e) => {
+    if (window.innerWidth > 768) return;
+    if (e.touches.length === 2) {
+      isPinching = true;
+      initialDistance = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      initialMidX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+      initialMidY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+      img.style.transition = "none";
+    }
+  });
+
+  img.addEventListener("touchmove", (e) => {
+    if (window.innerWidth > 768) return;
+    if (isPinching && e.touches.length === 2) {
+      e.preventDefault(); // Prevent native page scrolling while zooming
+      const currentDistance = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      const currentMidX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+      const currentMidY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+
+      if (initialDistance > 0) {
+        let scale = currentDistance / initialDistance;
+        // Clamp scale between 1x and 3.5x
+        scale = Math.max(1, Math.min(scale, 3.5));
+        
+        // Calculate translation displacement (panning)
+        const panX = currentMidX - initialMidX;
+        const panY = currentMidY - initialMidY;
+
+        img.style.transform = `scale(${scale}) translate(${panX / scale}px, ${panY / scale}px)`;
+        img.style.zIndex = scale > 1 ? "100" : "1";
+        container.style.overflow = scale > 1 ? "visible" : "hidden";
+      }
+    }
+  });
+
+  const resetZoom = () => {
+    if (isPinching) {
+      isPinching = false;
+      initialDistance = 0;
+      initialMidX = 0;
+      initialMidY = 0;
+      img.style.transition = "transform 0.25s ease-out";
+      img.style.transform = "scale(1) translate(0, 0)";
+      img.style.zIndex = "1";
+      setTimeout(() => {
+        container.style.overflow = "hidden";
+      }, 250);
+    }
+  };
+
+  img.addEventListener("touchend", resetZoom);
+  img.addEventListener("touchcancel", resetZoom);
 }
 
 function initUnifiedSearchBar() {

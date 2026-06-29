@@ -11642,10 +11642,14 @@ main.static-page-card .btn-primary-marquee:hover,
 
 @media (max-width: 768px) {
   .product-gallery-3col {
+    display: flex !important;
     flex-direction: column-reverse !important;
+    gap: 16px !important;
   }
   .product-gallery-3col .thumbnail-vertical-strip {
+    display: flex !important;
     flex-direction: row !important;
+    gap: 8px !important;
     overflow-x: auto !important;
     overflow-y: hidden !important;
     width: 100% !important;
