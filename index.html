@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kawachi - Premium Headless WooCommerce Marketplace</title>
   <meta name="description" content="Explore a curated selection of lifestyle, wellness, home appliances, and smart gadgets at Kawachi. High-performance, premium utility shopping.">
-  <link rel="stylesheet" href="css/global-styles.css?v=6.35">
+  <link rel="stylesheet" href="css/global-styles.css?v=6.36">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@1,700;1,800&family=Bebas+Neue&family=Caveat:wght@700&family=Inter:wght@400;500;600;700;800;900&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
   <style>
@@ -384,30 +384,39 @@
         background: rgba(255,255,255,0.9) !important;
       }
       .modal-product-card {
-        flex-direction: row !important;
-        align-items: center !important;
-        padding: 8px !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        padding: 10px !important;
         gap: 8px !important;
         margin-top: 8px !important;
       }
       .modal-product-img {
-        width: 50px !important;
-        height: 50px !important;
-        flex-shrink: 0 !important;
-        padding: 4px !important;
+        width: 100% !important;
+        height: 120px !important;
+        object-fit: contain !important;
+        background: #ffffff !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 10px !important;
+        padding: 6px !important;
+        box-sizing: border-box !important;
       }
       .modal-product-info {
+        display: flex !important;
         flex-direction: column !important;
         align-items: flex-start !important;
         gap: 2px !important;
-        padding: 0 !important;
+        padding: 0 4px !important;
       }
       .modal-product-title {
-        font-size: 11px !important;
-        line-height: 1.2 !important;
+        font-size: 12px !important;
+        font-weight: 700 !important;
+        color: #0f172a !important;
+        line-height: 1.25 !important;
       }
       .modal-product-price {
-        font-size: 12px !important;
+        font-size: 13px !important;
+        font-weight: 800 !important;
+        color: #003366 !important;
       }
       #modal-product-shop-link {
         padding: 10px !important;
@@ -2075,7 +2084,7 @@
     </div>
   </footer>
 
-  <script src="js/main-api.js?v=6.35"></script>
+  <script src="js/main-api.js?v=6.36"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       // General drawer controls
