@@ -10146,14 +10146,7 @@ main.static-page-card .btn-primary-marquee:hover,
 }
 
 .carousel-dots-indicator {
-  position: absolute !important;
-  bottom: 15px !important;
-  left: 50% !important;
-  transform: translateX(-50%) !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 8px !important;
-  z-index: 10 !important;
+  display: none !important;
 }
 
 .carousel-dot-indicator {
