@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kawachi - Premium Headless WooCommerce Marketplace</title>
   <meta name="description" content="Explore a curated selection of lifestyle, wellness, home appliances, and smart gadgets at Kawachi. High-performance, premium utility shopping.">
-  <link rel="stylesheet" href="css/global-styles.css?v=6.66">
+  <link rel="stylesheet" href="css/global-styles.css?v=6.67">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@1,700;1,800&family=Bebas+Neue&family=Caveat:wght@700&family=Inter:wght@400;500;600;700;800;900&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
   <style>
@@ -608,15 +608,15 @@
         <div class="carousel-slides-track" id="hero-slides-track">
           
           <!-- Slide 1 -->
-          <a href="#" class="carousel-slide slide-active" style="background-image: url('banners%20/banner%20test1.png'); background-size: 100% 100%; background-position: center; cursor: pointer; text-decoration: none; display: block;">
+          <a href="#" draggable="false" class="carousel-slide slide-active" style="background-image: url('banners%20/banner%20test1.png'); background-size: 100% 100%; background-position: center; cursor: pointer; text-decoration: none; display: block;">
           </a>
 
           <!-- Slide 2 -->
-          <a href="#" class="carousel-slide" style="background-image: url('banners%20/banner%20test2.png'); background-size: 100% 100%; background-position: center; cursor: pointer; text-decoration: none; display: block;">
+          <a href="#" draggable="false" class="carousel-slide" style="background-image: url('banners%20/banner%20test2.png'); background-size: 100% 100%; background-position: center; cursor: pointer; text-decoration: none; display: block;">
           </a>
 
           <!-- Slide 3 -->
-          <a href="#" class="carousel-slide" style="background-image: url('banners%20/banner%20test3.png'); background-size: 100% 100%; background-position: center; cursor: pointer; text-decoration: none; display: block;">
+          <a href="#" draggable="false" class="carousel-slide" style="background-image: url('banners%20/banner%20test3.png'); background-size: 100% 100%; background-position: center; cursor: pointer; text-decoration: none; display: block;">
           </a>
 
         </div>
@@ -1664,8 +1664,13 @@
 
       // Hero Carousel Autoslide Setup (5 seconds interval loop)
       function initHeroCarousel() {
-        const track = document.getElementById("hero-slides-track");
+        let track = document.getElementById("hero-slides-track");
         if (!track) return;
+
+        // Clone and replace track to strip any stacked duplicate event listeners on re-initializations
+        const newTrack = track.cloneNode(true);
+        track.parentNode.replaceChild(newTrack, track);
+        track = newTrack;
         
         // Clear any previously injected clones first to avoid duplicates on re-initializations
         const existingClones = track.querySelectorAll(".carousel-slide-clone");
@@ -2195,7 +2200,7 @@
     </div>
   </footer>
 
-  <script src="js/main-api.js?v=6.66"></script>
+  <script src="js/main-api.js?v=6.67"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       // General drawer controls
