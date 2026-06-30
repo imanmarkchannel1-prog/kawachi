@@ -1785,7 +1785,7 @@ window.renderHeroBanners = function(banners) {
     const desktopImg = b.desktop_image || b.banner_image;
     const mobileImg = b.mobile_image || desktopImg;
     return `
-      <div class="carousel-slide ${idx === 0 ? 'slide-active' : ''}" onclick="window.location.href='${b.banner_link || '#'}'" style="cursor: pointer; height: 100%; position: relative; width: 100%; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+      <div class="carousel-slide ${idx === 0 ? 'slide-active' : ''}" data-link="${b.banner_link || '#'}" style="cursor: pointer; height: 100%; position: relative; width: 100%; overflow: hidden; display: flex; align-items: center; justify-content: center;">
         <picture style="width: 100%; height: 100%; display: block;">
           <source media="(max-width: 768px)" srcset="${mobileImg}">
           <img src="${desktopImg}" alt="Hero Slide ${idx + 1}" style="width: 100%; height: 100%; object-fit: fill; display: block;">

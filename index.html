@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kawachi - Premium Headless WooCommerce Marketplace</title>
   <meta name="description" content="Explore a curated selection of lifestyle, wellness, home appliances, and smart gadgets at Kawachi. High-performance, premium utility shopping.">
-  <link rel="stylesheet" href="css/global-styles.css?v=6.64">
+  <link rel="stylesheet" href="css/global-styles.css?v=6.65">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@1,700;1,800&family=Bebas+Neue&family=Caveat:wght@700&family=Inter:wght@400;500;600;700;800;900&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
   <style>
@@ -1831,6 +1831,16 @@
           if (!isDragging) return;
           isDragging = false;
           
+          // If the interaction was a tap (no significant drag), trigger navigation
+          if (Math.abs(dragOffset) < 5 && e && e.target) {
+            const slide = e.target.closest('.carousel-slide');
+            if (slide && slide.dataset.link && slide.dataset.link !== '#') {
+              window.location.href = slide.dataset.link;
+              dragOffset = 0;
+              return; // Stop drag execution and let the page navigate
+            }
+          }
+          
           const threshold = containerWidth * 0.2; // 20% width scroll boundary
           
           if (dragOffset < -threshold) {
@@ -2179,7 +2189,7 @@
     </div>
   </footer>
 
-  <script src="js/main-api.js?v=6.64"></script>
+  <script src="js/main-api.js?v=6.65"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       // General drawer controls
