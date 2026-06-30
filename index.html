@@ -1665,113 +1665,187 @@
       // Hero Carousel Autoslide Setup (5 seconds interval loop)
       function initHeroCarousel() {
         const track = document.getElementById("hero-slides-track");
-        const slides = track ? track.querySelectorAll(".carousel-slide") : [];
+        if (!track) return;
+        
+        // Clear any previously injected clones first to avoid duplicates on re-initializations
+        const existingClones = track.querySelectorAll(".carousel-slide-clone");
+        existingClones.forEach(c => c.remove());
+
+        const originalSlides = track.querySelectorAll(".carousel-slide");
+        if (!originalSlides.length) return;
+
+        const N = originalSlides.length;
         const dots = document.querySelectorAll("#hero-dots-indicator .carousel-dot-indicator");
         const prevBtn = document.getElementById("hero-carousel-prev");
         const nextBtn = document.getElementById("hero-carousel-next");
-        if (!track || !slides.length) return;
 
-        let activeIndex = 0;
+        // Prepend clone of last slide and append clone of first slide for a seamless infinite loop
+        const firstClone = originalSlides[0].cloneNode(true);
+        firstClone.classList.add("carousel-slide-clone");
+        firstClone.classList.remove("slide-active");
+        
+        const lastClone = originalSlides[N - 1].cloneNode(true);
+        lastClone.classList.add("carousel-slide-clone");
+        lastClone.classList.remove("slide-active");
+
+        track.appendChild(firstClone);
+        track.insertBefore(lastClone, originalSlides[0]);
+
+        // Re-query all slide nodes inside track
+        const allSlides = track.querySelectorAll(".carousel-slide, .carousel-slide-clone");
+
+        let activeIndex = 1; // Start on Slide 1 (clones place Slide 1 at index 1)
         let slideInterval;
+        let isTransitioning = false;
 
-        function showSlide(index) {
-          track.style.setProperty("transform", `translateX(-${index * 100}%)`, "important");
-          slides.forEach((slide, i) => {
-            if (i === index) {
+        // Reset positions immediately to the first real slide
+        track.style.transition = "none";
+        track.style.transform = `translateX(-${activeIndex * 100}%)`;
+
+        function updateSlideStates() {
+          const visualIndex = (activeIndex - 1 + N) % N;
+          
+          allSlides.forEach((slide, i) => {
+            if (i === activeIndex) {
               slide.classList.add("slide-active");
             } else {
               slide.classList.remove("slide-active");
             }
           });
+
           dots.forEach((dot, i) => {
-            if (i === index) {
+            if (i === visualIndex) {
               dot.classList.add("dot-active");
             } else {
               dot.classList.remove("dot-active");
             }
           });
+        }
+
+        function moveToSlide(index, animate = true) {
+          if (isTransitioning && animate) return;
+          if (animate) {
+            isTransitioning = true;
+            track.style.transition = "transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)";
+          } else {
+            track.style.transition = "none";
+          }
           activeIndex = index;
+          track.style.transform = `translateX(-${activeIndex * 100}%)`;
+          updateSlideStates();
         }
 
         function nextSlide() {
-          const nextIndex = (activeIndex + 1) % slides.length;
-          showSlide(nextIndex);
+          if (isTransitioning) return;
+          moveToSlide(activeIndex + 1);
         }
 
         function prevSlide() {
-          const prevIndex = (activeIndex - 1 + slides.length) % slides.length;
-          showSlide(prevIndex);
+          if (isTransitioning) return;
+          moveToSlide(activeIndex - 1);
         }
+
+        // Snaps cleanly to loop points after transitions complete
+        track.addEventListener("transitionend", () => {
+          isTransitioning = false;
+          if (activeIndex === N + 1) {
+            moveToSlide(1, false);
+          } else if (activeIndex === 0) {
+            moveToSlide(N, false);
+          }
+        });
 
         function startAutoplay() {
           clearInterval(slideInterval);
           slideInterval = setInterval(nextSlide, 5000);
         }
 
-        if (nextBtn) nextBtn.addEventListener("click", () => {
-          nextSlide();
-          startAutoplay();
-        });
-        if (prevBtn) prevBtn.addEventListener("click", () => {
-          prevSlide();
-          startAutoplay();
-        });
+        if (nextBtn) {
+          nextBtn.onclick = (e) => {
+            e.stopPropagation();
+            nextSlide();
+            startAutoplay();
+          };
+        }
+        if (prevBtn) {
+          prevBtn.onclick = (e) => {
+            e.stopPropagation();
+            prevSlide();
+            startAutoplay();
+          };
+        }
 
         dots.forEach((dot, index) => {
-          dot.addEventListener("click", () => {
-            showSlide(index);
+          dot.onclick = (e) => {
+            e.stopPropagation();
+            moveToSlide(index + 1);
             startAutoplay();
-          });
+          };
         });
 
-        // Mobile touch drag & swipe support for hero carousel
-        let touchStartX = 0;
-        let touchCurrentX = 0;
+        // Touch & Mouse Pointer Drag Gestures: tracks hand positions smoothly
+        let startX = 0;
+        let currentX = 0;
         let isDragging = false;
-        let startTranslate = 0;
+        let dragOffset = 0;
+        let containerWidth = track.parentElement ? track.parentElement.offsetWidth : window.innerWidth;
 
-        track.addEventListener("touchstart", (e) => {
-          clearInterval(slideInterval); // Stop autoplay during drag interaction
-          touchStartX = e.touches[0].clientX;
-          startTranslate = -activeIndex * track.offsetWidth;
-          // Temporarily disable transition for instant, lag-free dragging
-          track.style.setProperty("transition", "none", "important");
+        window.addEventListener("resize", () => {
+          containerWidth = track.parentElement ? track.parentElement.offsetWidth : window.innerWidth;
+          moveToSlide(activeIndex, false);
+        });
+
+        function dragStart(e) {
+          if (isTransitioning) return;
+          clearInterval(slideInterval);
           isDragging = true;
-        }, { passive: true });
+          startX = e.type.includes("touch") ? e.touches[0].clientX : e.clientX;
+          track.style.transition = "none";
+        }
 
-        track.addEventListener("touchmove", (e) => {
+        function dragMove(e) {
           if (!isDragging) return;
-          touchCurrentX = e.touches[0].clientX;
-          const diffX = touchCurrentX - touchStartX;
-          const targetTranslate = startTranslate + diffX;
-          // Translate the track instantly as the finger moves
-          track.style.setProperty("transform", `translateX(${targetTranslate}px)`, "important");
-        }, { passive: true });
+          
+          // Disable horizontal swipe link click behavior while dragging
+          currentX = e.type.includes("touch") ? e.touches[0].clientX : e.clientX;
+          dragOffset = currentX - startX;
+          
+          const currentTranslate = -activeIndex * containerWidth + dragOffset;
+          track.style.transform = `translateX(${currentTranslate}px)`;
+        }
 
-        track.addEventListener("touchend", (e) => {
+        function dragEnd(e) {
           if (!isDragging) return;
           isDragging = false;
-
-          // Re-enable smooth transition animation
-          track.style.setProperty("transition", "transform 0.6s cubic-bezier(0.25, 1, 0.5, 1)", "important");
-
-          const touchEndX = e.changedTouches[0].clientX;
-          const diffX = touchStartX - touchEndX;
-          const threshold = track.offsetWidth * 0.15; // 15% drag threshold for snapping
-
-          if (Math.abs(diffX) > threshold) {
-            if (diffX > 0) {
-              nextSlide();
-            } else {
-              prevSlide();
-            }
+          
+          const threshold = containerWidth * 0.2; // 20% width scroll boundary
+          
+          if (dragOffset < -threshold) {
+            moveToSlide(activeIndex + 1);
+          } else if (dragOffset > threshold) {
+            moveToSlide(activeIndex - 1);
           } else {
-            // Snap back to current slide
-            showSlide(activeIndex);
+            moveToSlide(activeIndex);
           }
+          
+          dragOffset = 0;
           startAutoplay();
-        }, { passive: true });
+        }
 
+        // Bind touch events
+        track.addEventListener("touchstart", dragStart, { passive: true });
+        track.addEventListener("touchmove", dragMove, { passive: true });
+        track.addEventListener("touchend", dragEnd, { passive: true });
+
+        // Bind desktop mouse drag events for drag testing
+        track.addEventListener("mousedown", dragStart);
+        track.addEventListener("mousemove", dragMove);
+        track.addEventListener("mouseup", dragEnd);
+        track.addEventListener("mouseleave", () => {
+          if (isDragging) dragEnd();
+        });
+
+        updateSlideStates();
         startAutoplay();
       }
 
