@@ -9983,7 +9983,7 @@ main.static-page-card .btn-primary-marquee:hover,
   width: 100% !important;
   height: 100% !important;
   position: relative !important;
-  transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1) !important;
+  transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .carousel-slide {

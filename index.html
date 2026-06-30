@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kawachi - Premium Headless WooCommerce Marketplace</title>
   <meta name="description" content="Explore a curated selection of lifestyle, wellness, home appliances, and smart gadgets at Kawachi. High-performance, premium utility shopping.">
-  <link rel="stylesheet" href="css/global-styles.css?v=6.58">
+  <link rel="stylesheet" href="css/global-styles.css?v=6.59">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@1,700;1,800&family=Bebas+Neue&family=Caveat:wght@700&family=Inter:wght@400;500;600;700;800;900&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
   <style>
@@ -1726,12 +1726,12 @@
           if (isTransitioning && animate) return;
           if (animate) {
             isTransitioning = true;
-            track.style.transition = "transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)";
+            track.style.setProperty("transition", "transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)", "important");
           } else {
-            track.style.transition = "none";
+            track.style.setProperty("transition", "none", "important");
           }
           activeIndex = index;
-          track.style.transform = `translateX(-${activeIndex * 100}%)`;
+          track.style.setProperty("transform", `translateX(-${activeIndex * 100}%)`, "important");
           
           if (!animate) {
             // Force browser layout reflow to render the 0ms snap position immediately
@@ -1812,7 +1812,7 @@
           clearInterval(slideInterval);
           isDragging = true;
           startX = e.type.includes("touch") ? e.touches[0].clientX : e.clientX;
-          track.style.transition = "none";
+          track.style.setProperty("transition", "none", "important");
           track.offsetHeight; // Force layout reflow
         }
 
@@ -1824,7 +1824,7 @@
           dragOffset = currentX - startX;
           
           const currentTranslate = -activeIndex * containerWidth + dragOffset;
-          track.style.transform = `translateX(${currentTranslate}px)`;
+          track.style.setProperty("transform", `translateX(${currentTranslate}px)`, "important");
         }
 
         function dragEnd(e) {
@@ -2179,7 +2179,7 @@
     </div>
   </footer>
 
-  <script src="js/main-api.js?v=6.58"></script>
+  <script src="js/main-api.js?v=6.59"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       // General drawer controls
