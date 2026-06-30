@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kawachi - Premium Headless WooCommerce Marketplace</title>
   <meta name="description" content="Explore a curated selection of lifestyle, wellness, home appliances, and smart gadgets at Kawachi. High-performance, premium utility shopping.">
-  <link rel="stylesheet" href="css/global-styles.css?v=6.53">
+  <link rel="stylesheet" href="css/global-styles.css?v=6.54">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@1,700;1,800&family=Bebas+Neue&family=Caveat:wght@700&family=Inter:wght@400;500;600;700;800;900&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
   <style>
@@ -1724,6 +1724,25 @@
           });
         });
 
+        // Mobile touch swipe gestures support for hero carousel
+        let touchStartX = 0;
+        track.addEventListener("touchstart", (e) => {
+          touchStartX = e.touches[0].clientX;
+        }, { passive: true });
+
+        track.addEventListener("touchend", (e) => {
+          const touchEndX = e.changedTouches[0].clientX;
+          const diffX = touchStartX - touchEndX;
+          if (Math.abs(diffX) > 40) {
+            if (diffX > 0) {
+              nextSlide();
+            } else {
+              prevSlide();
+            }
+            startAutoplay();
+          }
+        }, { passive: true });
+
         startAutoplay();
       }
 
@@ -2044,7 +2063,7 @@
     </div>
   </footer>
 
-  <script src="js/main-api.js?v=6.53"></script>
+  <script src="js/main-api.js?v=6.54"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       // General drawer controls
