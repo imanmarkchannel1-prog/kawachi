@@ -1715,7 +1715,7 @@ function syncHeaderUtilitiesAndIcons() {
   if (!container) return;
 
   // 1. Wishlist Link
-  const wishlistLink = container.querySelector('a[href*="Wishlist"]');
+  const wishlistLink = container.querySelector('a[href*="wishlist"]');
   if (wishlistLink) {
     const svg = wishlistLink.querySelector("svg");
     if (svg) {
@@ -1728,7 +1728,7 @@ function syncHeaderUtilitiesAndIcons() {
   }
 
   // 2. Account Link
-  const accountLink = container.querySelector('a[href*="support-center"], a[href*="account"]');
+  const accountLink = container.querySelector('a[href*="account"], a[href*="support-center"], a[href*="profile"]');
   if (accountLink) {
     const svg = accountLink.querySelector("svg");
     if (svg) {
@@ -1742,7 +1742,7 @@ function syncHeaderUtilitiesAndIcons() {
   }
 
   // 3. Orders & Returns Link
-  const ordersLink = container.querySelector('a[href*="returns-warranties"], a[href*="returns"]');
+  const ordersLink = container.querySelector('a[href*="orders"], a[href*="returns"]');
   if (ordersLink) {
     const svg = ordersLink.querySelector("svg");
     if (svg) {
