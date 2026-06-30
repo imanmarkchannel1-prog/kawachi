@@ -12345,11 +12345,7 @@ html {
     order: 1 !important;
   }
   
-  .trust-badges-section {
-    order: 2 !important;
-    margin-top: 10px !important;
-    margin-bottom: 25px !important;
-  }
+
   
   .mobile-only-category-bubbles {
     display: block !important;
