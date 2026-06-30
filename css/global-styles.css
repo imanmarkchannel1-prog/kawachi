@@ -11688,13 +11688,7 @@ main.static-page-card .btn-primary-marquee:hover,
   cursor: default !important;
 }
 
-@media (hover: hover) {
-  .offer-card:hover {
-    transform: translateY(-3px) !important;
-    border-color: rgba(255, 107, 0, 0.3) !important;
-    box-shadow: 0 8px 24px rgba(255, 107, 0, 0.08) !important;
-  }
-}
+
 
 .offer-card-tag {
   font-size: 12px !important;
