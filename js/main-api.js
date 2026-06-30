@@ -1808,39 +1808,44 @@ window.renderHeroBanners = function(banners) {
 
 window.renderShoppableVideos = function(videos) {
   const track = document.getElementById("video-spotlight-track");
-  if (!track || !videos || !videos.length || !window.KawachiProducts) return;
+  if (!track || !videos || !videos.length) return;
 
   const cardsHtml = videos.map(videoData => {
-    const productId = parseInt(videoData.linked_product, 10);
-    if (isNaN(productId)) return "";
-
-    const product = window.KawachiProducts.find(p => p.id === productId);
-    if (!product) return "";
-
+    const productId = parseInt(videoData.linked_product, 10) || "";
     const videoSrc = videoData.video_url;
+    if (!videoSrc) return "";
+
     const influencer = videoData.influencer || "@kawachi_live";
     const title = videoData.title || "Customer Review";
+    
+    // Automatically extract YouTube thumbnails if available, otherwise use premium generic fallback
+    let thumbnail = "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=600&q=80"; 
+    if (videoSrc.includes("youtube.com") || videoSrc.includes("youtu.be")) {
+      let videoId = "";
+      if (videoSrc.includes("watch?v=")) videoId = videoSrc.split("v=")[1].split("&")[0];
+      else if (videoSrc.includes("youtu.be/")) videoId = videoSrc.split("youtu.be/")[1].split("?")[0];
+      else if (videoSrc.includes("/embed/")) videoId = videoSrc.split("/embed/")[1].split("?")[0];
+      if (videoId) thumbnail = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+    }
 
     return `
       <div class="video-card-wrap">
-        <div class="video-card" data-product-id="${product.id}" data-influencer="${influencer}" data-title="${title}" data-video-src="${videoSrc}" data-product-name="${product.name}" data-product-price="₹${product.price}" data-product-image="${product.image}">
-          <img src="${product.image}" alt="${product.name}" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;">
+        <div class="video-card" data-product-id="${productId}" data-influencer="${influencer}" data-title="${title}" data-video-src="${videoSrc}" data-product-name="Click to view details" data-product-price="" data-product-image="${thumbnail}">
+          <img src="${thumbnail}" alt="${title}" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;">
           <div class="video-play-btn-circle"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
         </div>
         <div class="video-card-caption">
-          <p class="vc-product-name">${product.name}</p>
+          <p class="vc-product-name">${title}</p>
           <span class="vc-views">
             <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-            ${title}
+            Click to watch
           </span>
         </div>
       </div>
     `;
-  }).filter(html => html).join("");
+  }).join("");
 
-  if (cardsHtml) {
-    track.insertAdjacentHTML('afterbegin', cardsHtml);
-  }
+  track.innerHTML = cardsHtml;
 };
 
 window.renderPromoBanners = function(banners) {
@@ -1992,13 +1997,19 @@ window.loadHomepageACFSettings = async function() {
         window.renderHeroBanners(formattedOptions);
       }
 
-      // Collect all shoppable videos dynamically
+      // Collect all shoppable videos dynamically from fixed slots 1 through 4 (Standard ACF)
       const dynamicVideos = [];
-      if (acfData.shoppable_videos && Array.isArray(acfData.shoppable_videos)) {
-        dynamicVideos.push(...acfData.shoppable_videos);
-      }
-      if (acfData.shoppable_video && acfData.shoppable_video.video_url) {
-        dynamicVideos.push(acfData.shoppable_video);
+      for (let i = 1; i <= 4; i++) {
+        const videoUrl = acfData[`video_${i}_url`];
+        const videoProduct = acfData[`video_${i}_product`];
+        if (videoUrl) {
+          dynamicVideos.push({
+            video_url: videoUrl,
+            linked_product: videoProduct || "",
+            title: acfData[`video_${i}_title`] || "Customer Review",
+            influencer: acfData[`video_${i}_influencer`] || "@kawachi_live"
+          });
+        }
       }
       if (dynamicVideos.length > 0) {
         window.renderShoppableVideos(dynamicVideos);
