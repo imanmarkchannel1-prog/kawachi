@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kawachi - Premium Headless WooCommerce Marketplace</title>
   <meta name="description" content="Explore a curated selection of lifestyle, wellness, home appliances, and smart gadgets at Kawachi. High-performance, premium utility shopping.">
-  <link rel="stylesheet" href="css/global-styles.css?v=6.54">
+  <link rel="stylesheet" href="css/global-styles.css?v=6.55">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@1,700;1,800&family=Bebas+Neue&family=Caveat:wght@700&family=Inter:wght@400;500;600;700;800;900&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
   <style>
@@ -1675,7 +1675,7 @@
         let slideInterval;
 
         function showSlide(index) {
-          track.style.transform = `translateX(-${index * 100}%)`;
+          track.style.setProperty("transform", `translateX(-${index * 100}%)`, "important");
           slides.forEach((slide, i) => {
             if (i === index) {
               slide.classList.add("slide-active");
@@ -1724,23 +1724,52 @@
           });
         });
 
-        // Mobile touch swipe gestures support for hero carousel
+        // Mobile touch drag & swipe support for hero carousel
         let touchStartX = 0;
+        let touchCurrentX = 0;
+        let isDragging = false;
+        let startTranslate = 0;
+
         track.addEventListener("touchstart", (e) => {
+          clearInterval(slideInterval); // Stop autoplay during drag interaction
           touchStartX = e.touches[0].clientX;
+          startTranslate = -activeIndex * track.offsetWidth;
+          // Temporarily disable transition for instant, lag-free dragging
+          track.style.setProperty("transition", "none", "important");
+          isDragging = true;
+        }, { passive: true });
+
+        track.addEventListener("touchmove", (e) => {
+          if (!isDragging) return;
+          touchCurrentX = e.touches[0].clientX;
+          const diffX = touchCurrentX - touchStartX;
+          const targetTranslate = startTranslate + diffX;
+          // Translate the track instantly as the finger moves
+          track.style.setProperty("transform", `translateX(${targetTranslate}px)`, "important");
         }, { passive: true });
 
         track.addEventListener("touchend", (e) => {
+          if (!isDragging) return;
+          isDragging = false;
+
+          // Re-enable smooth transition animation
+          track.style.setProperty("transition", "transform 0.6s cubic-bezier(0.25, 1, 0.5, 1)", "important");
+
           const touchEndX = e.changedTouches[0].clientX;
           const diffX = touchStartX - touchEndX;
-          if (Math.abs(diffX) > 40) {
+          const threshold = track.offsetWidth * 0.15; // 15% drag threshold for snapping
+
+          if (Math.abs(diffX) > threshold) {
             if (diffX > 0) {
               nextSlide();
             } else {
               prevSlide();
             }
-            startAutoplay();
+          } else {
+            // Snap back to current slide
+            showSlide(activeIndex);
           }
+          startAutoplay();
         }, { passive: true });
 
         startAutoplay();
@@ -2063,7 +2092,7 @@
     </div>
   </footer>
 
-  <script src="js/main-api.js?v=6.54"></script>
+  <script src="js/main-api.js?v=6.55"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       // General drawer controls
