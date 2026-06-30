@@ -12321,6 +12321,11 @@ html {
   }
 }
 
+/* Hide the mobile clone on desktop */
+.mobile-only-category-bubbles {
+  display: none !important;
+}
+
 /* =========================================
    Mobile Layout Reordering (CodeRabbit Request)
    ========================================= */
@@ -12346,13 +12351,27 @@ html {
     margin-bottom: 25px !important;
   }
   
-  .split-category-best-sellers-section {
+  .mobile-only-category-bubbles {
+    display: block !important;
     order: 3 !important;
     margin-bottom: 25px !important;
+    background: var(--color-bg-white) !important;
+    border-radius: 16px !important;
+    box-shadow: var(--shadow-sm) !important;
   }
   
   .discovery-grid-section {
     order: 4 !important;
+  }
+  
+  /* Push original split-category containing banners down, and hide the duplicate bubbles inside it */
+  .split-category-best-sellers-section {
+    order: 5 !important;
+  }
+  
+  .split-category-best-sellers-section .split-card-header,
+  .split-category-best-sellers-section .bubble-categories-row {
+    display: none !important;
   }
 }
 
