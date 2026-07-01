@@ -11,14 +11,14 @@ app.use(cors());
 app.use(express.json());
 
 // Clean up WOO API URL to get base WordPress path
-const apiUrl = process.env.VITE_WOO_API_URL || 'http://62.72.31.43/wp-json/wc/v3';
+const apiUrl = process.env.WOOCOMMERCE_URL || 'http://62.72.31.43/';
 const cleanBaseUrl = apiUrl.replace(/\/wp-json\/wc\/v3\/?$/, '').replace(/\/$/, '');
 
 // Initialize WooCommerce Client securely in backend environment
 const WooCommerce = new WooCommerceRestApi({
   url: cleanBaseUrl,
-  consumerKey: process.env.VITE_WOO_CONSUMER_KEY,
-  consumerSecret: process.env.VITE_WOO_CONSUMER_SECRET,
+  consumerKey: process.env.WOOCOMMERCE_CONSUMER_KEY,
+  consumerSecret: process.env.WOOCOMMERCE_CONSUMER_SECRET,
   version: 'wc/v3'
 });
 
