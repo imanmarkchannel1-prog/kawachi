@@ -1,0 +1,4 @@
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteRule ^wp-json/(.*)$ http://kawachi-wordp/wp-json/$1 [P,L]
+</IfModule>

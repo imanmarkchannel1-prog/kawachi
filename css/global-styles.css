@@ -2589,6 +2589,7 @@ ul, ol {
   gap: 24px;
   transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform;
+  min-height: 400px;
 }
 
 /* Responsive slide dimensions */
@@ -10230,6 +10231,7 @@ main.static-page-card .btn-primary-marquee:hover,
   gap: 12px !important;
   flex-grow: 1 !important;
   margin-bottom: 16px !important;
+  min-height: 400px !important;
 }
 
 .discovery-grid-item {
@@ -10719,6 +10721,7 @@ main.static-page-card .btn-primary-marquee:hover,
   flex-direction: column !important;
   gap: 20px !important;
   flex-grow: 1 !important;
+  min-height: 400px !important;
 }
 
 .split-bestseller-item {
