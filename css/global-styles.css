@@ -2589,6 +2589,7 @@ ul, ol {
   gap: 24px;
   transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform;
+  min-height: 280px;
 }
 
 /* Responsive slide dimensions */
@@ -10230,6 +10231,7 @@ main.static-page-card .btn-primary-marquee:hover,
   gap: 12px !important;
   flex-grow: 1 !important;
   margin-bottom: 16px !important;
+  min-height: 240px !important;
 }
 
 .discovery-grid-item {
@@ -10370,6 +10372,7 @@ main.static-page-card .btn-primary-marquee:hover,
   display: flex !important;
   gap: 20px !important;
   transition: transform 0.5s ease !important;
+  min-height: 280px !important;
 }
 
 .deal-product-item-card {
@@ -10719,6 +10722,7 @@ main.static-page-card .btn-primary-marquee:hover,
   flex-direction: column !important;
   gap: 20px !important;
   flex-grow: 1 !important;
+  min-height: 320px !important;
 }
 
 .split-bestseller-item {
@@ -12369,6 +12373,71 @@ html {
   .split-category-best-sellers-section .bubble-categories-row {
     display: none !important;
   }
+
+  /* Redundant vertical list is hidden on mobile, as we already have the horizontal slider below it */
+  .list-best-sellers-card {
+    display: none !important;
+  }
+
+  /* Product slider section optimizations on mobile */
+  .product-slider-section {
+    padding: 20px 16px !important;
+    border-radius: 12px !important;
+    margin-bottom: 16px !important;
+  }
+
+  /* Compact min-heights for mobile views to prevent empty gaps */
+  .product-slider-track {
+    min-height: 220px !important;
+  }
+  .deals-slider-track {
+    min-height: 220px !important;
+  }
+
+  /* Hide navigation arrows on smaller touch screens where swiping is natural */
+  .slider-arrow-btn {
+    display: none !important;
+  }
+
+  /* Grid alignment of slider section headers on mobile */
+  .sec-header-row {
+    margin-bottom: 16px !important;
+    display: grid !important;
+    grid-template-columns: 1fr auto !important;
+    gap: 4px 12px !important;
+    align-items: center !important;
+  }
+  .sec-header-row > div {
+    display: contents !important;
+  }
+  .sec-header-row .kawachi-sec-title {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    margin: 0 !important;
+    font-size: 20px !important;
+  }
+  .sec-header-row > a {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    white-space: nowrap !important;
+    align-self: center !important;
+    font-size: 13px !important;
+  }
+  .sec-header-row .kawachi-sec-desc {
+    grid-column: 1 / span 2 !important;
+    grid-row: 2 !important;
+    margin: 0 !important;
+    font-size: 12px !important;
+    line-height: 1.4 !important;
+  }
+}
+
+/* Base styling for sec-header-row on desktop */
+.sec-header-row {
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
 }
 
 
