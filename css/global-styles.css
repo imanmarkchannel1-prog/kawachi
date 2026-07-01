@@ -10372,6 +10372,7 @@ main.static-page-card .btn-primary-marquee:hover,
   display: flex !important;
   gap: 20px !important;
   transition: transform 0.5s ease !important;
+  min-height: 280px !important;
 }
 
 .deal-product-item-card {
