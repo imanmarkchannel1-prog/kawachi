@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kawachi - Premium Headless WooCommerce Marketplace</title>
   <meta name="description" content="Explore a curated selection of lifestyle, wellness, home appliances, and smart gadgets at Kawachi. High-performance, premium utility shopping.">
-  <link rel="stylesheet" href="css/global-styles.css?v=6.75">
+  <link rel="stylesheet" href="css/global-styles.css?v=6.76">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@1,700;1,800&family=Bebas+Neue&family=Caveat:wght@700&family=Inter:wght@400;500;600;700;800;900&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
   <style>
@@ -1562,29 +1562,23 @@
 
       // Hydrate Category Product Sliders
       function hydrateSliders() {
-        // 1. Best Sellers
-        const bestSellersTrack = document.getElementById("track-best-sellers");
-        if (bestSellersTrack && window.KawachiBestSellers) {
-          bestSellersTrack.innerHTML = window.KawachiBestSellers.map(p => renderCard(p, true)).join("");
+        // Helper to hydrate or hide
+        function hydrateOrHide(trackId, sectionId, dataArray) {
+          const track = document.getElementById(trackId);
+          const section = document.getElementById(sectionId);
+          if (!track) return;
+          if (dataArray && dataArray.length > 0) {
+            track.innerHTML = dataArray.map(p => renderCard(p, true)).join("");
+            if (section) section.style.display = "";
+          } else {
+            if (section) section.style.display = "none";
+          }
         }
 
-        // 2. Trending Now
-        const trendingTrack = document.getElementById("track-trending-now");
-        if (trendingTrack && window.KawachiTrendingNow) {
-          trendingTrack.innerHTML = window.KawachiTrendingNow.map(p => renderCard(p, true)).join("");
-        }
-
-        // 3. Home Furniture
-        const furnitureTrack = document.getElementById("track-home-furniture");
-        if (furnitureTrack && window.KawachiFurniture) {
-          furnitureTrack.innerHTML = window.KawachiFurniture.map(p => renderCard(p, true)).join("");
-        }
-
-        // 4. Kitchen Storage
-        const kitchenTrack = document.getElementById("track-kitchen-furniture");
-        if (kitchenTrack && window.KawachiKitchen) {
-          kitchenTrack.innerHTML = window.KawachiKitchen.map(p => renderCard(p, true)).join("");
-        }
+        hydrateOrHide("track-best-sellers", "best-sellers-section", window.KawachiBestSellers);
+        hydrateOrHide("track-trending-now", "trending-now-section", window.KawachiTrendingNow);
+        hydrateOrHide("track-home-furniture", "home-furniture", window.KawachiFurniture);
+        hydrateOrHide("track-kitchen-furniture", "kitchen-storage", window.KawachiKitchen);
       }
 
       // Hydrate 4-Box Category Discovery Grids Dynamically
@@ -1643,7 +1637,14 @@
       function hydrateDeals() {
         const dealsTrack = document.getElementById("deals-slider-track");
         const dealsList = window.KawachiBestSellers || [];
-        if (!dealsTrack || !dealsList.length) return;
+        const dealsSection = document.getElementById("deals-of-the-day");
+        
+        if (!dealsTrack || !dealsList.length) {
+          if (dealsSection) dealsSection.style.display = "none";
+          return;
+        } else {
+          if (dealsSection) dealsSection.style.display = "";
+        }
 
         dealsTrack.innerHTML = dealsList.map(p => {
           const savings = p.regular_price ? Math.round(((p.regular_price - p.price) / p.regular_price) * 100) : 0;
@@ -1670,7 +1671,14 @@
       // Hydrate Best Sellers Side List
       function hydrateBestSellersSplit() {
         const container = document.getElementById("split-best-sellers-products-container");
-        if (!container || !products.length) return;
+        const listCard = document.querySelector(".list-best-sellers-card");
+        
+        if (!container || !products.length) {
+          if (listCard) listCard.style.display = "none";
+          return;
+        } else {
+          if (listCard) listCard.style.display = "flex";
+        }
 
         const bestList = [...products].sort((a,b) => b.sales_count - a.sales_count).slice(0, 4);
         container.innerHTML = bestList.map(p => `
@@ -2227,7 +2235,7 @@
     </div>
   </footer>
 
-  <script src="js/main-api.js?v=6.75"></script>
+  <script src="js/main-api.js?v=6.76"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       // General drawer controls
