@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Search Results - Kawachi</title>
   <meta name="description" content="Search products and categories on our headless WooCommerce catalog.">
-  <link rel="stylesheet" href="css/global-styles.css?v=6.78">
+  <link rel="stylesheet" href="css/global-styles.css?v=6.79">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <style>
     body, #main-content {
@@ -22,6 +22,323 @@
     #search-summary-text span.query-highlight {
       color: #1E3E7A !important;
       font-weight: 700 !important;
+    }
+
+    /* Grid Layout for Search Area */
+    .search-layout-wrapper {
+      display: grid !important;
+      grid-template-columns: 260px 1fr !important;
+      gap: 32px !important;
+      align-items: start !important;
+      margin-top: 24px !important;
+    }
+
+    @media (max-width: 992px) {
+      .search-layout-wrapper {
+        grid-template-columns: 1fr !important;
+        gap: 24px !important;
+      }
+    }
+
+    /* Sidebar Filters Styling */
+    .search-sidebar {
+      background: #ffffff !important;
+      border: 1px solid #e2e8f0 !important;
+      border-radius: 16px !important;
+      padding: 24px !important;
+      box-shadow: var(--shadow-sm) !important;
+      position: sticky !important;
+      top: 120px !important;
+      box-sizing: border-box !important;
+    }
+    
+    @media (max-width: 992px) {
+      .search-sidebar {
+        position: static !important;
+      }
+    }
+
+    .filter-group {
+      margin-bottom: 24px !important;
+      border-bottom: 1px solid #f1f5f9 !important;
+      padding-bottom: 20px !important;
+    }
+    
+    .filter-group:last-child {
+      margin-bottom: 0 !important;
+      border-bottom: none !important;
+      padding-bottom: 0 !important;
+    }
+    
+    .filter-title {
+      font-size: 13px !important;
+      font-weight: 700 !important;
+      color: #0f172a !important;
+      margin: 0 0 14px 0 !important;
+      text-transform: uppercase !important;
+      letter-spacing: 0.5px !important;
+    }
+    
+    .filter-options {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 10px !important;
+    }
+    
+    .filter-checkbox-label {
+      display: flex !important;
+      align-items: center !important;
+      gap: 10px !important;
+      font-size: 13.5px !important;
+      color: #475569 !important;
+      cursor: pointer !important;
+      font-weight: 500 !important;
+      transition: color 0.2s ease !important;
+      user-select: none !important;
+    }
+    
+    .filter-checkbox-label:hover {
+      color: #1e3e7a !important;
+    }
+    
+    .filter-checkbox-label input[type="checkbox"] {
+      width: 16px !important;
+      height: 16px !important;
+      border-radius: 4px !important;
+      border: 1px solid #cbd5e1 !important;
+      cursor: pointer !important;
+      accent-color: #1e3e7a !important;
+      margin: 0 !important;
+    }
+    
+    /* Search inside sidebar */
+    .sidebar-search-inner {
+      display: flex !important;
+      border: 1px solid #cbd5e1 !important;
+      border-radius: 8px !important;
+      overflow: hidden !important;
+    }
+    
+    #sidebar-search-input {
+      border: none !important;
+      padding: 10px 12px !important;
+      font-size: 13.5px !important;
+      width: 100% !important;
+      outline: none !important;
+      background: #ffffff !important;
+    }
+    
+    #sidebar-search-btn {
+      background: #f8fafc !important;
+      border: none !important;
+      border-left: 1px solid #cbd5e1 !important;
+      padding: 0 14px !important;
+      cursor: pointer !important;
+      color: #64748b !important;
+      transition: background 0.2s ease, color 0.2s ease !important;
+    }
+    
+    #sidebar-search-btn:hover {
+      background: #f1f5f9 !important;
+      color: #0f172a !important;
+    }
+
+    /* Color Swatches Grid */
+    .color-swatches-grid {
+      display: grid !important;
+      grid-template-columns: repeat(5, 1fr) !important;
+      gap: 10px !important;
+    }
+    
+    .color-swatch-btn {
+      width: 28px !important;
+      height: 28px !important;
+      border-radius: 50% !important;
+      border: 1px solid rgba(0,0,0,0.08) !important;
+      cursor: pointer !important;
+      transition: all 0.2s ease !important;
+      padding: 0 !important;
+      outline: none !important;
+      box-sizing: border-box !important;
+    }
+    
+    .color-swatch-btn:hover {
+      transform: scale(1.15) !important;
+    }
+    
+    .color-swatch-btn.active {
+      transform: scale(1.15) !important;
+      box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #1E3E7A !important;
+    }
+    
+    /* Topbar Styles */
+    .search-topbar {
+      display: flex !important;
+      justify-content: space-between !important;
+      align-items: center !important;
+      background: #f8fafc !important;
+      border: 1px solid #e2e8f0 !important;
+      border-radius: 12px !important;
+      padding: 14px 20px !important;
+      margin-bottom: 24px !important;
+      gap: 12px !important;
+      flex-wrap: wrap !important;
+    }
+    
+    .results-count-lbl {
+      font-size: 14px !important;
+      font-weight: 700 !important;
+      color: #475569 !important;
+    }
+    
+    .sort-selector-wrapper {
+      display: flex !important;
+      align-items: center !important;
+      gap: 8px !important;
+    }
+    
+    .sort-selector-wrapper label {
+      font-size: 13.5px !important;
+      font-weight: 600 !important;
+      color: #475569 !important;
+    }
+    
+    .sort-dropdown-select {
+      border: 1px solid #cbd5e1 !important;
+      border-radius: 6px !important;
+      padding: 8px 12px !important;
+      font-size: 13.5px !important;
+      color: #0f172a !important;
+      outline: none !important;
+      cursor: pointer !important;
+      background: #ffffff !important;
+    }
+
+    /* Premium No Results Card */
+    .no-results-premium-card {
+      grid-column: 1 / -1 !important;
+      background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
+      border: 1px solid #e2e8f0 !important;
+      border-radius: 24px !important;
+      padding: 54px 32px !important;
+      text-align: center !important;
+      max-width: 600px !important;
+      margin: 20px auto !important;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.03) !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      box-sizing: border-box !important;
+      width: 100% !important;
+    }
+    
+    .no-results-premium-card .icon-wrap {
+      width: 72px !important;
+      height: 72px !important;
+      border-radius: 50% !important;
+      background: #eff6ff !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      margin-bottom: 24px !important;
+      color: #3b82f6 !important;
+      box-shadow: 0 8px 16px rgba(59, 130, 246, 0.08) !important;
+      animation: pulseGlow 2.5s infinite !important;
+    }
+    
+    @keyframes pulseGlow {
+      0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.2); }
+      70% { box-shadow: 0 0 0 12px rgba(59, 130, 246, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+    }
+    
+    .no-results-title {
+      font-size: 18px !important;
+      font-weight: 800 !important;
+      color: #0f172a !important;
+      margin: 0 0 24px 0 !important;
+      line-height: 1.35 !important;
+    }
+    
+    .no-results-title .highlight {
+      color: #e05e3f !important;
+    }
+    
+    /* Search Box inside No Results Card */
+    .card-search-wrapper {
+      display: flex !important;
+      max-width: 400px !important;
+      width: 100% !important;
+      border: 1px solid #cbd5e1 !important;
+      border-radius: 10px !important;
+      overflow: hidden !important;
+      box-shadow: var(--shadow-sm) !important;
+      margin-bottom: 30px !important;
+      background: #ffffff !important;
+    }
+    
+    .card-search-input {
+      flex-grow: 1 !important;
+      border: none !important;
+      padding: 12px 16px !important;
+      font-size: 14px !important;
+      outline: none !important;
+      background: #ffffff !important;
+      width: 100% !important;
+    }
+    
+    .card-search-btn {
+      border: none !important;
+      border-radius: 0 !important;
+      padding: 0 24px !important;
+      font-weight: 700 !important;
+      cursor: pointer !important;
+      background: #1e3e7a !important;
+      color: #ffffff !important;
+      font-size: 13.5px !important;
+      transition: background 0.2s ease !important;
+    }
+
+    .card-search-btn:hover {
+      background: #152b54 !important;
+    }
+    
+    .suggestions-heading {
+      font-size: 11.5px !important;
+      font-weight: 700 !important;
+      color: #64748b !important;
+      margin: 0 0 12px 0 !important;
+      text-transform: uppercase !important;
+      letter-spacing: 0.5px !important;
+    }
+    
+    .suggestions-row {
+      display: flex !important;
+      gap: 10px !important;
+      justify-content: center !important;
+      flex-wrap: wrap !important;
+      margin-bottom: 24px !important;
+    }
+    
+    .suggest-chip {
+      text-decoration: none !important;
+      background: #ffffff !important;
+      border: 1px solid #e2e8f0 !important;
+      color: #475569 !important;
+      padding: 8px 18px !important;
+      font-size: 13px !important;
+      font-weight: 600 !important;
+      border-radius: 50px !important;
+      transition: all 0.2s ease !important;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02) !important;
+    }
+    
+    .suggest-chip:hover {
+      background: #eff6ff !important;
+      border-color: #bfdbfe !important;
+      color: #1e3e7a !important;
+      transform: translateY(-1px) !important;
+      box-shadow: 0 4px 8px rgba(30, 62, 122, 0.08) !important;
     }
 
     .product-card {
@@ -236,23 +553,112 @@
     <div class="search-backdrop" id="search-backdrop"></div>
   </header>
 
-  <main id="main-content" style="padding: 40px 0; min-height: 500px;">
+  <main id="main-content" style="padding: 30px 0; min-height: 550px;">
     <div class="container">
       
-      <!-- Breadcrumb Navigation -->
-      <nav aria-label="Breadcrumb" style="margin-bottom: 24px; font-size: var(--text-xs); color: var(--color-text-muted);">
-        <a href="index.html" style="color: var(--color-text-muted); text-decoration: none;">Home</a> &gt;
-        <span style="color: var(--color-text-main);">Search Results</span>
-      </nav>
-
-      <h1 class="kawachi-sec-title" style="margin-bottom: 8px;">Search Results</h1>
-      <p class="kawachi-sec-desc" id="search-summary-text" style="margin-bottom: 32px;">Showing search results for your query...</p>
+      <h1 class="kawachi-sec-title" style="margin-bottom: 6px;">Search Results</h1>
+      <p class="kawachi-sec-desc" id="search-summary-text" style="margin-bottom: 24px;">Showing search results for your query...</p>
       
-      <div class="product-slider-wrapper" style="overflow: visible;">
-        <div id="search-results-grid" style="display: grid; gap: 24px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));">
-          <!-- Populated dynamically by script -->
+      <div class="search-layout-wrapper">
+        
+        <!-- Left Side: Sidebar Filters -->
+        <aside class="search-sidebar">
+          <!-- Search Within Results -->
+          <div class="filter-group">
+            <h4 class="filter-title">Search Within Results</h4>
+            <div class="sidebar-search-inner">
+              <input type="text" id="sidebar-search-input" placeholder="Type keywords..." aria-label="Search Within Results">
+              <button id="sidebar-search-btn" aria-label="Submit Search">
+                <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Category Filters -->
+          <div class="filter-group">
+            <h4 class="filter-title">Filter by Category</h4>
+            <div class="filter-options">
+              <label class="filter-checkbox-label">
+                <input type="checkbox" class="category-filter-chk" value="furniture"> Home Furniture
+              </label>
+              <label class="filter-checkbox-label">
+                <input type="checkbox" class="category-filter-chk" value="kitchen"> Kitchen Storage
+              </label>
+              <label class="filter-checkbox-label">
+                <input type="checkbox" class="category-filter-chk" value="decor"> Home Decor
+              </label>
+              <label class="filter-checkbox-label">
+                <input type="checkbox" class="category-filter-chk" value="beauty"> Health &amp; Beauty
+              </label>
+              <label class="filter-checkbox-label">
+                <input type="checkbox" class="category-filter-chk" value="utility"> Utility Products
+              </label>
+            </div>
+          </div>
+
+          <!-- Size Filters -->
+          <div class="filter-group">
+            <h4 class="filter-title">Filter by Size</h4>
+            <div class="filter-options">
+              <label class="filter-checkbox-label">
+                <input type="checkbox" class="size-filter-chk" value="small"> Small
+              </label>
+              <label class="filter-checkbox-label">
+                <input type="checkbox" class="size-filter-chk" value="medium"> Medium
+              </label>
+              <label class="filter-checkbox-label">
+                <input type="checkbox" class="size-filter-chk" value="large"> Large
+              </label>
+            </div>
+          </div>
+
+          <!-- Color Filters -->
+          <div class="filter-group">
+            <h4 class="filter-title">Filter by Color</h4>
+            <div class="color-swatches-grid">
+              <button class="color-swatch-btn" data-color="Red" style="background-color: #EF4444;" title="Red"></button>
+              <button class="color-swatch-btn" data-color="Blue" style="background-color: #3B82F6;" title="Blue"></button>
+              <button class="color-swatch-btn" data-color="Black" style="background-color: #1F2937;" title="Black"></button>
+              <button class="color-swatch-btn" data-color="White" style="background-color: #FFFFFF; border: 1px solid #CBD5E1;" title="White"></button>
+              <button class="color-swatch-btn" data-color="Brown" style="background-color: #78350F;" title="Brown"></button>
+              <button class="color-swatch-btn" data-color="Orange" style="background-color: #F59E0B;" title="Orange"></button>
+            </div>
+          </div>
+
+          <button class="btn btn-secondary btn-full" id="clear-all-btn" style="margin-top: 16px;">Clear All Filters</button>
+        </aside>
+        
+        <!-- Right Side: Content Area -->
+        <div class="search-content-area">
+          
+          <!-- Topbar: Sorting & Results Count -->
+          <div class="search-topbar">
+            <div class="results-count-lbl" id="results-count-lbl">0 products found</div>
+            <div class="sort-selector-wrapper">
+              <label for="sort-select">Sort By:</label>
+              <select id="sort-select" class="sort-dropdown-select">
+                <option value="popularity">Popularity (Best Sellers)</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+                <option value="size-asc">Size: Low to High</option>
+                <option value="size-desc">Size: High to Low</option>
+                <option value="name-asc">Name: A to Z</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="product-slider-wrapper" style="overflow: visible; padding: 0;">
+            <div id="search-results-grid" style="display: grid; gap: 24px; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); min-height: 400px;">
+              <!-- Populated dynamically by script -->
+            </div>
+          </div>
+
         </div>
+
       </div>
+
     </div>
   </main>
 
@@ -371,7 +777,7 @@
     </div>
   </footer>
 
-  <script src="js/main-api.js?v=6.78"></script>
+  <script src="js/main-api.js?v=6.79"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       // General drawer controls
@@ -408,7 +814,7 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", async () => {
-      // Await WooCommerce live products loading before running search filters
+      // 1. Await WooCommerce live products loading
       if (window.KawachiProductsPromise) {
         try {
           await window.KawachiProductsPromise;
@@ -424,133 +830,378 @@
       
       const summaryText = document.getElementById("search-summary-text");
       const resultsGrid = document.getElementById("search-results-grid");
+      const resultsCountLbl = document.getElementById("results-count-lbl");
       
       if (!summaryText || !resultsGrid) return;
       
-      let matches = window.KawachiProducts ? [...window.KawachiProducts] : [];
-      
+      // Filter states
+      let selectedCategories = [];
+      let selectedSizes = [];
+      let selectedColor = "";
+      let sidebarSearchQuery = "";
+      let currentSort = "popularity";
+
+      // Initialize defaults from URL params
       if (categoryParam) {
+        selectedCategories.push(categoryParam.toLowerCase());
+        const chk = document.querySelector(`.category-filter-chk[value="${categoryParam.toLowerCase()}"]`);
+        if (chk) chk.checked = true;
         summaryText.innerHTML = `Showing products in category <span class="query-highlight">"${categoryParam.replace('-', ' ')}"</span>`;
-        matches = matches.filter(p => 
-          p.category.toLowerCase().replace(/[^a-z0-9]/g, '-').includes(categoryParam.toLowerCase()) ||
-          p.category.toLowerCase().includes(categoryParam.toLowerCase())
-        );
       } else if (orderbyParam) {
+        currentSort = orderbyParam;
+        const sortSelect = document.getElementById("sort-select");
+        if (sortSelect) sortSelect.value = orderbyParam;
+        
         if (orderbyParam === "popularity") {
           summaryText.innerHTML = `Showing <span class="query-highlight">"Best Sellers"</span> catalog`;
-          matches = window.KawachiBestSellers && window.KawachiBestSellers.length > 0 ? window.KawachiBestSellers : matches.sort((a, b) => (b.sales_count || 0) - (a.sales_count || 0));
         } else if (orderbyParam === "date") {
           summaryText.innerHTML = `Showing <span class="query-highlight">"New Arrivals"</span> catalog`;
-          matches = window.KawachiTrendingNow && window.KawachiTrendingNow.length > 0 ? window.KawachiTrendingNow : matches;
         }
       } else if (query) {
         summaryText.innerHTML = `Showing search results for <span class="query-highlight">"${query}"</span>`;
-        if (query.toLowerCase() === 'ddd') {
-          matches = matches.filter(p => [101, 104, 105].includes(p.id));
-        } else {
-          matches = matches.filter(p => 
-            p.name.toLowerCase().includes(query.toLowerCase()) || 
-            p.category.toLowerCase().includes(query.toLowerCase())
-          );
-        }
+        const sidebarSearchInput = document.getElementById("sidebar-search-input");
+        if (sidebarSearchInput) sidebarSearchInput.value = query;
       } else {
         summaryText.innerHTML = "Please enter a search term in the header search box.";
-        resultsGrid.innerHTML = `
-          <div style="grid-column: 1 / -1; padding: 64px 32px; text-align: center; background: #f8fafc; border-radius: 12px; border: 1px dashed #cbd5e1; max-width: 600px; margin: 0 auto;">
-            <svg width="48" height="48" fill="none" stroke="#64748b" stroke-width="2" viewBox="0 0 24 24" style="margin: 0 auto 16px; display: block;">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-            </svg>
-            <h3 style="font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 8px;">No search term entered</h3>
-            <p style="font-size: 13.5px; color: #64748b; margin-bottom: 24px; line-height: 1.5;">Try searching for your favorite home furniture, kitchen organizers, study desks, and wellness products from the search bar above.</p>
-          </div>
-        `;
-        return;
       }
-      
-      if (matches.length === 0) {
-        resultsGrid.innerHTML = `
-          <div style="grid-column: 1 / -1; padding: 64px 32px; text-align: center; background: #f8fafc; border-radius: 12px; border: 1px dashed #cbd5e1; max-width: 600px; margin: 0 auto;">
-            <svg width="48" height="48" fill="none" stroke="#64748b" stroke-width="2" viewBox="0 0 24 24" style="margin: 0 auto 16px; display: block;">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-            </svg>
-            <h3 style="font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 8px;">No products found matching "${query}"</h3>
-            <p style="font-size: 13.5px; color: #64748b; margin-bottom: 24px; line-height: 1.5;">We couldn't find any items matching your search term. Check the spelling or try searching for another product category.</p>
-            <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
-              <a href="search.html?q=Sauna" class="btn btn-secondary" style="padding: 8px 16px; font-size: 12px; border-radius: 6px;">Sauna</a>
-              <a href="search.html?q=Desk" class="btn btn-secondary" style="padding: 8px 16px; font-size: 12px; border-radius: 6px;">Desk</a>
-              <a href="search.html?q=Chair" class="btn btn-secondary" style="padding: 8px 16px; font-size: 12px; border-radius: 6px;">Chair</a>
-              <a href="search.html?q=Rack" class="btn btn-secondary" style="padding: 8px 16px; font-size: 12px; border-radius: 6px;">Rack</a>
-            </div>
-          </div>
-        `;
-        return;
-      }
-      
-      // Render matches in the grid
-      resultsGrid.innerHTML = matches.map(p => {
-        const formattedPrice = '₹' + Number(p.price).toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
-        const formattedRegularPrice = p.regular_price ? '₹' + Number(p.regular_price).toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) : "";
-        
-        let badgeHtml = "";
-        if (p.regular_price && p.regular_price > p.price) {
-          const discountPct = Math.round(((p.regular_price - p.price) / p.regular_price) * 100);
-          badgeHtml = `<span class="product-badge sale">-${discountPct}%</span>`;
+
+      // Helper: Parse Size Weight
+      function getSizeWeight(p) {
+        if (!p.attributes) return 0;
+        const sizeAttr = p.attributes.find(a => a.name.toLowerCase() === 'size' || a.name.toLowerCase() === 'sizes');
+        if (sizeAttr && sizeAttr.options && sizeAttr.options.length > 0) {
+          const size = sizeAttr.options[0].toLowerCase();
+          if (size.includes('small') || size === 's') return 1;
+          if (size.includes('medium') || size === 'm') return 2;
+          if (size.includes('large') || size === 'l') return 3;
+          if (size.includes('xl')) return 4;
         }
+        return 0;
+      }
+
+      // Helper: Check Product Color
+      function productHasColor(p, colorName) {
+        if (!p.attributes) return false;
+        const colorAttr = p.attributes.find(a => a.name.toLowerCase() === 'color' || a.name.toLowerCase() === 'colors');
+        if (colorAttr && colorAttr.options) {
+          return colorAttr.options.some(opt => opt.toLowerCase().includes(colorName.toLowerCase()));
+        }
+        return false;
+      }
+
+      // Render: "No Results" premium card template (Without description line, added inline search & reset options)
+      function renderNoResultsCard(searchedTerm) {
+        const queryTerm = searchedTerm || query || "";
+        return `
+          <div class="no-results-premium-card">
+            <div class="icon-wrap">
+              <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+              </svg>
+            </div>
+            <h3 class="no-results-title">No products found matching <span class="highlight">"${queryTerm}"</span></h3>
+            
+            <div class="card-search-wrapper">
+              <input type="text" class="card-search-input" id="card-no-results-input" placeholder="Try searching something else...">
+              <button class="card-search-btn" id="card-no-results-btn">Search</button>
+            </div>
+
+            <p class="suggestions-heading">Try exploring popular terms</p>
+            <div class="suggestions-row">
+              <a href="search.html?q=Sauna" class="suggest-chip">Sauna</a>
+              <a href="search.html?q=Desk" class="suggest-chip">Desk</a>
+              <a href="search.html?q=Chair" class="suggest-chip">Chair</a>
+              <a href="search.html?q=Rack" class="suggest-chip">Rack</a>
+            </div>
+            
+            <button class="btn btn-secondary reset-filters-btn" id="card-reset-filters-btn">Reset All Filters</button>
+          </div>
+        `;
+      }
+
+      // Render: Products Grid HTML
+      function renderProductsList(productsList) {
+        return productsList.map(p => {
+          const formattedPrice = '₹' + Number(p.price).toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+          const formattedRegularPrice = p.regular_price ? '₹' + Number(p.regular_price).toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) : "";
+          
+          let badgeHtml = "";
+          if (p.regular_price && p.regular_price > p.price) {
+            const discountPct = Math.round(((p.regular_price - p.price) / p.regular_price) * 100);
+            badgeHtml = `<span class="product-badge sale">-${discountPct}%</span>`;
+          }
+          
+          const ratingVal = parseFloat(p.rating) || 4.6;
+          let starsHtml = "";
+          for (let i = 1; i <= 5; i++) {
+            if (ratingVal >= i) {
+              starsHtml += `<svg width="13" height="13" fill="#DE7921" viewBox="0 0 20 20" style="display: inline-block; margin-right: 1px;"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>`;
+            } else {
+              starsHtml += `<svg width="13" height="13" fill="#E5E7EB" viewBox="0 0 20 20" style="display: inline-block; margin-right: 1px;"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>`;
+            }
+          }
+          
+          const ratingHtml = p.rating ? `
+            <div class="product-rating" style="display: flex; align-items: center; gap: 4px; margin-bottom: 6px;">
+              <div style="display: flex; align-items: center;">${starsHtml}</div>
+              <span style="font-size: 11px; font-weight: 700; color: var(--color-text-muted); margin-left: 2px;">${p.rating}</span>
+            </div>
+          ` : "";
+          
+          const salesCount = p.sales_count || p.orders_count || 0;
+          const salesHtml = salesCount > 0 ? `
+            <div class="product-sales-badge" style="margin-top: 4px; font-size: 11px; color: #475569; display: flex; align-items: center; gap: 4px; margin-bottom: 8px;">
+              <svg fill="currentColor" viewBox="0 0 20 20" style="width: 12px; height: 12px; color: #3B82F6; display: inline-block;">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+              </svg>
+              <span>${salesCount.toLocaleString('en-IN')}+ bought</span>
+            </div>
+          ` : "";
+          
+          return `
+            <article class="product-card" style="display: flex; flex-direction: column;">
+              <a href="single-product.html?id=${p.id}" style="text-decoration: none; color: inherit; display: flex; flex-direction: column; height: 100%;">
+                <div class="product-image-container">
+                  ${badgeHtml}
+                  <img src="${p.image}" alt="${p.name}" class="product-image" loading="lazy">
+                </div>
+                <div class="product-info" style="flex-grow: 1; display: flex; flex-direction: column;">
+                  <span class="product-category">${p.category}</span>
+                  <h3 class="product-title" style="margin-bottom: 8px;">${p.name}</h3>
+                  ${ratingHtml}
+                  ${salesHtml}
+                  <div class="product-price-row" style="margin-top: auto; padding-top: 8px;">
+                    <span class="price-current">${formattedPrice}</span>
+                    ${p.regular_price && p.regular_price > p.price ? `<span class="price-old">${formattedRegularPrice}</span>` : ""}
+                  </div>
+                </div>
+              </a>
+              <div style="padding: 0 16px 16px 16px; margin-top: auto;">
+                <button class="btn btn-primary btn-full add-to-cart-quick" data-id="${p.id}" data-name="${p.name}" data-price="${p.price}">
+                  Add to Cart
+                </button>
+              </div>
+            </article>
+          `;
+        }).join("");
+      }
+
+      // Filter and Sort Engine
+      function filterAndSortEngine() {
+        let items = window.KawachiProducts ? [...window.KawachiProducts] : [];
         
-        // Dynamic stars rendering with premium Warning color (#DE7921)
-        const ratingVal = parseFloat(p.rating) || 4.6;
-        let starsHtml = "";
-        for (let i = 1; i <= 5; i++) {
-          if (ratingVal >= i) {
-            starsHtml += `<svg width="13" height="13" fill="#DE7921" viewBox="0 0 20 20" style="display: inline-block; margin-right: 1px;"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>`;
+        // 1. Filter by search query (URL parameters or sidebar keyword)
+        const currentSearchText = sidebarSearchQuery || query;
+        if (currentSearchText) {
+          if (currentSearchText.toLowerCase() === 'ddd') {
+            items = items.filter(p => [101, 104, 105].includes(p.id));
           } else {
-            starsHtml += `<svg width="13" height="13" fill="#E5E7EB" viewBox="0 0 20 20" style="display: inline-block; margin-right: 1px;"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>`;
+            items = items.filter(p => 
+              p.name.toLowerCase().includes(currentSearchText.toLowerCase()) || 
+              p.category.toLowerCase().includes(currentSearchText.toLowerCase())
+            );
           }
         }
+
+        // 2. Filter by Category checkbox array
+        if (selectedCategories.length > 0) {
+          items = items.filter(p => {
+            const productCatSlug = p.category.toLowerCase().replace(/[^a-z0-9]/g, '-');
+            return selectedCategories.some(cat => productCatSlug.includes(cat) || p.category.toLowerCase().includes(cat));
+          });
+        }
+
+        // 3. Filter by Size checkbox array
+        if (selectedSizes.length > 0) {
+          items = items.filter(p => {
+            if (!p.attributes) return false;
+            const sizeAttr = p.attributes.find(a => a.name.toLowerCase() === 'size' || a.name.toLowerCase() === 'sizes');
+            if (sizeAttr && sizeAttr.options) {
+              return sizeAttr.options.some(opt => selectedSizes.includes(opt.toLowerCase()));
+            }
+            return false;
+          });
+        }
+
+        // 4. Filter by Color swatch selection
+        if (selectedColor) {
+          items = items.filter(p => productHasColor(p, selectedColor));
+        }
+
+        // 5. Apply sorting algorithms
+        if (currentSort === "popularity") {
+          // Check for Best Sellers array first to maintain pre-calculated order from homepage options
+          if (!sidebarSearchQuery && !query && !categoryParam && window.KawachiBestSellers && window.KawachiBestSellers.length > 0) {
+            items = [...window.KawachiBestSellers];
+          } else {
+            items.sort((a, b) => (b.sales_count || 0) - (a.sales_count || 0));
+          }
+        } else if (currentSort === "price-asc") {
+          items.sort((a, b) => a.price - b.price);
+        } else if (currentSort === "price-desc") {
+          items.sort((a, b) => b.price - a.price);
+        } else if (currentSort === "size-asc") {
+          items.sort((a, b) => getSizeWeight(a) - getSizeWeight(b));
+        } else if (currentSort === "size-desc") {
+          items.sort((a, b) => getSizeWeight(b) - getSizeWeight(a));
+        } else if (currentSort === "name-asc") {
+          items.sort((a, b) => a.name.localeCompare(b.name));
+        }
+
+        // Update count labels
+        if (resultsCountLbl) {
+          resultsCountLbl.textContent = `${items.length} product${items.length === 1 ? '' : 's'} found`;
+        }
+
+        // Render to grid
+        if (items.length === 0) {
+          resultsGrid.innerHTML = renderNoResultsCard(currentSearchText);
+          attachNoResultsCardListeners();
+        } else {
+          resultsGrid.innerHTML = renderProductsList(items);
+        }
+      }
+
+      // Listeners: Setup for sidebar widgets
+      function setupSidebarListeners() {
+        // 1. Sidebar Search Input Handler
+        const sidebarSearchInput = document.getElementById("sidebar-search-input");
+        const sidebarSearchBtn = document.getElementById("sidebar-search-btn");
         
-        const ratingHtml = p.rating ? `
-          <div class="product-rating" style="display: flex; align-items: center; gap: 4px; margin-bottom: 6px;">
-            <div style="display: flex; align-items: center;">${starsHtml}</div>
-            <span style="font-size: 11px; font-weight: 700; color: var(--color-text-muted); margin-left: 2px;">${p.rating}</span>
-          </div>
-        ` : "";
+        function triggerSidebarSearch() {
+          if (sidebarSearchInput) {
+            sidebarSearchQuery = sidebarSearchInput.value.trim();
+            if (sidebarSearchQuery) {
+              summaryText.innerHTML = `Showing search results for <span class="query-highlight">"${sidebarSearchQuery}"</span>`;
+            } else {
+              summaryText.innerHTML = `Showing all products`;
+            }
+            filterAndSortEngine();
+          }
+        }
+
+        if (sidebarSearchInput) {
+          sidebarSearchInput.addEventListener("keyup", (e) => {
+            if (e.key === "Enter") triggerSidebarSearch();
+          });
+        }
+        if (sidebarSearchBtn) {
+          sidebarSearchBtn.addEventListener("click", triggerSidebarSearch);
+        }
+
+        // 2. Category Checkboxes
+        const categoryCheckboxes = document.querySelectorAll(".category-filter-chk");
+        categoryCheckboxes.forEach(chk => {
+          chk.addEventListener("change", () => {
+            selectedCategories = Array.from(categoryCheckboxes)
+              .filter(c => c.checked)
+              .map(c => c.value);
+            filterAndSortEngine();
+          });
+        });
+
+        // 3. Size Checkboxes
+        const sizeCheckboxes = document.querySelectorAll(".size-filter-chk");
+        sizeCheckboxes.forEach(chk => {
+          chk.addEventListener("change", () => {
+            selectedSizes = Array.from(sizeCheckboxes)
+              .filter(c => c.checked)
+              .map(c => c.value);
+            filterAndSortEngine();
+          });
+        });
+
+        // 4. Color Swatches Toggle
+        const colorSwatches = document.querySelectorAll(".color-swatch-btn");
+        colorSwatches.forEach(btn => {
+          btn.addEventListener("click", () => {
+            const swatchColor = btn.getAttribute("data-color");
+            if (btn.classList.contains("active")) {
+              btn.classList.remove("active");
+              selectedColor = "";
+            } else {
+              colorSwatches.forEach(b => b.classList.remove("active"));
+              btn.classList.add("active");
+              selectedColor = swatchColor;
+            }
+            filterAndSortEngine();
+          });
+        });
+
+        // 5. Sorting select dropdown
+        const sortSelect = document.getElementById("sort-select");
+        if (sortSelect) {
+          sortSelect.addEventListener("change", (e) => {
+            currentSort = e.target.value;
+            filterAndSortEngine();
+          });
+        }
+
+        // 6. Clear All Filters
+        const clearAllBtn = document.getElementById("clear-all-btn");
+        if (clearAllBtn) {
+          clearAllBtn.addEventListener("click", () => {
+            resetAllFilters();
+          });
+        }
+      }
+
+      // Reset utility
+      function resetAllFilters() {
+        selectedCategories = [];
+        selectedSizes = [];
+        selectedColor = "";
+        sidebarSearchQuery = "";
         
-        const salesCount = p.sales_count || p.orders_count || 0;
-        const salesHtml = salesCount > 0 ? `
-          <div class="product-sales-badge" style="margin-top: 4px; font-size: 11px; color: #475569; display: flex; align-items: center; gap: 4px; margin-bottom: 8px;">
-            <svg fill="currentColor" viewBox="0 0 20 20" style="width: 12px; height: 12px; color: #3B82F6; display: inline-block;">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-            </svg>
-            <span>${salesCount.toLocaleString('en-IN')}+ bought</span>
-          </div>
-        ` : "";
+        // Reset checkbox DOM states
+        document.querySelectorAll(".category-filter-chk").forEach(c => c.checked = false);
+        document.querySelectorAll(".size-filter-chk").forEach(c => c.checked = false);
+        document.querySelectorAll(".color-swatch-btn").forEach(c => c.classList.remove("active"));
         
-        return `
-          <article class="product-card" style="display: flex; flex-direction: column;">
-            <a href="single-product.html?id=${p.id}" style="text-decoration: none; color: inherit; display: flex; flex-direction: column; height: 100%;">
-              <div class="product-image-container">
-                ${badgeHtml}
-                <img src="${p.image}" alt="${p.name}" class="product-image" loading="lazy">
-              </div>
-              <div class="product-info" style="flex-grow: 1; display: flex; flex-direction: column;">
-                <span class="product-category">${p.category}</span>
-                <h3 class="product-title" style="margin-bottom: 8px;">${p.name}</h3>
-                ${ratingHtml}
-                ${salesHtml}
-                <div class="product-price-row" style="margin-top: auto; padding-top: 8px;">
-                  <span class="price-current">${formattedPrice}</span>
-                  ${p.regular_price && p.regular_price > p.price ? `<span class="price-old">${formattedRegularPrice}</span>` : ""}
-                </div>
-              </div>
-            </a>
-            <div style="padding: 0 16px 16px 16px; margin-top: auto;">
-              <button class="btn btn-primary btn-full add-to-cart-quick" data-id="${p.id}" data-name="${p.name}" data-price="${p.price}">
-                Add to Cart
-              </button>
-            </div>
-          </article>
-        `;
-      }).join("");
+        const sidebarSearchInput = document.getElementById("sidebar-search-input");
+        if (sidebarSearchInput) sidebarSearchInput.value = "";
+        
+        summaryText.innerHTML = query ? `Showing search results for <span class="query-highlight">"${query}"</span>` : `Showing all products`;
+        
+        filterAndSortEngine();
+      }
+
+      // Listeners inside premium "No Results" Card
+      function attachNoResultsCardListeners() {
+        const cardSearchInput = document.getElementById("card-no-results-input");
+        const cardSearchBtn = document.getElementById("card-no-results-btn");
+        const cardResetFiltersBtn = document.getElementById("card-reset-filters-btn");
+
+        function triggerCardSearchAction() {
+          if (cardSearchInput) {
+            const val = cardSearchInput.value.trim();
+            if (val) {
+              sidebarSearchQuery = val;
+              const sidebarSearchInput = document.getElementById("sidebar-search-input");
+              if (sidebarSearchInput) sidebarSearchInput.value = val;
+              summaryText.innerHTML = `Showing search results for <span class="query-highlight">"${val}"</span>`;
+              filterAndSortEngine();
+            }
+          }
+        }
+
+        if (cardSearchInput) {
+          cardSearchInput.addEventListener("keyup", (e) => {
+            if (e.key === "Enter") triggerCardSearchAction();
+          });
+          cardSearchInput.focus();
+        }
+        if (cardSearchBtn) {
+          cardSearchBtn.addEventListener("click", triggerCardSearchAction);
+        }
+        if (cardResetFiltersBtn) {
+          cardResetFiltersBtn.addEventListener("click", resetAllFilters);
+        }
+      }
+
+      // Execute on page load
+      setupSidebarListeners();
+      filterAndSortEngine();
     });
   </script>
 </body>
