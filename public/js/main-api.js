@@ -8,6 +8,122 @@
 // ==========================================================================
 // WooCommerce Live Catalog Integration Layer (v6.20)
 // ==========================================================================
+const MOCK_CATALOG = [
+  {
+    id: 101,
+    name: 'Foldable Laptop Study Table',
+    price: 1690,
+    regular_price: 2490,
+    category: 'Home Furniture',
+    image: 'images/products/laptop_desk.png',
+    images: [{ src: 'images/products/laptop_desk.png' }],
+    rating: '4.8',
+    reviews: '128',
+    sales_count: 1450,
+    description: 'Ultra-portable and space-saving folding table.'
+  },
+  {
+    id: 102,
+    name: '3 Tier Kitchen Storage Rack',
+    price: 2099,
+    regular_price: 3499,
+    category: 'Kitchen Storage',
+    image: 'images/products/kitchen_rack.png',
+    images: [{ src: 'images/products/kitchen_rack.png' }],
+    rating: '4.7',
+    reviews: '96',
+    sales_count: 850,
+    description: 'Multi-functional kitchen shelves organizer.'
+  },
+  {
+    id: 103,
+    name: 'Adjustable Sofa Couch',
+    price: 8499,
+    regular_price: 12999,
+    category: 'Home Furniture',
+    image: 'images/products/sofa_couch.png',
+    images: [{ src: 'images/products/sofa_couch.png' }],
+    rating: '4.6',
+    reviews: '64',
+    sales_count: 320,
+    description: 'Comfortable and fully adjustable multi-position sofa.'
+  },
+  {
+    id: 104,
+    name: 'Portable Steam Sauna Box',
+    price: 6799,
+    regular_price: 9999,
+    category: 'Wellness',
+    image: 'images/products/steam_sauna.png',
+    images: [{ src: 'images/products/steam_sauna.png' }],
+    rating: '4.9',
+    reviews: '210',
+    sales_count: 1890,
+    description: 'Personal home steam spa box for relaxation.'
+  },
+  {
+    id: 105,
+    name: 'Meditation Floor Chair',
+    price: 2099,
+    regular_price: 2999,
+    category: 'Home Furniture',
+    image: 'images/products/meditation_chair.png',
+    images: [{ src: 'images/products/meditation_chair.png' }],
+    rating: '4.8',
+    reviews: '142',
+    sales_count: 950,
+    description: 'Ergonomic floor seating for home posture support.'
+  },
+  {
+    id: 106,
+    name: 'Compact Fabric Wardrobe',
+    price: 3299,
+    regular_price: 4999,
+    category: 'Utility Products',
+    image: 'images/products/wardrobe.png',
+    images: [{ src: 'images/products/wardrobe.png' }],
+    rating: '4.5',
+    reviews: '88',
+    sales_count: 420,
+    description: 'Spacious and strong fabric cabinet closet organizer.'
+  },
+  {
+    id: 107,
+    name: 'Luxury Recliner Chair',
+    price: 12999,
+    regular_price: 19999,
+    category: 'Home Furniture',
+    image: 'images/products/recliner.png',
+    images: [{ src: 'images/products/recliner.png' }],
+    rating: '4.9',
+    reviews: '105',
+    sales_count: 510,
+    description: 'Premium single seater lounge recliner sofa.'
+  },
+  {
+    id: 108,
+    name: 'Bedside Table with Charging',
+    price: 4199,
+    regular_price: 5999,
+    category: 'Home Furniture',
+    image: 'images/products/bedside_table.png',
+    images: [{ src: 'images/products/bedside_table.png' }],
+    rating: '4.7',
+    reviews: '74',
+    sales_count: 310,
+    description: 'Smart bedside drawer with built-in USB outlets.'
+  }
+];
+
+function loadMockCatalogFallback() {
+  window.KawachiBestSellers = MOCK_CATALOG.filter(p => p.sales_count > 400).sort((a,b) => b.sales_count - a.sales_count);
+  window.KawachiTrendingNow = MOCK_CATALOG.filter(p => p.id !== 103).slice(0, 8);
+  window.KawachiFurniture = MOCK_CATALOG.filter(p => p.category === 'Home Furniture');
+  window.KawachiKitchen = MOCK_CATALOG.filter(p => p.category === 'Kitchen Storage');
+  window.KawachiProducts = [...MOCK_CATALOG];
+  return MOCK_CATALOG;
+}
+
 async function loadLiveWooCommerceProducts() {
   try {
     const client = new WooCommerceClient({
@@ -63,6 +179,11 @@ async function loadLiveWooCommerceProducts() {
     const furniture = furnitureRaw.map(mapWooProduct);
     const kitchen = kitchenRaw.map(mapWooProduct);
 
+    if (!bestSellers.length && !trendingNow.length) {
+      console.warn("[WooCommerce REST Client] API resolved with no catalog data. Invoking mock catalog fallback.");
+      return loadMockCatalogFallback();
+    }
+
     // Save specific rows globally
     window.KawachiBestSellers = bestSellers;
     window.KawachiTrendingNow = trendingNow;
@@ -85,9 +206,8 @@ async function loadLiveWooCommerceProducts() {
     console.log(`[WooCommerce REST Client] Loaded dynamic product rows successfully. Unique count: ${uniqueProducts.length}`);
     return uniqueProducts;
   } catch (error) {
-    console.error('[WooCommerce REST Client] Dynamic loading failed:', error);
-    window.KawachiProducts = [];
-    return [];
+    console.error('[WooCommerce REST Client] Dynamic loading failed. Using fallback catalog:', error);
+    return loadMockCatalogFallback();
   }
 }
 

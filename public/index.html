@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kawachi - Premium Headless WooCommerce Marketplace</title>
   <meta name="description" content="Explore a curated selection of lifestyle, wellness, home appliances, and smart gadgets at Kawachi. High-performance, premium utility shopping.">
-  <link rel="stylesheet" href="css/global-styles.css?v=6.82">
+  <link rel="stylesheet" href="css/global-styles.css?v=6.83">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@1,700;1,800&family=Bebas+Neue&family=Caveat:wght@700&family=Inter:wght@400;500;600;700;800;900&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
   <style>
@@ -978,7 +978,7 @@
       </div>
       <div class="split-card-body" style="padding: 0 20px 24px 20px;">
         <div class="bubble-categories-row">
-          <a href="search.html?q=Chair" class="bubble-category-item">
+          <a href="search.html?q=Sofa+Chair" class="bubble-category-item">
             <div class="bubble-image-wrap"><div class="bubble-image-inner"><img src="images/products/meditation_chair.png" alt="Sofa &amp; Chairs"></div></div>
             <span class="bubble-name">Sofa &amp; Chairs</span>
           </a>
@@ -986,7 +986,7 @@
             <div class="bubble-image-wrap"><div class="bubble-image-inner"><img src="images/products/laptop_desk.png" alt="Tables"></div></div>
             <span class="bubble-name">Tables</span>
           </a>
-          <a href="search.html?category=kitchen-storage" class="bubble-category-item">
+          <a href="search.html?q=Rack" class="bubble-category-item">
             <div class="bubble-image-wrap"><div class="bubble-image-inner"><img src="images/products/kitchen_rack.png" alt="Storage Racks"></div></div>
             <span class="bubble-name">Storage Racks</span>
           </a>
@@ -1011,7 +1011,7 @@
             <div class="bubble-categories-row">
               
               <!-- Category Bubble 1 -->
-              <a href="search.html?q=Chair" class="bubble-category-item">
+              <a href="search.html?q=Sofa+Chair" class="bubble-category-item">
                 <div class="bubble-image-wrap">
                   <div class="bubble-image-inner">
                     <img src="images/products/meditation_chair.png" alt="Sofa &amp; Chairs">
@@ -1031,7 +1031,7 @@
               </a>
 
               <!-- Category Bubble 3 -->
-              <a href="search.html?category=kitchen-storage" class="bubble-category-item">
+              <a href="search.html?q=Rack" class="bubble-category-item">
                 <div class="bubble-image-wrap">
                   <div class="bubble-image-inner">
                     <img src="images/products/kitchen_rack.png" alt="Storage Racks">
@@ -1910,7 +1910,7 @@
         startAutoplay();
       }
 
-      // Deals of the Day Slow Auto-Slider Setup (transitions every 5 seconds)
+      // Deals of the Day Slow Auto-Slider Setup (transitions every 5 seconds + click-and-drag scroll)
       function initDealsSlider() {
         const track = document.getElementById("deals-slider-track");
         const prevBtn = document.getElementById("deals-prev-btn");
@@ -1919,6 +1919,10 @@
 
         let currentIndex = 0;
         let dealsInterval;
+        let isDown = false;
+        let startX = 0;
+        let startTranslate = 0;
+        let currentTranslate = 0;
 
         function getVisibleDeals() {
           const w = window.innerWidth;
@@ -1933,14 +1937,25 @@
           return Math.max(0, cards.length - getVisibleDeals());
         }
 
-        function updateSlider() {
+        function getCardWidth() {
           const cards = track.querySelectorAll(".deal-product-item-card");
-          if (cards.length === 0) return;
-          const cardWidth = cards[0].getBoundingClientRect().width;
+          if (cards.length === 0) return 0;
+          return cards[0].getBoundingClientRect().width;
+        }
+
+        function getTranslationForIndex(idx) {
+          const cardWidth = getCardWidth();
           const isMobile = window.innerWidth < 768;
           const gap = isMobile ? 12 : 20;
-          const translation = currentIndex * (cardWidth + gap);
-          track.style.transform = `translateX(-${translation}px)`;
+          return idx * (cardWidth + gap);
+        }
+
+        function updateSlider(useTransition = true) {
+          track.style.transition = useTransition ? "transform 0.5s ease" : "none";
+          const maxIdx = getMaxIndex();
+          currentIndex = Math.max(0, Math.min(currentIndex, maxIdx));
+          currentTranslate = -getTranslationForIndex(currentIndex);
+          track.style.transform = `translateX(${currentTranslate}px)`;
         }
 
         function autoSlideNext() {
@@ -1950,12 +1965,16 @@
           } else {
             currentIndex++;
           }
-          updateSlider();
+          updateSlider(true);
         }
 
         function startAutoDeals() {
           clearInterval(dealsInterval);
           dealsInterval = setInterval(autoSlideNext, 5000);
+        }
+
+        function stopAutoDeals() {
+          clearInterval(dealsInterval);
         }
 
         if (nextBtn) nextBtn.addEventListener("click", () => {
@@ -1965,7 +1984,7 @@
           } else {
             currentIndex = 0;
           }
-          updateSlider();
+          updateSlider(true);
           startAutoDeals();
         });
 
@@ -1975,34 +1994,69 @@
           } else {
             currentIndex = getMaxIndex();
           }
-          updateSlider();
+          updateSlider(true);
           startAutoDeals();
         });
 
         window.addEventListener("resize", () => {
           currentIndex = Math.min(currentIndex, getMaxIndex());
-          updateSlider();
+          updateSlider(false);
         });
 
-        // Mobile touch swipe gestures support
-        let startX = 0;
-        track.addEventListener("touchstart", (e) => {
-          startX = e.touches[0].clientX;
-        }, { passive: true });
-        track.addEventListener("touchend", (e) => {
-          const endX = e.changedTouches[0].clientX;
-          const diffX = startX - endX;
-          if (Math.abs(diffX) > 40) {
-            if (diffX > 0) {
-              if (nextBtn) nextBtn.click();
-            } else {
-              if (prevBtn) prevBtn.click();
-            }
-          }
-        }, { passive: true });
+        // Mouse Drag / Touch Swipe using CSS Transform
+        const getEventX = (e) => e.touches ? e.touches[0].clientX : e.clientX;
+
+        const startDrag = (e) => {
+          isDown = true;
+          track.style.cursor = "grabbing";
+          startX = getEventX(e);
+          startTranslate = currentTranslate;
+          stopAutoDeals();
+          track.style.transition = "none";
+        };
+
+        const moveDrag = (e) => {
+          if (!isDown) return;
+          if (!e.touches) e.preventDefault();
+          const currentX = getEventX(e);
+          const diffX = currentX - startX;
+          currentTranslate = startTranslate + diffX;
+          
+          // Constrain drag boundaries with basic spring physics elastic overflow
+          const maxTranslate = 0;
+          const minTranslate = -getTranslationForIndex(getMaxIndex());
+          currentTranslate = Math.max(minTranslate - 60, Math.min(maxTranslate + 60, currentTranslate));
+          
+          track.style.transform = `translateX(${currentTranslate}px)`;
+        };
+
+        const endDrag = (e) => {
+          if (!isDown) return;
+          isDown = false;
+          track.style.cursor = "grab";
+          
+          // Snap track to the closest product item card boundary
+          const cardWidth = getCardWidth();
+          const isMobile = window.innerWidth < 768;
+          const gap = isMobile ? 12 : 20;
+          const step = cardWidth + gap;
+          
+          currentIndex = Math.round(-currentTranslate / step);
+          updateSlider(true);
+          startAutoDeals();
+        };
+
+        track.style.cursor = "grab";
+        track.addEventListener("mousedown", startDrag);
+        window.addEventListener("mousemove", moveDrag);
+        window.addEventListener("mouseup", endDrag);
+
+        track.addEventListener("touchstart", startDrag, { passive: true });
+        track.addEventListener("touchmove", moveDrag, { passive: false });
+        track.addEventListener("touchend", endDrag, { passive: true });
 
         startAutoDeals();
-        setTimeout(updateSlider, 200);
+        setTimeout(() => updateSlider(false), 200);
       }
 
       // Standard Product sliders setup
@@ -2227,7 +2281,7 @@
     </div>
   </footer>
 
-  <script src="js/main-api.js?v=6.82"></script>
+  <script src="js/main-api.js?v=6.83"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       // General drawer controls
@@ -2371,7 +2425,43 @@
         track.style.cursor = "grab";
       }
       
-      // 2. Hover play/pause preview disabled (using high-quality static thumbnail preview)
+      // 2. Hover play/pause preview (using pointer-events free iframe preview)
+      const hoverCards = document.querySelectorAll(".video-card");
+      hoverCards.forEach(card => {
+        let hoverIframe = null;
+
+        card.addEventListener("mouseenter", () => {
+          const videoSrc = card.getAttribute("data-video-src");
+          if (videoSrc) {
+            let embedUrl = videoSrc;
+            if (embedUrl.includes("youtube.com") || embedUrl.includes("youtu.be") || embedUrl.includes("/embed/")) {
+              if (!embedUrl.includes("autoplay=")) {
+                const separator = embedUrl.includes("?") ? "&" : "?";
+                embedUrl = `${embedUrl}${separator}autoplay=1&mute=1&loop=1&controls=0&modestbranding=1&rel=0`;
+              }
+            }
+            
+            const img = card.querySelector("img");
+            if (img) img.style.opacity = "0";
+
+            if (!hoverIframe) {
+              hoverIframe = document.createElement("iframe");
+              hoverIframe.src = embedUrl;
+              hoverIframe.style.cssText = "position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; z-index: 5; pointer-events: none; object-fit: cover; border-radius: 12px;";
+              card.appendChild(hoverIframe);
+            }
+          }
+        });
+
+        card.addEventListener("mouseleave", () => {
+          if (hoverIframe) {
+            hoverIframe.remove();
+            hoverIframe = null;
+          }
+          const img = card.querySelector("img");
+          if (img) img.style.opacity = "1";
+        });
+      });
 
       // 3. Click to open modal popup and play (using event delegation to support dynamic shoppable video additions)
       document.addEventListener("click", (e) => {

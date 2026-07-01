@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Search Results - Kawachi</title>
   <meta name="description" content="Search products and categories on our headless WooCommerce catalog.">
-  <link rel="stylesheet" href="css/global-styles.css?v=6.82">
+  <link rel="stylesheet" href="css/global-styles.css?v=6.83">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <style>
     body, #main-content {
@@ -706,7 +706,7 @@
     </div>
   </footer>
 
-  <script src="js/main-api.js?v=6.82"></script>
+  <script src="js/main-api.js?v=6.83"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       // General drawer controls
@@ -878,9 +878,12 @@
           if (query.toLowerCase() === 'ddd') {
             items = items.filter(p => [101, 104, 105].includes(p.id));
           } else {
+            const queryWords = query.toLowerCase().split(/\s+/).filter(Boolean);
             items = items.filter(p => 
-              p.name.toLowerCase().includes(query.toLowerCase()) || 
-              p.category.toLowerCase().includes(query.toLowerCase())
+              queryWords.some(word => 
+                p.name.toLowerCase().includes(word) || 
+                p.category.toLowerCase().includes(word)
+              )
             );
           }
         }
