@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Search Results - Kawachi</title>
   <meta name="description" content="Search products and categories on our headless WooCommerce catalog.">
-  <link rel="stylesheet" href="css/global-styles.css?v=6.79">
+  <link rel="stylesheet" href="css/global-styles.css?v=6.80">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <style>
     body, #main-content {
@@ -559,104 +559,22 @@
       <h1 class="kawachi-sec-title" style="margin-bottom: 6px;">Search Results</h1>
       <p class="kawachi-sec-desc" id="search-summary-text" style="margin-bottom: 24px;">Showing search results for your query...</p>
       
-      <div class="search-layout-wrapper">
-        
-        <!-- Left Side: Sidebar Filters -->
-        <aside class="search-sidebar">
-          <!-- Search Within Results -->
-          <div class="filter-group">
-            <h4 class="filter-title">Search Within Results</h4>
-            <div class="sidebar-search-inner">
-              <input type="text" id="sidebar-search-input" placeholder="Type keywords..." aria-label="Search Within Results">
-              <button id="sidebar-search-btn" aria-label="Submit Search">
-                <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                </svg>
-              </button>
-            </div>
-          </div>
-
-          <!-- Category Filters -->
-          <div class="filter-group">
-            <h4 class="filter-title">Filter by Category</h4>
-            <div class="filter-options">
-              <label class="filter-checkbox-label">
-                <input type="checkbox" class="category-filter-chk" value="furniture"> Home Furniture
-              </label>
-              <label class="filter-checkbox-label">
-                <input type="checkbox" class="category-filter-chk" value="kitchen"> Kitchen Storage
-              </label>
-              <label class="filter-checkbox-label">
-                <input type="checkbox" class="category-filter-chk" value="decor"> Home Decor
-              </label>
-              <label class="filter-checkbox-label">
-                <input type="checkbox" class="category-filter-chk" value="beauty"> Health &amp; Beauty
-              </label>
-              <label class="filter-checkbox-label">
-                <input type="checkbox" class="category-filter-chk" value="utility"> Utility Products
-              </label>
-            </div>
-          </div>
-
-          <!-- Size Filters -->
-          <div class="filter-group">
-            <h4 class="filter-title">Filter by Size</h4>
-            <div class="filter-options">
-              <label class="filter-checkbox-label">
-                <input type="checkbox" class="size-filter-chk" value="small"> Small
-              </label>
-              <label class="filter-checkbox-label">
-                <input type="checkbox" class="size-filter-chk" value="medium"> Medium
-              </label>
-              <label class="filter-checkbox-label">
-                <input type="checkbox" class="size-filter-chk" value="large"> Large
-              </label>
-            </div>
-          </div>
-
-          <!-- Color Filters -->
-          <div class="filter-group">
-            <h4 class="filter-title">Filter by Color</h4>
-            <div class="color-swatches-grid">
-              <button class="color-swatch-btn" data-color="Red" style="background-color: #EF4444;" title="Red"></button>
-              <button class="color-swatch-btn" data-color="Blue" style="background-color: #3B82F6;" title="Blue"></button>
-              <button class="color-swatch-btn" data-color="Black" style="background-color: #1F2937;" title="Black"></button>
-              <button class="color-swatch-btn" data-color="White" style="background-color: #FFFFFF; border: 1px solid #CBD5E1;" title="White"></button>
-              <button class="color-swatch-btn" data-color="Brown" style="background-color: #78350F;" title="Brown"></button>
-              <button class="color-swatch-btn" data-color="Orange" style="background-color: #F59E0B;" title="Orange"></button>
-            </div>
-          </div>
-
-          <button class="btn btn-secondary btn-full" id="clear-all-btn" style="margin-top: 16px;">Clear All Filters</button>
-        </aside>
-        
-        <!-- Right Side: Content Area -->
-        <div class="search-content-area">
-          
-          <!-- Topbar: Sorting & Results Count -->
-          <div class="search-topbar">
-            <div class="results-count-lbl" id="results-count-lbl">0 products found</div>
-            <div class="sort-selector-wrapper">
-              <label for="sort-select">Sort By:</label>
-              <select id="sort-select" class="sort-dropdown-select">
-                <option value="popularity">Popularity (Best Sellers)</option>
-                <option value="price-asc">Price: Low to High</option>
-                <option value="price-desc">Price: High to Low</option>
-                <option value="size-asc">Size: Low to High</option>
-                <option value="size-desc">Size: High to Low</option>
-                <option value="name-asc">Name: A to Z</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="product-slider-wrapper" style="overflow: visible; padding: 0;">
-            <div id="search-results-grid" style="display: grid; gap: 24px; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); min-height: 400px;">
-              <!-- Populated dynamically by script -->
-            </div>
-          </div>
-
+      <!-- Topbar: Sorting & Results Count -->
+      <div class="search-topbar">
+        <div class="results-count-lbl" id="results-count-lbl">0 products found</div>
+        <div class="sort-selector-wrapper">
+          <label for="sort-select">Sort By:</label>
+          <select id="sort-select" class="sort-dropdown-select">
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+          </select>
         </div>
+      </div>
 
+      <div class="product-slider-wrapper" style="overflow: visible; padding: 0;">
+        <div id="search-results-grid" style="display: grid; gap: 24px; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); min-height: 400px;">
+          <!-- Populated dynamically by script -->
+        </div>
       </div>
 
     </div>
@@ -777,7 +695,7 @@
     </div>
   </footer>
 
-  <script src="js/main-api.js?v=6.79"></script>
+  <script src="js/main-api.js?v=6.80"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       // General drawer controls
@@ -826,7 +744,6 @@
       const urlParams = new URLSearchParams(window.location.search);
       const query = urlParams.get("q") ? urlParams.get("q").trim() : "";
       const categoryParam = urlParams.get("category") ? urlParams.get("category").trim() : "";
-      const orderbyParam = urlParams.get("orderby") ? urlParams.get("orderby").trim() : "";
       
       const summaryText = document.getElementById("search-summary-text");
       const resultsGrid = document.getElementById("search-results-grid");
@@ -834,62 +751,19 @@
       
       if (!summaryText || !resultsGrid) return;
       
-      // Filter states
-      let selectedCategories = [];
-      let selectedSizes = [];
-      let selectedColor = "";
-      let sidebarSearchQuery = "";
-      let currentSort = "popularity";
+      // Default Sort State: Price Low to High
+      let currentSort = "price-asc";
 
-      // Initialize defaults from URL params
+      // Set initial summary descriptions
       if (categoryParam) {
-        selectedCategories.push(categoryParam.toLowerCase());
-        const chk = document.querySelector(`.category-filter-chk[value="${categoryParam.toLowerCase()}"]`);
-        if (chk) chk.checked = true;
         summaryText.innerHTML = `Showing products in category <span class="query-highlight">"${categoryParam.replace('-', ' ')}"</span>`;
-      } else if (orderbyParam) {
-        currentSort = orderbyParam;
-        const sortSelect = document.getElementById("sort-select");
-        if (sortSelect) sortSelect.value = orderbyParam;
-        
-        if (orderbyParam === "popularity") {
-          summaryText.innerHTML = `Showing <span class="query-highlight">"Best Sellers"</span> catalog`;
-        } else if (orderbyParam === "date") {
-          summaryText.innerHTML = `Showing <span class="query-highlight">"New Arrivals"</span> catalog`;
-        }
       } else if (query) {
         summaryText.innerHTML = `Showing search results for <span class="query-highlight">"${query}"</span>`;
-        const sidebarSearchInput = document.getElementById("sidebar-search-input");
-        if (sidebarSearchInput) sidebarSearchInput.value = query;
       } else {
         summaryText.innerHTML = "Please enter a search term in the header search box.";
       }
 
-      // Helper: Parse Size Weight
-      function getSizeWeight(p) {
-        if (!p.attributes) return 0;
-        const sizeAttr = p.attributes.find(a => a.name.toLowerCase() === 'size' || a.name.toLowerCase() === 'sizes');
-        if (sizeAttr && sizeAttr.options && sizeAttr.options.length > 0) {
-          const size = sizeAttr.options[0].toLowerCase();
-          if (size.includes('small') || size === 's') return 1;
-          if (size.includes('medium') || size === 'm') return 2;
-          if (size.includes('large') || size === 'l') return 3;
-          if (size.includes('xl')) return 4;
-        }
-        return 0;
-      }
-
-      // Helper: Check Product Color
-      function productHasColor(p, colorName) {
-        if (!p.attributes) return false;
-        const colorAttr = p.attributes.find(a => a.name.toLowerCase() === 'color' || a.name.toLowerCase() === 'colors');
-        if (colorAttr && colorAttr.options) {
-          return colorAttr.options.some(opt => opt.toLowerCase().includes(colorName.toLowerCase()));
-        }
-        return false;
-      }
-
-      // Render: "No Results" premium card template (Without description line, added inline search & reset options)
+      // Render: "No Results" premium card template
       function renderNoResultsCard(searchedTerm) {
         const queryTerm = searchedTerm || query || "";
         return `
@@ -902,7 +776,7 @@
             <h3 class="no-results-title">No products found matching <span class="highlight">"${queryTerm}"</span></h3>
             
             <div class="card-search-wrapper">
-              <input type="text" class="card-search-input" id="card-no-results-input" placeholder="Try searching something else...">
+              <input type="text" class="card-search-input" id="card-no-results-input" placeholder="Search again...">
               <button class="card-search-btn" id="card-no-results-btn">Search</button>
             </div>
 
@@ -913,8 +787,6 @@
               <a href="search.html?q=Chair" class="suggest-chip">Chair</a>
               <a href="search.html?q=Rack" class="suggest-chip">Rack</a>
             </div>
-            
-            <button class="btn btn-secondary reset-filters-btn" id="card-reset-filters-btn">Reset All Filters</button>
           </div>
         `;
       }
@@ -990,62 +862,31 @@
       function filterAndSortEngine() {
         let items = window.KawachiProducts ? [...window.KawachiProducts] : [];
         
-        // 1. Filter by search query (URL parameters or sidebar keyword)
-        const currentSearchText = sidebarSearchQuery || query;
-        if (currentSearchText) {
-          if (currentSearchText.toLowerCase() === 'ddd') {
+        // 1. Filter by search query
+        if (query) {
+          if (query.toLowerCase() === 'ddd') {
             items = items.filter(p => [101, 104, 105].includes(p.id));
           } else {
             items = items.filter(p => 
-              p.name.toLowerCase().includes(currentSearchText.toLowerCase()) || 
-              p.category.toLowerCase().includes(currentSearchText.toLowerCase())
+              p.name.toLowerCase().includes(query.toLowerCase()) || 
+              p.category.toLowerCase().includes(query.toLowerCase())
             );
           }
         }
 
-        // 2. Filter by Category checkbox array
-        if (selectedCategories.length > 0) {
+        // 2. Filter by Category
+        if (categoryParam) {
           items = items.filter(p => {
             const productCatSlug = p.category.toLowerCase().replace(/[^a-z0-9]/g, '-');
-            return selectedCategories.some(cat => productCatSlug.includes(cat) || p.category.toLowerCase().includes(cat));
+            return productCatSlug.includes(categoryParam.toLowerCase()) || p.category.toLowerCase().includes(categoryParam.toLowerCase());
           });
         }
 
-        // 3. Filter by Size checkbox array
-        if (selectedSizes.length > 0) {
-          items = items.filter(p => {
-            if (!p.attributes) return false;
-            const sizeAttr = p.attributes.find(a => a.name.toLowerCase() === 'size' || a.name.toLowerCase() === 'sizes');
-            if (sizeAttr && sizeAttr.options) {
-              return sizeAttr.options.some(opt => selectedSizes.includes(opt.toLowerCase()));
-            }
-            return false;
-          });
-        }
-
-        // 4. Filter by Color swatch selection
-        if (selectedColor) {
-          items = items.filter(p => productHasColor(p, selectedColor));
-        }
-
-        // 5. Apply sorting algorithms
-        if (currentSort === "popularity") {
-          // Check for Best Sellers array first to maintain pre-calculated order from homepage options
-          if (!sidebarSearchQuery && !query && !categoryParam && window.KawachiBestSellers && window.KawachiBestSellers.length > 0) {
-            items = [...window.KawachiBestSellers];
-          } else {
-            items.sort((a, b) => (b.sales_count || 0) - (a.sales_count || 0));
-          }
-        } else if (currentSort === "price-asc") {
+        // 3. Apply sorting algorithms
+        if (currentSort === "price-asc") {
           items.sort((a, b) => a.price - b.price);
         } else if (currentSort === "price-desc") {
           items.sort((a, b) => b.price - a.price);
-        } else if (currentSort === "size-asc") {
-          items.sort((a, b) => getSizeWeight(a) - getSizeWeight(b));
-        } else if (currentSort === "size-desc") {
-          items.sort((a, b) => getSizeWeight(b) - getSizeWeight(a));
-        } else if (currentSort === "name-asc") {
-          items.sort((a, b) => a.name.localeCompare(b.name));
         }
 
         // Update count labels
@@ -1055,80 +896,15 @@
 
         // Render to grid
         if (items.length === 0) {
-          resultsGrid.innerHTML = renderNoResultsCard(currentSearchText);
+          resultsGrid.innerHTML = renderNoResultsCard(query);
           attachNoResultsCardListeners();
         } else {
           resultsGrid.innerHTML = renderProductsList(items);
         }
       }
 
-      // Listeners: Setup for sidebar widgets
-      function setupSidebarListeners() {
-        // 1. Sidebar Search Input Handler
-        const sidebarSearchInput = document.getElementById("sidebar-search-input");
-        const sidebarSearchBtn = document.getElementById("sidebar-search-btn");
-        
-        function triggerSidebarSearch() {
-          if (sidebarSearchInput) {
-            sidebarSearchQuery = sidebarSearchInput.value.trim();
-            if (sidebarSearchQuery) {
-              summaryText.innerHTML = `Showing search results for <span class="query-highlight">"${sidebarSearchQuery}"</span>`;
-            } else {
-              summaryText.innerHTML = `Showing all products`;
-            }
-            filterAndSortEngine();
-          }
-        }
-
-        if (sidebarSearchInput) {
-          sidebarSearchInput.addEventListener("keyup", (e) => {
-            if (e.key === "Enter") triggerSidebarSearch();
-          });
-        }
-        if (sidebarSearchBtn) {
-          sidebarSearchBtn.addEventListener("click", triggerSidebarSearch);
-        }
-
-        // 2. Category Checkboxes
-        const categoryCheckboxes = document.querySelectorAll(".category-filter-chk");
-        categoryCheckboxes.forEach(chk => {
-          chk.addEventListener("change", () => {
-            selectedCategories = Array.from(categoryCheckboxes)
-              .filter(c => c.checked)
-              .map(c => c.value);
-            filterAndSortEngine();
-          });
-        });
-
-        // 3. Size Checkboxes
-        const sizeCheckboxes = document.querySelectorAll(".size-filter-chk");
-        sizeCheckboxes.forEach(chk => {
-          chk.addEventListener("change", () => {
-            selectedSizes = Array.from(sizeCheckboxes)
-              .filter(c => c.checked)
-              .map(c => c.value);
-            filterAndSortEngine();
-          });
-        });
-
-        // 4. Color Swatches Toggle
-        const colorSwatches = document.querySelectorAll(".color-swatch-btn");
-        colorSwatches.forEach(btn => {
-          btn.addEventListener("click", () => {
-            const swatchColor = btn.getAttribute("data-color");
-            if (btn.classList.contains("active")) {
-              btn.classList.remove("active");
-              selectedColor = "";
-            } else {
-              colorSwatches.forEach(b => b.classList.remove("active"));
-              btn.classList.add("active");
-              selectedColor = swatchColor;
-            }
-            filterAndSortEngine();
-          });
-        });
-
-        // 5. Sorting select dropdown
+      // Listeners: Setup sorting dropdown selector
+      function setupSortListener() {
         const sortSelect = document.getElementById("sort-select");
         if (sortSelect) {
           sortSelect.addEventListener("change", (e) => {
@@ -1136,51 +912,18 @@
             filterAndSortEngine();
           });
         }
-
-        // 6. Clear All Filters
-        const clearAllBtn = document.getElementById("clear-all-btn");
-        if (clearAllBtn) {
-          clearAllBtn.addEventListener("click", () => {
-            resetAllFilters();
-          });
-        }
-      }
-
-      // Reset utility
-      function resetAllFilters() {
-        selectedCategories = [];
-        selectedSizes = [];
-        selectedColor = "";
-        sidebarSearchQuery = "";
-        
-        // Reset checkbox DOM states
-        document.querySelectorAll(".category-filter-chk").forEach(c => c.checked = false);
-        document.querySelectorAll(".size-filter-chk").forEach(c => c.checked = false);
-        document.querySelectorAll(".color-swatch-btn").forEach(c => c.classList.remove("active"));
-        
-        const sidebarSearchInput = document.getElementById("sidebar-search-input");
-        if (sidebarSearchInput) sidebarSearchInput.value = "";
-        
-        summaryText.innerHTML = query ? `Showing search results for <span class="query-highlight">"${query}"</span>` : `Showing all products`;
-        
-        filterAndSortEngine();
       }
 
       // Listeners inside premium "No Results" Card
       function attachNoResultsCardListeners() {
         const cardSearchInput = document.getElementById("card-no-results-input");
         const cardSearchBtn = document.getElementById("card-no-results-btn");
-        const cardResetFiltersBtn = document.getElementById("card-reset-filters-btn");
 
         function triggerCardSearchAction() {
           if (cardSearchInput) {
             const val = cardSearchInput.value.trim();
             if (val) {
-              sidebarSearchQuery = val;
-              const sidebarSearchInput = document.getElementById("sidebar-search-input");
-              if (sidebarSearchInput) sidebarSearchInput.value = val;
-              summaryText.innerHTML = `Showing search results for <span class="query-highlight">"${val}"</span>`;
-              filterAndSortEngine();
+              window.location.href = `search.html?q=${encodeURIComponent(val)}`;
             }
           }
         }
@@ -1194,13 +937,10 @@
         if (cardSearchBtn) {
           cardSearchBtn.addEventListener("click", triggerCardSearchAction);
         }
-        if (cardResetFiltersBtn) {
-          cardResetFiltersBtn.addEventListener("click", resetAllFilters);
-        }
       }
 
       // Execute on page load
-      setupSidebarListeners();
+      setupSortListener();
       filterAndSortEngine();
     });
   </script>
