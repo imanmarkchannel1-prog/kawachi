@@ -3468,10 +3468,16 @@ ul, ol {
   color: var(--color-primary);
   margin-top: 8px;
   max-width: 480px;
-  margin-left: auto;
+  margin-left: 0;
   margin-right: auto;
   font-weight: 500;
-  text-align: center;
+  text-align: left;
+}
+
+#faq .kawachi-sec-desc {
+  text-align: center !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
 }
 
 /* 1. Hero Section Layout */
@@ -4772,10 +4778,10 @@ ul, ol {
   font-size: var(--text-sm);
   color: var(--color-primary);
   margin-top: 4px;
-  margin-left: auto;
+  margin-left: 0;
   margin-right: auto;
   font-weight: 500;
-  text-align: center;
+  text-align: left;
 }
 
 /* Product Slide Card 24px border-radius override */
