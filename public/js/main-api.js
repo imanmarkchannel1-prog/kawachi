@@ -37,16 +37,16 @@ const MOCK_CATALOG = [
   },
   {
     id: 103,
-    name: 'Adjustable Sofa Couch',
-    price: 8499,
-    regular_price: 12999,
-    category: 'Home Furniture',
-    image: 'images/products/sofa_couch.png',
-    images: [{ src: 'images/products/sofa_couch.png' }],
+    name: '3 Tier Utility Trolley Cart',
+    price: 1899,
+    regular_price: 2999,
+    category: 'Kitchen Storage',
+    image: 'images/products/trolley_organizer.png',
+    images: [{ src: 'images/products/trolley_organizer.png' }],
     rating: '4.6',
-    reviews: '64',
-    sales_count: 320,
-    description: 'Comfortable and fully adjustable multi-position sofa.'
+    reviews: '72',
+    sales_count: 920,
+    description: 'Mobile rolling storage organizer cart with lockable wheels.'
   },
   {
     id: 104,
@@ -76,32 +76,19 @@ const MOCK_CATALOG = [
   },
   {
     id: 106,
-    name: 'Compact Fabric Wardrobe',
-    price: 3299,
-    regular_price: 4999,
-    category: 'Utility Products',
-    image: 'images/products/wardrobe.png',
-    images: [{ src: 'images/products/wardrobe.png' }],
+    name: 'Decorative Wall Shelves',
+    price: 1299,
+    regular_price: 1999,
+    category: 'Home Furniture',
+    image: 'images/products/wall_shelves.png',
+    images: [{ src: 'images/products/wall_shelves.png' }],
     rating: '4.5',
     reviews: '88',
     sales_count: 420,
-    description: 'Spacious and strong fabric cabinet closet organizer.'
+    description: 'Sleek wood floating wall shelves for display.'
   },
   {
     id: 107,
-    name: 'Luxury Recliner Chair',
-    price: 12999,
-    regular_price: 19999,
-    category: 'Home Furniture',
-    image: 'images/products/recliner.png',
-    images: [{ src: 'images/products/recliner.png' }],
-    rating: '4.9',
-    reviews: '105',
-    sales_count: 510,
-    description: 'Premium single seater lounge recliner sofa.'
-  },
-  {
-    id: 108,
     name: 'Bedside Table with Charging',
     price: 4199,
     regular_price: 5999,
@@ -110,14 +97,14 @@ const MOCK_CATALOG = [
     images: [{ src: 'images/products/bedside_table.png' }],
     rating: '4.7',
     reviews: '74',
-    sales_count: 310,
+    sales_count: 510,
     description: 'Smart bedside drawer with built-in USB outlets.'
   }
 ];
 
 function loadMockCatalogFallback() {
   window.KawachiBestSellers = MOCK_CATALOG.filter(p => p.sales_count > 400).sort((a,b) => b.sales_count - a.sales_count);
-  window.KawachiTrendingNow = MOCK_CATALOG.filter(p => p.id !== 103).slice(0, 8);
+  window.KawachiTrendingNow = [...MOCK_CATALOG].reverse().slice(0, 8);
   window.KawachiFurniture = MOCK_CATALOG.filter(p => p.category === 'Home Furniture');
   window.KawachiKitchen = MOCK_CATALOG.filter(p => p.category === 'Kitchen Storage');
   window.KawachiProducts = [...MOCK_CATALOG];

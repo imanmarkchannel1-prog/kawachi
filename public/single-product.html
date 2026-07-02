@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Product Details - Kawachi</title>
   <meta name="description" content="Explore detailed features, warranty structures, and purchase options for Kawachi utility products.">
-  <link rel="stylesheet" href="css/global-styles.css?v=6.83">
+  <link rel="stylesheet" href="css/global-styles.css?v=6.84">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <style>
     body {
@@ -844,7 +844,7 @@
     </div>
   </footer>
 
-  <script src="js/main-api.js?v=6.83"></script>
+  <script src="js/main-api.js?v=6.84"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       // General drawer controls
@@ -905,6 +905,89 @@
             stickyBar.classList.remove("visible");
           }
         }, { passive: true });
+      }
+    });
+  </script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // Decode product ID from URL query parameters
+      const urlParams = new URLSearchParams(window.location.search);
+      const productId = parseInt(urlParams.get("id"), 10);
+
+      // Hydrate product details once products promise resolves
+      if (window.KawachiProductsPromise) {
+        window.KawachiProductsPromise.then(products => {
+          const product = products.find(p => p.id === productId);
+          if (product) {
+            hydrateProductDetails(product);
+          }
+        });
+      }
+
+      function hydrateProductDetails(p) {
+        // 1. Update Title and Meta details
+        const titleEl = document.querySelector(".product-title-detail");
+        if (titleEl) titleEl.textContent = p.name;
+
+        const categoryEl = document.querySelector(".product-category-detail");
+        if (categoryEl) categoryEl.textContent = p.category;
+
+        const skuEl = document.getElementById("meta-sku");
+        if (skuEl) skuEl.textContent = `KW-${p.category.toUpperCase().replace(/[^A-Z]/g, "").slice(0,3)}-${p.id}`;
+
+        // 2. Update Pricing
+        const priceDisplayLarge = document.getElementById("p-price-display-large");
+        if (priceDisplayLarge) priceDisplayLarge.textContent = Number(p.price).toLocaleString('en-IN');
+
+        const priceDisplaySidebar = document.getElementById("p-price-display");
+        if (priceDisplaySidebar) priceDisplaySidebar.textContent = '₹' + Number(p.price).toLocaleString('en-IN');
+
+        const oldPriceEl = document.querySelector(".price-old");
+        const discountEl = document.getElementById("product-discount-percentage");
+        if (p.regular_price && p.regular_price > p.price) {
+          if (oldPriceEl) oldPriceEl.textContent = '₹' + Number(p.regular_price).toLocaleString('en-IN');
+          if (oldPriceEl.parentElement) oldPriceEl.parentElement.style.display = '';
+          const savings = Math.round(((p.regular_price - p.price) / p.regular_price) * 100);
+          if (discountEl) {
+            discountEl.textContent = `-${savings}%`;
+            discountEl.style.display = '';
+          }
+        } else {
+          if (oldPriceEl && oldPriceEl.parentElement) oldPriceEl.parentElement.style.display = 'none';
+          if (discountEl) discountEl.style.display = 'none';
+        }
+
+        // 3. Update Ratings
+        const ratingValEl = document.getElementById("rating-count-val");
+        if (ratingValEl) ratingValEl.textContent = p.reviews;
+
+        const starsRow = document.getElementById("detail-stars-row");
+        if (starsRow && window.getCardRatingHtml) {
+          starsRow.innerHTML = window.getCardRatingHtml(p.rating, p.reviews);
+        }
+
+        // 4. Update Description
+        const descEl = document.querySelector(".product-description-brief");
+        if (descEl) descEl.innerHTML = p.description || p.short_description || "High-quality premium item sourced from our certified WooCommerce inventory.";
+
+        // 5. Update Images & Gallery thumbnails
+        const mainImg = document.getElementById("gallery-main-img");
+        if (mainImg) mainImg.src = p.image;
+
+        const thumbStrip = document.querySelector(".thumbnail-vertical-strip");
+        if (thumbStrip) {
+          // Fallback to single main image if no additional images
+          const imageList = p.images && p.images.length > 0 ? p.images : [{ src: p.image }];
+          thumbStrip.innerHTML = imageList.map((imgObj, idx) => {
+            const isActive = idx === 0 ? "active" : "";
+            return `
+              <div class="thumb-item ${isActive}" onclick="document.getElementById('gallery-main-img').src='${imgObj.src}'; document.querySelectorAll('.thumb-item').forEach(el=>el.classList.remove('active')); this.classList.add('active');">
+                <img src="${imgObj.src}" alt="${p.name} Preview Thumbnail ${idx+1}">
+              </div>
+            `;
+          }).join("");
+        }
       }
     });
   </script>

@@ -20,10 +20,10 @@
   --color-accent-light: #ea6c4d;
   --color-accent-soft: rgba(224, 94, 63, 0.06);
   
-  --color-bg-main: #F4F6F8;          /* Light, clean, premium grey background */
+  --color-bg-main: #FFFFFF;          /* Pure White Main Background */
   --color-bg-white: #FFFFFF;
   --color-bg-alt: #F0F6FF;           /* Clean light blue accent */
-  --color-bg-section: #FFFFFF;       /* Section Background (White for premium look) */
+  --color-bg-section: #F8FAFC;       /* Off-White Section Background for premium look */
   
   --color-charcoal: #0B1530;         /* Deep Premium Navy (Amazon Style Brand Color) */
   --color-text-main: #0B1530;
@@ -7065,7 +7065,7 @@ ul, ol {
   right: 0 !important;
   background: #FFFFFF !important;
   border: 1px solid #E2E8F0 !important;
-  border-radius: 20px !important;
+  border-radius: 12px !important;
   box-shadow: 
     0 20px 40px rgba(15, 23, 42, 0.08),
     0 1px 3px rgba(15, 23, 42, 0.02) !important;
@@ -10288,8 +10288,8 @@ main.static-page-card .btn-primary-marquee:hover,
 
 /* Deals of the Day Redesign styles */
 .deals-of-the-day-section {
-  background-color: #FFFFFF !important;
-  border-radius: 20px !important;
+  background-color: var(--color-bg-section) !important;
+  border-radius: 12px !important;
   padding: 24px 20px !important;
   box-shadow: var(--shadow-sm) !important;
   border: 1px solid var(--color-border) !important;
@@ -10385,7 +10385,7 @@ main.static-page-card .btn-primary-marquee:hover,
   flex-shrink: 0 !important;
   width: calc(100% / 6 - 17px) !important; /* 6 cards width minus layout gaps */
   background-color: #FFFFFF !important;
-  border-radius: 12px !important;
+  border-radius: 8px !important;
   padding: 14px !important;
   border: 1px solid rgba(0, 0, 0, 0.05) !important;
   box-sizing: border-box !important;
@@ -10603,8 +10603,8 @@ main.static-page-card .btn-primary-marquee:hover,
 
 .bubble-categories-card,
 .list-best-sellers-card {
-  background-color: #FFFFFF !important;
-  border-radius: 20px !important;
+  background-color: var(--color-bg-section) !important;
+  border-radius: 12px !important;
   padding: 24px 20px !important;
   border: 1px solid var(--color-border) !important;
   box-shadow: var(--shadow-sm) !important;
@@ -10856,7 +10856,7 @@ main.static-page-card .btn-primary-marquee:hover,
 }
 
 .promo-box-triple {
-  border-radius: 20px !important;
+  border-radius: 12px !important;
   padding: 24px !important;
   height: 180px !important;
   display: flex !important;
@@ -11361,7 +11361,7 @@ main.static-page-card .btn-primary-marquee:hover,
   }
   .deals-slider-wrapper {
     overflow: hidden !important;
-    padding: 10px 0 !important; /* No negative margins — stay inside the box */
+    padding: 6px 0 !important;
     margin: 0 !important;
     width: 100% !important;
   }
@@ -11369,11 +11369,36 @@ main.static-page-card .btn-primary-marquee:hover,
     display: flex !important;
     gap: 12px !important;
     transition: transform 0.5s ease !important;
+    min-height: 210px !important;
   }
   .deal-product-item-card {
-    flex: 0 0 44% !important;
-    width: 44% !important;
+    flex: 0 0 38% !important;
+    width: 38% !important;
+    padding: 8px !important;
+    border-radius: 8px !important;
     scroll-snap-align: start !important;
+  }
+  .deal-product-image {
+    margin-bottom: 6px !important;
+  }
+  .deal-product-title {
+    font-size: 11.5px !important;
+    margin-bottom: 4px !important;
+  }
+  .deal-product-rating {
+    margin-bottom: 4px !important;
+    gap: 1px !important;
+  }
+  .deal-product-rating .stars-fill {
+    font-size: 9px !important;
+  }
+  .deal-product-rating .rating-val, 
+  .deal-product-rating .reviews-count {
+    font-size: 8.5px !important;
+  }
+  .deal-price-line {
+    font-size: 12px !important;
+    gap: 4px !important;
   }
   .deals-arrow {
     display: none !important;
