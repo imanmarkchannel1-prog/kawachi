@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Search Results - Kawachi</title>
   <meta name="description" content="Search products and categories on our headless WooCommerce catalog.">
-  <link rel="stylesheet" href="css/global-styles.css?v=6.90">
+  <link rel="stylesheet" href="css/global-styles.css?v=6.91">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <style>
     body, #main-content {
@@ -736,7 +736,7 @@
     </div>
   </footer>
 
-  <script src="js/main-api.js?v=6.90"></script>
+  <script src="js/main-api.js?v=6.91"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       // General drawer controls
@@ -827,7 +827,7 @@
         }
         
         const ratingHtml = p.rating ? `
-          <div class="product-rating" style="display: flex; align-items: center; gap: 4px; margin-bottom: 6px;">
+          <div class="product-rating" style="display: flex; align-items: center; gap: 4px; margin-bottom: 8px;">
             <div style="display: flex; align-items: center;">${starsHtml}</div>
             <span style="font-size: 11px; font-weight: 700; color: var(--color-text-muted); margin-left: 2px;">${p.rating}</span>
           </div>
@@ -835,7 +835,7 @@
         
         const salesCount = p.sales_count || p.orders_count || 0;
         const salesHtml = salesCount > 0 ? `
-          <div class="product-sales-badge" style="margin-top: 4px; font-size: 11px; color: #475569; display: flex; align-items: center; gap: 4px; margin-bottom: 8px;">
+          <div class="product-sales-badge" style="margin-top: 0; font-size: 11px; color: #475569; display: flex; align-items: center; gap: 4px; margin-bottom: 12px;">
             <svg fill="currentColor" viewBox="0 0 20 20" style="width: 12px; height: 12px; color: #3B82F6; display: inline-block;">
               <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
             </svg>
@@ -853,18 +853,18 @@
                 <img src="${p.image}" alt="${p.name}" class="product-image" loading="lazy">
               </div>
               <div class="product-info" style="flex-grow: 1; display: flex; flex-direction: column;">
-                <span class="product-category">${p.category}</span>
-                <h3 class="product-title" style="margin-bottom: 8px;">${p.name}</h3>
+                <span class="product-category" style="margin-bottom: 6px; display: block;">${p.category}</span>
+                <h3 class="product-title" style="margin-bottom: 12px; font-size: 14.5px;">${p.name}</h3>
                 ${ratingHtml}
                 ${salesHtml}
-                <div class="product-price-row" style="margin-top: auto; padding-top: 8px;">
+                <div class="product-price-row" style="margin-top: auto; padding-top: 4px; display: flex; align-items: baseline; gap: 8px;">
                   <span class="price-current">${formattedPrice}</span>
                   ${p.regular_price && p.regular_price > p.price ? `<span class="price-old">${formattedRegularPrice}</span>` : ""}
                 </div>
               </div>
             </a>
-            <div style="padding: 0 16px 16px 16px; margin-top: auto;">
-              <button class="btn btn-primary btn-full add-to-cart-quick" data-id="${p.id}" data-name="${p.name}" data-price="${p.price}">
+            <div style="padding: 0 16px 16px 16px; margin-top: auto; display: flex; justify-content: flex-start;">
+              <button class="btn btn-primary add-to-cart-quick" data-id="${p.id}" data-name="${p.name}" data-price="${p.price}" style="width: auto !important; padding: 10px 24px !important; border-radius: 8px !important;">
                 Add to Cart
               </button>
             </div>
@@ -1017,15 +1017,36 @@
           nextBtn.disabled = currentIndex >= getMaxIndex();
         }
 
+        // Auto-play from right to left (increasing index)
+        let autoPlayInterval = setInterval(() => {
+          const maxIdx = getMaxIndex();
+          if (maxIdx > 0) {
+            currentIndex = (currentIndex + 1) > maxIdx ? 0 : currentIndex + 1;
+            updateSlider();
+          }
+        }, 3500);
+
+        function stopAutoPlay() {
+          if (autoPlayInterval) {
+            clearInterval(autoPlayInterval);
+            autoPlayInterval = null;
+          }
+        }
+
         prevBtn.addEventListener("click", () => {
+          stopAutoPlay();
           currentIndex = Math.max(0, currentIndex - 1);
           updateSlider();
         });
 
         nextBtn.addEventListener("click", () => {
+          stopAutoPlay();
           currentIndex = Math.min(getMaxIndex(), currentIndex + 1);
           updateSlider();
         });
+
+        track.addEventListener("touchstart", stopAutoPlay, { passive: true });
+        track.addEventListener("mousedown", stopAutoPlay, { passive: true });
 
         window.addEventListener("resize", () => {
           currentIndex = Math.min(currentIndex, getMaxIndex());
