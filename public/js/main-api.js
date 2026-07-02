@@ -151,7 +151,7 @@ async function loadLiveWooCommerceProducts() {
     }
 
     const homeFurnitureCat = categories.find(c => c.slug === 'home-furniture' || c.name.toLowerCase() === 'home furniture');
-    const kitchenStorageCat = categories.find(c => c.slug === 'kitchen-storage' || c.name.toLowerCase() === 'kitchen storage');
+    const kitchenStorageCat = categories.find(c => c.slug === 'kitchen-storage' || c.name.toLowerCase() === 'kitchen storage' || c.slug === 'home-kitchen' || c.name.toLowerCase().includes('kitchen'));
 
     // 2. Fetch rows in parallel using standard WooCommerce API query params
     const [bestSellersRaw, trendingRaw, furnitureRaw, kitchenRaw] = await Promise.all([
