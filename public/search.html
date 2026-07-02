@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Search Results - Kawachi</title>
   <meta name="description" content="Search products and categories on our headless WooCommerce catalog.">
-  <link rel="stylesheet" href="css/global-styles.css?v=6.89">
+  <link rel="stylesheet" href="css/global-styles.css?v=6.90">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <style>
     body, #main-content {
@@ -205,17 +205,22 @@
       appearance: none !important;
       -webkit-appearance: none !important;
       -moz-appearance: none !important;
-      background: #ffffff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>") no-repeat right 12px center / 16px !important;
-      padding: 10px 36px 10px 16px !important;
-      border: 1px solid #cbd5e1 !important;
-      border-radius: 8px !important;
-      font-size: 13.5px !important;
+      background: #ffffff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>") no-repeat right 14px center / 14px !important;
+      padding: 8px 36px 8px 16px !important;
+      border: 1.5px solid #cbd5e1 !important;
+      border-radius: 50px !important; /* Premium Pill Shape */
+      font-size: 13px !important;
       font-weight: 600 !important;
       color: #334155 !important;
       outline: none !important;
       cursor: pointer !important;
-      transition: border-color 0.2s, box-shadow 0.2s !important;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05) !important;
+      transition: all 0.2s ease !important;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03) !important;
+    }
+    
+    .sort-dropdown-select:hover {
+      border-color: #94a3b8 !important;
+      background-color: #f8fafc !important;
     }
     
     .sort-dropdown-select:focus {
@@ -463,6 +468,34 @@
       background-color: #c94b2d !important;
       box-shadow: 0 4px 10px rgba(224, 94, 63, 0.15) !important;
     }
+    
+    /* Responsive overrides for the Premium No Results Card */
+    @media (max-width: 767px) {
+      .no-results-premium-card {
+        padding: 32px 20px !important;
+        border-radius: 16px !important;
+        margin: 10px auto 24px auto !important;
+      }
+      .no-results-title {
+        font-size: 15px !important;
+        margin-bottom: 18px !important;
+      }
+      .card-search-wrapper {
+        margin-bottom: 20px !important;
+      }
+      .card-search-input {
+        padding: 10px 12px !important;
+        font-size: 13px !important;
+      }
+      .card-search-btn {
+        padding: 0 16px !important;
+        font-size: 12.5px !important;
+      }
+      .suggest-chip {
+        padding: 6px 14px !important;
+        font-size: 12px !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -703,7 +736,7 @@
     </div>
   </footer>
 
-  <script src="js/main-api.js?v=6.89"></script>
+  <script src="js/main-api.js?v=6.90"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       // General drawer controls
@@ -771,11 +804,84 @@
         summaryText.innerHTML = "Please enter a search term in the header search box.";
       }
 
+      // Render single product card helper
+      function renderCardSearchPage(p, isSlide = false) {
+        if (!p) return "";
+        const formattedPrice = '₹' + Number(p.price).toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+        const formattedRegularPrice = p.regular_price ? '₹' + Number(p.regular_price).toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) : "";
+        
+        let badgeHtml = "";
+        if (p.regular_price && p.regular_price > p.price) {
+          const discountPct = Math.round(((p.regular_price - p.price) / p.regular_price) * 100);
+          badgeHtml = `<span class="product-badge sale">-${discountPct}%</span>`;
+        }
+        
+        const ratingVal = parseFloat(p.rating) || 4.6;
+        let starsHtml = "";
+        for (let i = 1; i <= 5; i++) {
+          if (ratingVal >= i) {
+            starsHtml += `<svg width="13" height="13" fill="#DE7921" viewBox="0 0 20 20" style="display: inline-block; margin-right: 1px;"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>`;
+          } else {
+            starsHtml += `<svg width="13" height="13" fill="#E5E7EB" viewBox="0 0 20 20" style="display: inline-block; margin-right: 1px;"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>`;
+          }
+        }
+        
+        const ratingHtml = p.rating ? `
+          <div class="product-rating" style="display: flex; align-items: center; gap: 4px; margin-bottom: 6px;">
+            <div style="display: flex; align-items: center;">${starsHtml}</div>
+            <span style="font-size: 11px; font-weight: 700; color: var(--color-text-muted); margin-left: 2px;">${p.rating}</span>
+          </div>
+        ` : "";
+        
+        const salesCount = p.sales_count || p.orders_count || 0;
+        const salesHtml = salesCount > 0 ? `
+          <div class="product-sales-badge" style="margin-top: 4px; font-size: 11px; color: #475569; display: flex; align-items: center; gap: 4px; margin-bottom: 8px;">
+            <svg fill="currentColor" viewBox="0 0 20 20" style="width: 12px; height: 12px; color: #3B82F6; display: inline-block;">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+            </svg>
+            <span>${salesCount.toLocaleString('en-IN')}+ bought</span>
+          </div>
+        ` : "";
+        
+        const slideClass = isSlide ? "product-slide-card" : "";
+        
+        return `
+          <article class="product-card ${slideClass}" style="display: flex; flex-direction: column;" onclick="if(!event.target.closest('button')) window.location.href='single-product.html?id=${p.id}'">
+            <a href="single-product.html?id=${p.id}" style="text-decoration: none; color: inherit; display: flex; flex-direction: column; height: 100%;" onclick="event.preventDefault();">
+              <div class="product-image-container">
+                ${badgeHtml}
+                <img src="${p.image}" alt="${p.name}" class="product-image" loading="lazy">
+              </div>
+              <div class="product-info" style="flex-grow: 1; display: flex; flex-direction: column;">
+                <span class="product-category">${p.category}</span>
+                <h3 class="product-title" style="margin-bottom: 8px;">${p.name}</h3>
+                ${ratingHtml}
+                ${salesHtml}
+                <div class="product-price-row" style="margin-top: auto; padding-top: 8px;">
+                  <span class="price-current">${formattedPrice}</span>
+                  ${p.regular_price && p.regular_price > p.price ? `<span class="price-old">${formattedRegularPrice}</span>` : ""}
+                </div>
+              </div>
+            </a>
+            <div style="padding: 0 16px 16px 16px; margin-top: auto;">
+              <button class="btn btn-primary btn-full add-to-cart-quick" data-id="${p.id}" data-name="${p.name}" data-price="${p.price}">
+                Add to Cart
+              </button>
+            </div>
+          </article>
+        `;
+      }
+
       // Render: "No Results" premium card template
       function renderNoResultsCard(searchedTerm) {
         const queryTerm = searchedTerm || query || "";
+        
+        // Fetch trending recommendations
+        const trendingList = window.KawachiTrendingNow || window.KawachiProducts || [];
+        const trendingCardsHtml = trendingList.map(p => renderCardSearchPage(p, true)).join("");
+        
         return `
-          <div class="no-results-premium-card">
+          <div class="no-results-premium-card" style="grid-column: 1 / -1;">
             <div class="icon-wrap">
               <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
@@ -796,74 +902,32 @@
               <a href="search.html?q=Rack" class="suggest-chip">Rack</a>
             </div>
           </div>
+          
+          <!-- Moving Horizontal Trending Strip -->
+          ${trendingList.length > 0 ? `
+          <div class="trending-recommendations-sec" style="margin-top: 40px; grid-column: 1 / -1; width: 100%; border-top: 1px solid #f1f5f9; padding-top: 40px;">
+            <h3 class="kawachi-sec-title" style="text-align: center; margin-bottom: 24px; font-size: 20px; font-weight: 800; font-family: var(--font-display);">Trending Products</h3>
+            <div class="slider-container-outer" style="position: relative;" id="no-results-slider-outer">
+              <button class="slider-arrow-btn prev" aria-label="Previous Slide" style="z-index: 10;">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path></svg>
+              </button>
+              <button class="slider-arrow-btn next" aria-label="Next Slide" style="z-index: 10;">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+              </button>
+              <div class="product-slider-wrapper" style="overflow: hidden; padding: 12px 4px;">
+                <div class="product-slider-track" id="no-results-trending-track" style="display: flex; gap: 24px; transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);">
+                  ${trendingCardsHtml}
+                </div>
+              </div>
+            </div>
+          </div>
+          ` : ""}
         `;
       }
 
       // Render: Products Grid HTML
       function renderProductsList(productsList) {
-        return productsList.map(p => {
-          const formattedPrice = '₹' + Number(p.price).toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
-          const formattedRegularPrice = p.regular_price ? '₹' + Number(p.regular_price).toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) : "";
-          
-          let badgeHtml = "";
-          if (p.regular_price && p.regular_price > p.price) {
-            const discountPct = Math.round(((p.regular_price - p.price) / p.regular_price) * 100);
-            badgeHtml = `<span class="product-badge sale">-${discountPct}%</span>`;
-          }
-          
-          const ratingVal = parseFloat(p.rating) || 4.6;
-          let starsHtml = "";
-          for (let i = 1; i <= 5; i++) {
-            if (ratingVal >= i) {
-              starsHtml += `<svg width="13" height="13" fill="#DE7921" viewBox="0 0 20 20" style="display: inline-block; margin-right: 1px;"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>`;
-            } else {
-              starsHtml += `<svg width="13" height="13" fill="#E5E7EB" viewBox="0 0 20 20" style="display: inline-block; margin-right: 1px;"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>`;
-            }
-          }
-          
-          const ratingHtml = p.rating ? `
-            <div class="product-rating" style="display: flex; align-items: center; gap: 4px; margin-bottom: 6px;">
-              <div style="display: flex; align-items: center;">${starsHtml}</div>
-              <span style="font-size: 11px; font-weight: 700; color: var(--color-text-muted); margin-left: 2px;">${p.rating}</span>
-            </div>
-          ` : "";
-          
-          const salesCount = p.sales_count || p.orders_count || 0;
-          const salesHtml = salesCount > 0 ? `
-            <div class="product-sales-badge" style="margin-top: 4px; font-size: 11px; color: #475569; display: flex; align-items: center; gap: 4px; margin-bottom: 8px;">
-              <svg fill="currentColor" viewBox="0 0 20 20" style="width: 12px; height: 12px; color: #3B82F6; display: inline-block;">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-              </svg>
-              <span>${salesCount.toLocaleString('en-IN')}+ bought</span>
-            </div>
-          ` : "";
-          
-          return `
-            <article class="product-card" style="display: flex; flex-direction: column;">
-              <a href="single-product.html?id=${p.id}" style="text-decoration: none; color: inherit; display: flex; flex-direction: column; height: 100%;">
-                <div class="product-image-container">
-                  ${badgeHtml}
-                  <img src="${p.image}" alt="${p.name}" class="product-image" loading="lazy">
-                </div>
-                <div class="product-info" style="flex-grow: 1; display: flex; flex-direction: column;">
-                  <span class="product-category">${p.category}</span>
-                  <h3 class="product-title" style="margin-bottom: 8px;">${p.name}</h3>
-                  ${ratingHtml}
-                  ${salesHtml}
-                  <div class="product-price-row" style="margin-top: auto; padding-top: 8px;">
-                    <span class="price-current">${formattedPrice}</span>
-                    ${p.regular_price && p.regular_price > p.price ? `<span class="price-old">${formattedRegularPrice}</span>` : ""}
-                  </div>
-                </div>
-              </a>
-              <div style="padding: 0 16px 16px 16px; margin-top: auto;">
-                <button class="btn btn-primary btn-full add-to-cart-quick" data-id="${p.id}" data-name="${p.name}" data-price="${p.price}">
-                  Add to Cart
-                </button>
-              </div>
-            </article>
-          `;
-        }).join("");
+        return productsList.map(p => renderCardSearchPage(p, false)).join("");
       }
 
       // Filter and Sort Engine
@@ -908,9 +972,67 @@
         if (items.length === 0) {
           resultsGrid.innerHTML = renderNoResultsCard(query);
           attachNoResultsCardListeners();
+          initNoResultsSlider();
         } else {
           resultsGrid.innerHTML = renderProductsList(items);
         }
+      }
+
+      // Slider initialization for search empty recommendations
+      function initNoResultsSlider() {
+        const sliderContainer = document.getElementById("no-results-slider-outer");
+        if (!sliderContainer) return;
+
+        const track = sliderContainer.querySelector(".product-slider-track");
+        if (!track) return;
+
+        const prevBtn = sliderContainer.querySelector(".slider-arrow-btn.prev");
+        const nextBtn = sliderContainer.querySelector(".slider-arrow-btn.next");
+        if (!prevBtn || !nextBtn) return;
+
+        let currentIndex = 0;
+
+        function getVisibleCards() {
+          const width = window.innerWidth;
+          if (width >= 1200) return 6;
+          if (width >= 1024) return 5;
+          if (width >= 768) return 3;
+          return 2;
+        }
+
+        function getMaxIndex() {
+          const cards = track.querySelectorAll(".product-slide-card");
+          return Math.max(0, cards.length - getVisibleCards());
+        }
+
+        function updateSlider() {
+          const cards = track.querySelectorAll(".product-slide-card");
+          if (cards.length === 0) return;
+          const cardWidth = cards[0].getBoundingClientRect().width;
+          const gap = 24;
+          const translation = currentIndex * (cardWidth + gap);
+          track.style.transform = `translateX(-${translation}px)`;
+
+          prevBtn.disabled = currentIndex === 0;
+          nextBtn.disabled = currentIndex >= getMaxIndex();
+        }
+
+        prevBtn.addEventListener("click", () => {
+          currentIndex = Math.max(0, currentIndex - 1);
+          updateSlider();
+        });
+
+        nextBtn.addEventListener("click", () => {
+          currentIndex = Math.min(getMaxIndex(), currentIndex + 1);
+          updateSlider();
+        });
+
+        window.addEventListener("resize", () => {
+          currentIndex = Math.min(currentIndex, getMaxIndex());
+          updateSlider();
+        });
+
+        setTimeout(updateSlider, 200);
       }
 
       // Listeners: Setup sorting dropdown selector
