@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Search Results - Kawachi</title>
   <meta name="description" content="Search products and categories on our headless WooCommerce catalog.">
-  <link rel="stylesheet" href="css/global-styles.css?v=6.91">
+  <link rel="stylesheet" href="css/global-styles.css?v=6.92">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <style>
     body, #main-content {
@@ -412,12 +412,13 @@
       font-weight: 600 !important;
       color: #0f172a !important;
       line-height: 1.4 !important;
-      height: 40px !important; /* clamp title to 2 lines */
+      height: auto !important; /* Dynamic height to close gap for 1-line titles */
+      max-height: 40px !important; /* Clamp title to 2 lines max */
       overflow: hidden !important;
       display: -webkit-box !important;
       -webkit-line-clamp: 2 !important;
       -webkit-box-orient: vertical !important;
-      margin: 0 0 8px 0 !important;
+      margin: 0 0 4px 0 !important;
     }
     
     .product-price-row {
@@ -736,7 +737,7 @@
     </div>
   </footer>
 
-  <script src="js/main-api.js?v=6.91"></script>
+  <script src="js/main-api.js?v=6.92"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       // General drawer controls

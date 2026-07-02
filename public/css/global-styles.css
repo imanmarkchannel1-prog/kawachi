@@ -1384,12 +1384,13 @@ ul, ol {
   color: var(--color-text-main);
   line-height: 1.35;
   margin-top: 0;
-  margin-bottom: 5px;
+  margin-bottom: 4px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  height: 36px;
+  height: auto;
+  max-height: 36px;
 }
 
 .product-rating {
