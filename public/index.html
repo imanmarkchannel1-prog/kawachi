@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kawachi - Premium Headless WooCommerce Marketplace</title>
   <meta name="description" content="Explore a curated selection of lifestyle, wellness, home appliances, and smart gadgets at Kawachi. High-performance, premium utility shopping.">
-  <link rel="stylesheet" href="css/global-styles.css?v=6.84">
+  <link rel="stylesheet" href="css/global-styles.css?v=6.85">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@1,700;1,800&family=Bebas+Neue&family=Caveat:wght@700&family=Inter:wght@400;500;600;700;800;900&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
   <style>
@@ -720,8 +720,8 @@
               <span class="vc-views">
                 <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                 3.7k views
-              </span>
-            </div>          <!-- Card 5: 3 Tier Utility Trolley Cart -->
+            </div>
+          </div>          <!-- Card 5: 3 Tier Utility Trolley Cart -->
           <div class="video-card-wrap">
             <div class="video-card" data-product-id="103" data-influencer="@home_comfort" data-title="Sofa Comfort Test" data-video-src="https://www.youtube.com/embed/IUN664s7N-c?autoplay=1&mute=1&loop=1&playlist=IUN664s7N-c" data-product-name="3 Tier Utility Trolley Cart" data-product-price="₹1,899" data-product-image="images/products/trolley_organizer.png">
               <img src="https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?auto=format&fit=crop&w=600&q=80" alt="3 Tier Utility Trolley Cart" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;">
@@ -2275,7 +2275,7 @@
     </div>
   </footer>
 
-  <script src="js/main-api.js?v=6.84"></script>
+  <script src="js/main-api.js?v=6.85"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       // General drawer controls
@@ -2419,43 +2419,7 @@
         track.style.cursor = "grab";
       }
       
-      // 2. Hover play/pause preview (using pointer-events free iframe preview)
-      const hoverCards = document.querySelectorAll(".video-card");
-      hoverCards.forEach(card => {
-        let hoverIframe = null;
-
-        card.addEventListener("mouseenter", () => {
-          const videoSrc = card.getAttribute("data-video-src");
-          if (videoSrc) {
-            let embedUrl = videoSrc;
-            if (embedUrl.includes("youtube.com") || embedUrl.includes("youtu.be") || embedUrl.includes("/embed/")) {
-              if (!embedUrl.includes("autoplay=")) {
-                const separator = embedUrl.includes("?") ? "&" : "?";
-                embedUrl = `${embedUrl}${separator}autoplay=1&mute=1&loop=1&controls=0&modestbranding=1&rel=0`;
-              }
-            }
-            
-            const img = card.querySelector("img");
-            if (img) img.style.opacity = "0";
-
-            if (!hoverIframe) {
-              hoverIframe = document.createElement("iframe");
-              hoverIframe.src = embedUrl;
-              hoverIframe.style.cssText = "position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; z-index: 5; pointer-events: none; object-fit: cover; border-radius: 12px;";
-              card.appendChild(hoverIframe);
-            }
-          }
-        });
-
-        card.addEventListener("mouseleave", () => {
-          if (hoverIframe) {
-            hoverIframe.remove();
-            hoverIframe = null;
-          }
-          const img = card.querySelector("img");
-          if (img) img.style.opacity = "1";
-        });
-      });
+      // 2. Hover play/pause preview disabled (play button displayed via CSS hover overlay)
 
       // 3. Click to open modal popup and play (using event delegation to support dynamic shoppable video additions)
       document.addEventListener("click", (e) => {
