@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Search Results - Kawachi</title>
   <meta name="description" content="Search products and categories on our headless WooCommerce catalog.">
-  <link rel="stylesheet" href="css/global-styles.css?v=6.88">
+  <link rel="stylesheet" href="css/global-styles.css?v=6.89">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <style>
     body, #main-content {
@@ -703,7 +703,7 @@
     </div>
   </footer>
 
-  <script src="js/main-api.js?v=6.88"></script>
+  <script src="js/main-api.js?v=6.89"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       // General drawer controls
@@ -900,16 +900,9 @@
           items.sort((a, b) => b.price - a.price);
         }
 
-        // Update count labels and toggle topbar visibility
+        // Keep sorting dropdown visible at all times
         const topbar = document.querySelector(".search-topbar");
-        if (items.length === 0) {
-          if (topbar) topbar.style.display = "none";
-        } else {
-          if (topbar) topbar.style.display = "flex";
-          if (resultsCountLbl) {
-            resultsCountLbl.textContent = `${items.length} product${items.length === 1 ? '' : 's'} found`;
-          }
-        }
+        if (topbar) topbar.style.display = "flex";
 
         // Render to grid
         if (items.length === 0) {
