@@ -119,85 +119,17 @@ async function loadLiveWooCommerceProducts() {
 
     console.log(`[WooCommerce REST Client] Fetching catalog and rows dynamically in parallel...`);
 
-    const resolveProductImage = (p) => {
-      if (p.images && p.images.length > 0 && p.images[0].src) {
-        return p.images[0].src;
-      }
-      const name = (p.name || "").toUpperCase();
-      const sku = (p.sku || "").toUpperCase();
-
-      if (name.includes("I51") || sku.includes("I51")) {
-        return "http://62.72.31.43/wp-content/uploads/2026/06/I51Blue-1.jpg";
-      }
-      if (name.includes("I73") || sku.includes("I73")) {
-        return "http://62.72.31.43/wp-content/uploads/2026/06/I73-Pink-02_269fd130-21e0-4e75-bd52-1e6cbde6b39a.jpg";
-      }
-      if (name.includes("K555") || sku.includes("K555")) {
-        return "http://62.72.31.43/wp-content/uploads/2026/06/K555-Beige-10.jpg";
-      }
-      if (name.includes("KW13") || sku.includes("KW13")) {
-        return "http://62.72.31.43/wp-content/uploads/2026/06/Modern-Computer-Desk-PC-Corner-Table-Gaming-01copy-Copy-Copy_12c4c8cd-1ed7-4dcd-b5df-6341dd2773a1.jpg";
-      }
-      if (name.includes("KW14") || sku.includes("KW14")) {
-        return "http://62.72.31.43/wp-content/uploads/2026/06/Display_Unit_-kw14_brown_01.jpg";
-      }
-      if (name.includes("KW25") || sku.includes("KW25")) {
-        return "http://62.72.31.43/wp-content/uploads/2026/06/KW25-Beige-01.jpg";
-      }
-      if (name.includes("KW36") || sku.includes("KW36")) {
-        return "http://62.72.31.43/wp-content/uploads/2026/06/ClassicWorkFromHomeTableKW36-01.jpg";
-      }
-      if (name.includes("KW39") || sku.includes("KW39")) {
-        return "http://62.72.31.43/wp-content/uploads/2026/06/FoldingLaptopStudyWritingDeskTableKW39Beige-01_0bdfc0ee-771d-4acc-83c4-c78d609a3379.jpg";
-      }
-      if (name.includes("KW40") || sku.includes("KW40")) {
-        return "http://62.72.31.43/wp-content/uploads/2026/06/WooditLaptopStudyTableKW40-RusticBlack-01.jpg";
-      }
-      if (name.includes("KW67") || sku.includes("KW67")) {
-        return "http://62.72.31.43/wp-content/uploads/2026/06/KW67-beige-02.jpg";
-      }
-      if (name.includes("KW68") || sku.includes("KW68")) {
-        return "http://62.72.31.43/wp-content/uploads/2026/06/KW68-Beige-01.jpg";
-      }
-      if (name.includes("KW69") || sku.includes("KW69")) {
-        return "http://62.72.31.43/wp-content/uploads/2026/06/KeyHolderKW69Brown-01.jpg";
-      }
-      if (name.includes("I125") || sku.includes("I125")) {
-        return "http://62.72.31.43/wp-content/uploads/2026/06/I125-Pink-08_bf2814ec-5bd4-42ea-b0c8-31cff99cdb29.jpg";
-      }
-      if (name.includes("I128") || sku.includes("I128")) {
-        return "http://62.72.31.43/wp-content/uploads/2026/06/I128-LightViolet-01.jpg";
-      }
-      if (name.includes("KW96") || sku.includes("KW96")) {
-        return "http://62.72.31.43/wp-content/uploads/2026/06/KW96-blue-10.jpg";
-      }
-      if (name.includes("K50") || sku.includes("K50")) {
-        return "http://62.72.31.43/wp-content/uploads/2026/06/51xtlKE79KL._AC_SL1000.jpg";
-      }
-      if (name.includes("K505") || sku.includes("K505")) {
-        return "http://62.72.31.43/wp-content/uploads/2026/06/400.jpg";
-      }
-      if (name.includes("I116") || sku.includes("I116") || name.includes("MEDITATION") || name.includes("YOGA CHAIR")) {
-        return "http://62.72.31.43/wp-content/uploads/2026/06/Floor_Medititaion_Chair_i116-Grey-3.jpg";
-      }
-      if (name.includes("LAPTOP TABLE") || name.includes("K37")) {
-        return "http://62.72.31.43/wp-content/uploads/2026/06/61yRxVsXh6L._AC_SL1024_cedfeb70-3ce3-46e2-a364-c1490bc8eb04.jpg";
-      }
-      return "http://62.72.31.43/wp-content/uploads/woocommerce-placeholder.webp";
-    };
-
     const mapWooProduct = (p) => {
       const regularPrice = parseFloat(p.regular_price) || parseFloat(p.price) || 0;
       const currentPrice = parseFloat(p.price) || 0;
-      const resolvedImg = resolveProductImage(p);
       return {
         id: p.id,
         name: p.name,
         price: currentPrice,
         regular_price: regularPrice > currentPrice ? regularPrice : null,
         category: p.categories && p.categories.length > 0 ? p.categories[0].name : "Wellness",
-        image: resolvedImg,
-        images: p.images && p.images.length > 0 ? p.images : [{ src: resolvedImg }],
+        image: p.images && p.images.length > 0 ? p.images[0].src : "",
+        images: p.images || [],
         attributes: p.attributes || [],
         rating: p.average_rating || "4.5",
         reviews: String(p.rating_count || 12),
