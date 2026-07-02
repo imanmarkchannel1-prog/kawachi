@@ -5,11 +5,12 @@ const dotenv = require('dotenv');
 const envRaw = fs.readFileSync('.env', 'utf-8');
 const env = dotenv.parse(envRaw);
 
-const apiUrl = env.VITE_WOO_API_URL;
-const consumerKey = env.VITE_WOO_CONSUMER_KEY;
-const consumerSecret = env.VITE_WOO_CONSUMER_SECRET;
+const apiUrl = env.WOOCOMMERCE_URL || 'http://62.72.31.43';
+const consumerKey = env.WOOCOMMERCE_CONSUMER_KEY;
+const consumerSecret = env.WOOCOMMERCE_CONSUMER_SECRET;
 
-const targetUrl = `${apiUrl}/products?consumer_key=${consumerKey}&consumer_secret=${consumerSecret}&per_page=1`;
+const cleanBaseUrl = apiUrl.replace(/\/wp-json\/wc\/v3\/?$/, '').replace(/\/$/, '');
+const targetUrl = `${cleanBaseUrl}/wp-json/wc/v3/products?consumer_key=${consumerKey}&consumer_secret=${consumerSecret}&per_page=1`;
 
 console.log(`Testing URL: ${targetUrl}`);
 

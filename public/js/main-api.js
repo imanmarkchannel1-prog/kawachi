@@ -215,7 +215,7 @@ class WooCommerceClient {
     this.consumerKey = consumerKey;
     this.consumerSecret = consumerSecret;
     this.useProxy = useProxy;
-    this.mockMode = !this.baseUrl || !this.consumerKey; // Automatically fallback to mockup details if config is empty
+    this.mockMode = !this.useProxy && (!this.baseUrl || !this.consumerKey); // Only fallback to mock mode if not using proxy and config is missing
   }
 
   /**
