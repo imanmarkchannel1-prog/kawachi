@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Search Results - Kawachi</title>
   <meta name="description" content="Search products and categories on our headless WooCommerce catalog.">
-  <link rel="stylesheet" href="css/global-styles.css?v=6.87">
+  <link rel="stylesheet" href="css/global-styles.css?v=6.88">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <style>
     body, #main-content {
@@ -171,15 +171,13 @@
       box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #1E3E7A !important;
     }
     
-    /* Topbar Styles */
     .search-topbar {
-      display: flex !important;
-      justify-content: space-between !important;
+      display: flex;
+      justify-content: flex-end !important;
       align-items: center !important;
-      background: #f8fafc !important;
-      border: 1px solid #e2e8f0 !important;
-      border-radius: 12px !important;
-      padding: 14px 20px !important;
+      background: transparent !important;
+      border: none !important;
+      padding: 0 !important;
       margin-bottom: 24px !important;
       gap: 12px !important;
       flex-wrap: wrap !important;
@@ -572,7 +570,6 @@
       
       <!-- Topbar: Sorting & Results Count -->
       <div class="search-topbar">
-        <div class="results-count-lbl" id="results-count-lbl">0 products found</div>
         <div class="sort-selector-wrapper">
           <label for="sort-select">Sort By:</label>
           <select id="sort-select" class="sort-dropdown-select">
@@ -706,7 +703,7 @@
     </div>
   </footer>
 
-  <script src="js/main-api.js?v=6.87"></script>
+  <script src="js/main-api.js?v=6.88"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       // General drawer controls
