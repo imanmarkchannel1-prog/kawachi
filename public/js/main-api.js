@@ -1579,31 +1579,16 @@ async function hydrateDetailPage() {
     // Initialize Main Image Hover Zoom Lens Effect
     initImageZoom();
 
-    // Hydrate trending products strip ("You May Also Like")
+    // Hydrate trending products strip ("You May Also Like") using the best sellers list
     const trendingStrip = document.getElementById("detail-trending-strip");
     const trendingGrid = document.getElementById("detail-trending-products");
     if (trendingStrip && trendingGrid && window.KawachiProducts) {
-      const related = window.KawachiProducts
+      const related = [...window.KawachiProducts]
         .filter(p => p.id !== product.id)
-        .sort((a, b) => (b.weekly_sales || 0) - (a.weekly_sales || 0))
-        .slice(0, 8);
+        .sort((a, b) => (b.sales_count || b.orders_count || 0) - (a.sales_count || a.orders_count || 0))
+        .slice(0, 10);
       if (related.length > 0) {
-        trendingGrid.innerHTML = related.map(p => {
-          const disc = p.regular_price && p.regular_price > p.price
-            ? Math.round(((p.regular_price - p.price) / p.regular_price) * 100)
-            : null;
-          return `
-              <a href="single-product.html?id=${p.id}" style="flex-shrink:0;width:140px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;text-decoration:none;color:inherit;transition:box-shadow 0.2s,transform 0.2s;" onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 8px 18px rgba(0,0,0,0.09)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
-                <div style="aspect-ratio:1;background:#f8fafc;display:flex;align-items:center;justify-content:center;padding:10px;position:relative;">
-                  ${disc ? `<span style="position:absolute;top:6px;left:6px;background:#CC0C39;color:#fff;font-size:10px;font-weight:700;padding:2px 5px;border-radius:3px;">-${disc}%</span>` : ''}
-                  <img src="${p.image}" alt="${p.name}" style="max-width:100%;max-height:100%;object-fit:contain;">
-                </div>
-                <div style="padding:8px;">
-                  <p style="font-size:11.5px;font-weight:600;color:#0f1111;line-height:1.3;margin:0 0 4px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;">${p.name}</p>
-                  <span style="font-size:13px;font-weight:700;color:#0f1111;">&#8377;${Number(p.price).toLocaleString('en-IN')}</span>
-                </div>
-              </a>`;
-        }).join('');
+        setupStaticSlider(trendingGrid, related);
         trendingStrip.style.display = 'block';
       }
     }
@@ -2824,107 +2809,115 @@ function hydrateDealPodium() {
   }
 }
 
-function hydrateStaticProductMarquees() {
-  if (!window.KawachiProducts) return;
-  const trendingTrack = document.getElementById("static-trending-marquee-track");
-  const bestsellerTrack = document.getElementById("static-bestseller-marquee-track");
+function createFullCardHtml(p) {
+  // Secondary image switcher compatibility dynamically from WooCommerce
+  const mainImg = p.image || (p.images && p.images.length > 0 ? p.images[0].src : "https://via.placeholder.com/600/ffffff/0f172a?text=No+Image");
+  const hoverImg = (p.images && p.images.length > 1) ? p.images[1].src : mainImg;
 
-  if (!trendingTrack && !bestsellerTrack) return;
-
-  function createFullCardHtml(p) {
-    // Secondary image switcher compatibility dynamically from WooCommerce
-    const mainImg = p.image || (p.images && p.images.length > 0 ? p.images[0].src : "https://via.placeholder.com/600/ffffff/0f172a?text=No+Image");
-    const hoverImg = (p.images && p.images.length > 1) ? p.images[1].src : mainImg;
-
-    return `
-      <div class="product-card marquee-product-card" data-gallery-count="2" onclick="if(!event.target.closest('button')) window.location.href='single-product.html?id=${p.id}'">
-        <div class="product-image-container">
-          <button class="product-wishlist-btn" aria-label="Add to Wishlist" onclick="event.stopPropagation();">
-            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+  return `
+    <div class="product-card marquee-product-card" data-gallery-count="2" onclick="if(!event.target.closest('button')) window.location.href='single-product.html?id=${p.id}'">
+      <div class="product-image-container">
+        <button class="product-wishlist-btn" aria-label="Add to Wishlist" onclick="event.stopPropagation();">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+          </svg>
+        </button>
+        <img src="${p.image}" alt="${p.name}" class="product-image" loading="lazy">
+        <img src="${hoverImg}" alt="${p.name}" class="product-image product-gallery-img" loading="lazy">
+        <div class="gallery-dots">
+          <span class="gallery-dot dot-active" data-dot-index="0"></span>
+          <span class="gallery-dot" data-dot-index="1"></span>
+        </div>
+        <div class="product-card-actions">
+          <button class="product-action-btn add-to-cart-quick" data-id="${p.id}" data-name="${p.name}" data-price="${p.price}" aria-label="Add to Cart" onclick="event.stopPropagation();">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path>
             </svg>
           </button>
-          <img src="${p.image}" alt="${p.name}" class="product-image" loading="lazy">
-          <img src="${hoverImg}" alt="${p.name}" class="product-image product-gallery-img" loading="lazy">
-          <div class="gallery-dots">
-            <span class="gallery-dot dot-active" data-dot-index="0"></span>
-            <span class="gallery-dot" data-dot-index="1"></span>
-          </div>
-          <div class="product-card-actions">
-            <button class="product-action-btn add-to-cart-quick" data-id="${p.id}" data-name="${p.name}" data-price="${p.price}" aria-label="Add to Cart" onclick="event.stopPropagation();">
-              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path>
-              </svg>
-            </button>
-          </div>
-        </div>
-        <div class="product-info">
-          <span class="product-category">${p.category || 'lifestyle'}</span>
-          <h3 class="product-title" onclick="window.location.href='single-product.html?id=${p.id}'">${p.name}</h3>
-          ${window.getCardRatingHtml(p.rating, p.reviews)}
-          ${window.getCardPriceRowHtml(p)}
         </div>
       </div>
-    `;
+      <div class="product-info">
+        <span class="product-category">${p.category || 'lifestyle'}</span>
+        <h3 class="product-title" onclick="window.location.href='single-product.html?id=${p.id}'">${p.name}</h3>
+        ${window.getCardRatingHtml(p.rating, p.reviews)}
+        ${window.getCardPriceRowHtml(p)}
+      </div>
+    </div>
+  `;
+}
+
+function setupStaticSlider(track, products) {
+  if (!track) return;
+  const container = track.closest('.static-marquee-container');
+  if (!container) return;
+
+  // Render cards
+  track.innerHTML = products.map(createFullCardHtml).join('');
+
+  // Inject rectangular navigation buttons
+  const prevBtn = document.createElement('button');
+  prevBtn.className = 'static-slider-arrow prev';
+  prevBtn.setAttribute('aria-label', 'Previous Page');
+  prevBtn.innerHTML = `
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width: 24px; height: 24px;">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+    </svg>
+  `;
+
+  const nextBtn = document.createElement('button');
+  nextBtn.className = 'static-slider-arrow next';
+  nextBtn.setAttribute('aria-label', 'Next Page');
+  nextBtn.innerHTML = `
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width: 24px; height: 24px;">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+    </svg>
+  `;
+
+  container.appendChild(prevBtn);
+  container.appendChild(nextBtn);
+
+  let currentIndex = 0;
+
+  function getVisibleCards() {
+    const containerWidth = container.getBoundingClientRect().width;
+    const padding = 88; // space for left/right arrow buttons
+    const count = Math.floor((containerWidth - padding + 24) / 254);
+    return Math.max(1, count);
   }
 
-  function setupStaticSlider(track, products) {
-    if (!track) return;
-    const container = track.closest('.static-marquee-container');
-    if (!container) return;
+  function getMaxIndex() {
+    const cards = track.querySelectorAll(".product-card");
+    return Math.max(0, cards.length - getVisibleCards());
+  }
 
-    // Render cards
-    track.innerHTML = products.map(createFullCardHtml).join('');
+  function updateSlider() {
+    const cards = track.querySelectorAll(".product-card");
+    if (cards.length === 0) return;
+    const cardWidth = 230;
+    const gap = 24;
+    const translation = currentIndex * (cardWidth + gap);
+    track.style.transform = `translateX(-${translation}px)`;
 
-    // Inject rectangular navigation buttons
-    const prevBtn = document.createElement('button');
-    prevBtn.className = 'static-slider-arrow prev';
-    prevBtn.setAttribute('aria-label', 'Previous Page');
-    prevBtn.innerHTML = `
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width: 24px; height: 24px;">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-      </svg>
-    `;
+    prevBtn.disabled = currentIndex === 0;
+    nextBtn.disabled = currentIndex >= getMaxIndex();
+  }
 
-    const nextBtn = document.createElement('button');
-    nextBtn.className = 'static-slider-arrow next';
-    nextBtn.setAttribute('aria-label', 'Next Page');
-    nextBtn.innerHTML = `
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width: 24px; height: 24px;">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-      </svg>
-    `;
-
-    container.appendChild(prevBtn);
-    container.appendChild(nextBtn);
-
-    let currentIndex = 0;
-
-    function getVisibleCards() {
-      const containerWidth = container.getBoundingClientRect().width;
-      const padding = 88; // space for left/right arrow buttons
-      const count = Math.floor((containerWidth - padding + 24) / 254);
-      return Math.max(1, count);
+  let autoScrollInterval = setInterval(() => {
+    const visible = getVisibleCards();
+    const maxIdx = getMaxIndex();
+    if (maxIdx > 0) {
+      if (currentIndex >= maxIdx) {
+        currentIndex = 0;
+      } else {
+        currentIndex = Math.min(currentIndex + visible, maxIdx);
+      }
+      updateSlider();
     }
+  }, 6000);
 
-    function getMaxIndex() {
-      const cards = track.querySelectorAll(".product-card");
-      return Math.max(0, cards.length - getVisibleCards());
-    }
-
-    function updateSlider() {
-      const cards = track.querySelectorAll(".product-card");
-      if (cards.length === 0) return;
-      const cardWidth = 230;
-      const gap = 24;
-      const translation = currentIndex * (cardWidth + gap);
-      track.style.transform = `translateX(-${translation}px)`;
-
-      prevBtn.disabled = currentIndex === 0;
-      nextBtn.disabled = currentIndex >= getMaxIndex();
-    }
-
-    let autoScrollInterval = setInterval(() => {
+  function resetAutoScroll() {
+    clearInterval(autoScrollInterval);
+    autoScrollInterval = setInterval(() => {
       const visible = getVisibleCards();
       const maxIdx = getMaxIndex();
       if (maxIdx > 0) {
@@ -2936,51 +2929,43 @@ function hydrateStaticProductMarquees() {
         updateSlider();
       }
     }, 6000);
-
-    function resetAutoScroll() {
-      clearInterval(autoScrollInterval);
-      autoScrollInterval = setInterval(() => {
-        const visible = getVisibleCards();
-        const maxIdx = getMaxIndex();
-        if (maxIdx > 0) {
-          if (currentIndex >= maxIdx) {
-            currentIndex = 0;
-          } else {
-            currentIndex = Math.min(currentIndex + visible, maxIdx);
-          }
-          updateSlider();
-        }
-      }, 6000);
-    }
-
-    prevBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const visible = getVisibleCards();
-      currentIndex = Math.max(0, currentIndex - visible);
-      updateSlider();
-      resetAutoScroll();
-    });
-
-    nextBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const visible = getVisibleCards();
-      const maxIdx = getMaxIndex();
-      if (currentIndex >= maxIdx) {
-        currentIndex = 0;
-      } else {
-        currentIndex = Math.min(currentIndex + visible, maxIdx);
-      }
-      updateSlider();
-      resetAutoScroll();
-    });
-
-    window.addEventListener('resize', () => {
-      currentIndex = Math.min(currentIndex, getMaxIndex());
-      updateSlider();
-    });
-
-    setTimeout(updateSlider, 200);
   }
+
+  prevBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const visible = getVisibleCards();
+    currentIndex = Math.max(0, currentIndex - visible);
+    updateSlider();
+    resetAutoScroll();
+  });
+
+  nextBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const visible = getVisibleCards();
+    const maxIdx = getMaxIndex();
+    if (currentIndex >= maxIdx) {
+      currentIndex = 0;
+    } else {
+      currentIndex = Math.min(currentIndex + visible, maxIdx);
+    }
+    updateSlider();
+    resetAutoScroll();
+  });
+
+  window.addEventListener('resize', () => {
+    currentIndex = Math.min(currentIndex, getMaxIndex());
+    updateSlider();
+  });
+
+  setTimeout(updateSlider, 200);
+}
+
+function hydrateStaticProductMarquees() {
+  if (!window.KawachiProducts) return;
+  const trendingTrack = document.getElementById("static-trending-marquee-track");
+  const bestsellerTrack = document.getElementById("static-bestseller-marquee-track");
+
+  if (!trendingTrack && !bestsellerTrack) return;
 
   if (trendingTrack) {
     const trendingProducts = [...window.KawachiProducts]
