@@ -11946,6 +11946,35 @@ main.static-page-card .btn-primary-marquee:hover,
   display: block !important;
 }
 
+/* PDP Modern Inline Benefit Pills */
+.pdp-benefits-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0 14px;
+}
+.pdp-benefit-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: #F7F8FA;
+  border: 1px solid #E5E7EB;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #374151;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+.pdp-benefit-pill:hover {
+  background: #EEF0F4;
+  border-color: #D1D5DB;
+}
+.pdp-benefit-pill svg {
+  flex-shrink: 0;
+}
+
 /* Services highlights horizontal strip */
 .services-highlights-strip {
   display: grid !important;

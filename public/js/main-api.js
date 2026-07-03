@@ -1358,11 +1358,43 @@ async function hydrateDetailPage() {
     if (briefDescEl) briefDescEl.innerHTML = product.short_description || product.description || briefText;
     const descCollapseWrapper = document.getElementById("desc-collapse-wrapper");
     if (descCollapseWrapper) {
-      descCollapseWrapper.innerHTML = product.description || `<p style="font-size: 14px; color: #333; line-height: 1.6;">${fullText}</p>`;
+      const rawDescHtml = product.description || `<p style="font-size: 14px; color: #333; line-height: 1.6;">${fullText}</p>`;
+      
+      // Parse description HTML to check for iframes/videos
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(rawDescHtml, 'text/html');
+      const iframe = doc.querySelector('iframe, video');
+      
+      if (iframe) {
+        const iframeHtml = iframe.outerHTML;
+        iframe.remove();
+        const textHtml = doc.body.innerHTML;
+        
+        descCollapseWrapper.innerHTML = `
+          <div class="desc-video-holder" style="margin-bottom: 12px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1); max-width: 100%; aspect-ratio: 16/9;">
+            ${iframeHtml}
+          </div>
+          <div class="desc-text-collapse" id="desc-text-container" style="max-height: 70px; overflow: hidden; position: relative;">
+            ${textHtml}
+          </div>
+        `;
+        descCollapseWrapper.classList.add('has-video');
+      } else {
+        descCollapseWrapper.innerHTML = `
+          <div class="desc-text-collapse" id="desc-text-container" style="max-height: 120px; overflow: hidden; position: relative;">
+            ${rawDescHtml}
+          </div>
+        `;
+        descCollapseWrapper.classList.remove('has-video');
+      }
+      
       // Reset collapse state
       descCollapseWrapper.classList.remove('expanded');
       const readMoreBtn = document.getElementById('desc-read-more-btn');
-      if (readMoreBtn) readMoreBtn.textContent = 'Read More \u25be';
+      if (readMoreBtn) {
+        readMoreBtn.style.display = 'block';
+        readMoreBtn.textContent = 'Read More \u25be';
+      }
     }
 
     // Hydrate specifications tab table depending on product type
@@ -1518,28 +1550,26 @@ async function hydrateDetailPage() {
       });
     }
 
-    // Hydrate direct marketplace purchase buttons (Amazon navy #232F3E + Flipkart blue)
-    const marketplaceContainer = document.getElementById("marketplace-links-container");
+    // Hydrate direct marketplace purchase buttons (side-by-side layout)
     const marketplaceAbove = document.getElementById("marketplace-links-above");
     const query = encodeURIComponent("Kawachi " + product.name);
     const marketplaceHtml = `
-        <div style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
-          <a href="https://www.amazon.in/s?k=${query}" target="_blank" class="premium-marketplace-btn amazon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 16 16" style="flex-shrink:0;">
+        <div style="display: flex; gap: 10px; width: 100%;">
+          <a href="https://www.amazon.in/s?k=${query}" target="_blank" class="premium-marketplace-btn amazon" style="flex: 1; padding: 10px 12px; font-size: 12.5px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" style="flex-shrink:0;">
               <path fill="#FFFFFF" d="M10.813 11.968c.157.083.36.074.5-.05l.005.005a90 90 0 0 1 1.623-1.405c.173-.143.143-.372.006-.563l-.125-.17c-.345-.465-.673-.906-.673-1.791v-3.3l.001-.335c.008-1.265.014-2.421-.933-3.305C10.404.274 9.06 0 8.03 0 6.017 0 3.77.75 3.296 3.24c-.047.264.143.404.316.443l2.054.22c.19-.009.33-.196.366-.387.176-.857.896-1.271 1.703-1.271.435 0 .929.16 1.188.55.264.39.26.91.257 1.376v.432q-.3.033-.621.065c-1.113.114-2.397.246-3.36.67C3.873 5.91 2.94 7.08 2.94 8.798c0 2.2 1.387 3.298 3.168 3.298 1.506 0 2.328-.354 3.489-1.54l.167.246c.274.405.456.675 1.047 1.166ZM6.03 8.431C6.03 6.627 7.647 6.3 9.177 6.3v.57c.001.776.002 1.434-.396 2.133-.336.595-.87.961-1.465.961-.812 0-1.286-.619-1.286-1.533"/>
               <path fill="#FF9900" d="M.435 12.174c2.629 1.603 6.698 4.084 13.183.997.28-.116.475.078.199.431C13.538 13.96 11.312 16 7.57 16 3.832 16 .968 13.446.094 12.386c-.24-.275.036-.4.199-.299z M13.828 11.943c.567-.07 1.468-.027 1.645.204.135.176-.004.966-.233 1.533-.23.563-.572.961-.762 1.115s-.333.094-.23-.137c.105-.23.684-1.663.455-1.963-.213-.278-1.177-.177-1.625-.13l-.09.009q-.142.013-.233.024c-.193.021-.245.027-.274-.032-.074-.209.779-.556 1.347-.623"/>
             </svg>
-            <span style="color: #FF9900;">Buy via Amazon</span>
+            <span style="color: #FF9900; font-weight: 700;">Amazon</span>
           </a>
-          <a href="https://www.flipkart.com/search?q=${query}" target="_blank" class="premium-marketplace-btn flipkart">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" style="flex-shrink:0;">
+          <a href="https://www.flipkart.com/search?q=${query}" target="_blank" class="premium-marketplace-btn flipkart" style="flex: 1; padding: 10px 12px; font-size: 12.5px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" style="flex-shrink:0;">
               <path fill="#FFE500" d="M17 6h-2V5c0-1.65-1.35-3-3-3S9 3.35 9 5v1H7c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-6-1c0-.55.45-1 1-1s1 .45 1 1v1h-2V5zm6 14H7V8h10v11z"/>
             </svg>
-            <span style="color: #FFFFFF;">Buy via <span style="color: #FFE500; font-weight: 800;">Flipkart</span></span>
+            <span style="color: #FFFFFF; font-weight: 700;"><span style="color: #FFE500;">Flipkart</span></span>
           </a>
         </div>
       `;
-    if (marketplaceContainer) marketplaceContainer.innerHTML = marketplaceHtml;
     if (marketplaceAbove) marketplaceAbove.innerHTML = marketplaceHtml;
 
     // Hydrate sticky bar
