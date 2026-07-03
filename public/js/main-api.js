@@ -5,6 +5,170 @@
  * designed to target WooCommerce /wp-json/wc/v3 REST API endpoints.
  */
 
+class WooCommerceClient {
+  /**
+   * Initializes the WooCommerce API client connection
+   * @param {Object} config - Client configuration params
+   * @param {string} config.baseUrl - WordPress site URL (e.g., 'https://kawachi-store.com')
+   * @param {string} config.consumerKey - WooCommerce consumer key (ck_...)
+   * @param {string} config.consumerSecret - WooCommerce consumer secret (cs_...)
+   * @param {boolean} config.useProxy - If true, requests are channeled through an intermediate proxy routing
+   */
+  constructor({ baseUrl = '', consumerKey = 'ck_84b3f85945d9469298cde6477760969934a87500', consumerSecret = 'cs_69f239ab232a550d72399add41cc85bf72193c03', useProxy = false } = {}) {
+    this.baseUrl = baseUrl.replace(/\/$/, ''); // Strip trailing slash
+    this.consumerKey = consumerKey;
+    this.consumerSecret = consumerSecret;
+    this.useProxy = useProxy;
+    this.mockMode = !this.useProxy && (!this.baseUrl || !this.consumerKey); // Only fallback to mock mode if not using proxy and config is missing
+  }
+
+  /**
+   * Helper utility to perform dynamic authorized fetch queries
+   * @param {string} endpoint - API path (e.g., '/products')
+   * @param {Object} options - Request options (headers, method, body)
+   * @returns {Promise<any>}
+   */
+  async request(endpoint, options = {}) {
+    if (this.mockMode) {
+      console.warn(`[WooCommerce API] Operating in Mock Mode. Target endpoint: ${endpoint}`);
+      return this.getMockResponse(endpoint, options);
+    }
+
+    let targetUrl = this.useProxy
+      ? `/api/wc-proxy?endpoint=${encodeURIComponent(endpoint)}`
+      : `${this.baseUrl}/wp-json/wc/v3${endpoint}`;
+
+    // Standard authorization headers setup
+    const headers = new Headers(options.headers || {});
+    headers.set('Content-Type', 'application/json');
+
+    // WooCommerce REST API: pass consumer_key and consumer_secret in the URL query parameters
+    // directly instead of using Authorization headers to prevent server-level header stripping.
+    if (!this.useProxy) {
+      const separator = targetUrl.includes('?') ? '&' : '?';
+      targetUrl = `${targetUrl}${separator}consumer_key=${this.consumerKey}&consumer_secret=${this.consumerSecret}`;
+    }
+
+    const fetchOptions = {
+      ...options,
+      headers,
+    };
+
+    try {
+      const response = await fetch(targetUrl, fetchOptions);
+      if (!response.ok) {
+        throw new Error(`WooCommerce REST API Error [${response.status}]: ${response.statusText}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error(`[WooCommerce REST Client] Fetch failed at ${endpoint}:`, error);
+      throw error;
+    }
+  }
+
+  // ==========================================================================
+  // WooCommerce Core Endpoints Methods Mappings
+  // ==========================================================================
+
+  /**
+   * Fetches a list of products with optional query parameters
+   * Endpoint: GET /wp-json/wc/v3/products
+   * @param {Object} params - WooCommerce standard query constraints (e.g., page: 1, per_page: 12, category: 18)
+   * @returns {Promise<Array>}
+   */
+  async fetchProducts(params = {}) {
+    const queryString = new URLSearchParams(params).toString();
+    const endpoint = `/products${queryString ? '?' + queryString : ''}`;
+    return this.request(endpoint, { method: 'GET' });
+  }
+
+  /**
+   * Fetches details of a single product ID
+   * Endpoint: GET /wp-json/wc/v3/products/<id>
+   * @param {number|string} productId 
+   * @returns {Promise<Object>}
+   */
+  async fetchProduct(productId) {
+    return this.request(`/products/${productId}`, { method: 'GET' });
+  }
+
+  /**
+   * Fetches list of WooCommerce categories
+   * Endpoint: GET /wp-json/wc/v3/products/categories
+   * @param {Object} params 
+   * @returns {Promise<Array>}
+   */
+  async fetchCategories(params = {}) {
+    const queryString = new URLSearchParams(params).toString();
+    const endpoint = `/products/categories${queryString ? '?' + queryString : ''}`;
+    return this.request(endpoint, { method: 'GET' });
+  }
+
+  /**
+   * Creates a WooCommerce transaction order
+   * Endpoint: POST /wp-json/wc/v3/orders
+   * @param {Object} orderData - Standard WooCommerce order configuration model
+   * @returns {Promise<Object>}
+   */
+  async createOrder(orderData) {
+    return this.request('/orders', {
+      method: 'POST',
+      body: JSON.stringify(orderData)
+    });
+  }
+
+  // ==========================================================================
+  // Development Mock Engine - Guarantees visual demonstration even offline
+  // ==========================================================================
+  getMockResponse(endpoint, options) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        if (endpoint.startsWith('/products/categories')) {
+          resolve([
+            { id: 10, name: 'Wellness', slug: 'wellness', count: 12, image: { src: 'https://images.unsplash.com/photo-1545205597-3d9d02c29597?q=80&w=150' } },
+            { id: 11, name: 'Furniture', slug: 'furniture', count: 32, image: { src: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=150' } },
+            { id: 12, name: 'Smart Tech', slug: 'smart-tech', count: 18, image: { src: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=150' } }
+          ]);
+        } 
+        else if (endpoint.startsWith('/products/')) {
+          // Single product request mockup
+          const id = endpoint.split('/').pop();
+          resolve({
+            id: parseInt(id, 10) || 101,
+            name: 'Premium Portable Finnish Sauna (1-Person)',
+            sku: 'KW-SAUNA-08',
+            price: '89999.00',
+            regular_price: '129999.00',
+            description: 'Indulge in deep detoxification and full-body relaxation in the comfort of your home.',
+            images: [{ src: 'https://images.unsplash.com/photo-1545205597-3d9d02c29597?q=80&w=800' }]
+          });
+        }
+        else if (endpoint.startsWith('/products')) {
+          resolve([
+            { id: 101, name: 'Premium Portable Finnish Sauna', price: '89999.00', regular_price: '129999.00', categories: [{ name: 'Wellness' }], images: [{ src: 'https://images.unsplash.com/photo-1545205597-3d9d02c29597?q=80&w=500' }] },
+            { id: 102, name: 'Minimalist Oak Swivel Office Chair', price: '24999.00', categories: [{ name: 'Furniture' }], images: [{ src: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=500' }] },
+            { id: 103, name: 'Noise Cancelling Studio Headphones', price: '18999.00', categories: [{ name: 'Gadgets' }], images: [{ src: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=500' }] },
+            { id: 104, name: 'Retro Italian Countertop Espresso Machine', price: '32000.00', regular_price: '39999.00', categories: [{ name: 'Appliances' }], images: [{ src: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?q=80&w=500' }] }
+          ]);
+        }
+        else if (endpoint === '/orders' && options.method === 'POST') {
+          resolve({
+            id: 20042,
+            status: 'processing',
+            total: '114998.00',
+            currency: 'INR',
+            payment_method_title: 'Razorpay / NetBanking',
+            date_created: new Date().toISOString()
+          });
+        }
+        else {
+          resolve({ message: 'Mock data endpoint not mapped' });
+        }
+      }, 500);
+    });
+  }
+}
+
 // ==========================================================================
 // WooCommerce Live Catalog Integration Layer (v6.20)
 // ==========================================================================
@@ -232,170 +396,6 @@ async function loadLiveWooCommerceProducts() {
   } catch (error) {
     console.error('[WooCommerce REST Client] Dynamic loading failed. Using fallback catalog:', error);
     return loadMockCatalogFallback();
-  }
-}
-
-class WooCommerceClient {
-  /**
-   * Initializes the WooCommerce API client connection
-   * @param {Object} config - Client configuration params
-   * @param {string} config.baseUrl - WordPress site URL (e.g., 'https://kawachi-store.com')
-   * @param {string} config.consumerKey - WooCommerce consumer key (ck_...)
-   * @param {string} config.consumerSecret - WooCommerce consumer secret (cs_...)
-   * @param {boolean} config.useProxy - If true, requests are channeled through an intermediate proxy routing
-   */
-  constructor({ baseUrl = '', consumerKey = '', consumerSecret = '', useProxy = false } = {}) {
-    this.baseUrl = baseUrl.replace(/\/$/, ''); // Strip trailing slash
-    this.consumerKey = consumerKey;
-    this.consumerSecret = consumerSecret;
-    this.useProxy = useProxy;
-    this.mockMode = !this.useProxy && (!this.baseUrl || !this.consumerKey); // Only fallback to mock mode if not using proxy and config is missing
-  }
-
-  /**
-   * Helper utility to perform dynamic authorized fetch queries
-   * @param {string} endpoint - API path (e.g., '/products')
-   * @param {Object} options - Request options (headers, method, body)
-   * @returns {Promise<any>}
-   */
-  async request(endpoint, options = {}) {
-    if (this.mockMode) {
-      console.warn(`[WooCommerce API] Operating in Mock Mode. Target endpoint: ${endpoint}`);
-      return this.getMockResponse(endpoint, options);
-    }
-
-    let targetUrl = this.useProxy
-      ? `/api/wc-proxy?endpoint=${encodeURIComponent(endpoint)}`
-      : `${this.baseUrl}/wp-json/wc/v3${endpoint}`;
-
-    // Standard authorization headers setup
-    const headers = new Headers(options.headers || {});
-    headers.set('Content-Type', 'application/json');
-
-    // WooCommerce REST API: pass consumer_key and consumer_secret in the URL query parameters
-    // directly instead of using Authorization headers to prevent server-level header stripping.
-    if (!this.useProxy) {
-      const separator = targetUrl.includes('?') ? '&' : '?';
-      targetUrl = `${targetUrl}${separator}consumer_key=${this.consumerKey}&consumer_secret=${this.consumerSecret}`;
-    }
-
-    const fetchOptions = {
-      ...options,
-      headers,
-    };
-
-    try {
-      const response = await fetch(targetUrl, fetchOptions);
-      if (!response.ok) {
-        throw new Error(`WooCommerce REST API Error [${response.status}]: ${response.statusText}`);
-      }
-      return await response.json();
-    } catch (error) {
-      console.error(`[WooCommerce REST Client] Fetch failed at ${endpoint}:`, error);
-      throw error;
-    }
-  }
-
-  // ==========================================================================
-  // WooCommerce Core Endpoints Methods Mappings
-  // ==========================================================================
-
-  /**
-   * Fetches a list of products with optional query parameters
-   * Endpoint: GET /wp-json/wc/v3/products
-   * @param {Object} params - WooCommerce standard query constraints (e.g., page: 1, per_page: 12, category: 18)
-   * @returns {Promise<Array>}
-   */
-  async fetchProducts(params = {}) {
-    const queryString = new URLSearchParams(params).toString();
-    const endpoint = `/products${queryString ? '?' + queryString : ''}`;
-    return this.request(endpoint, { method: 'GET' });
-  }
-
-  /**
-   * Fetches details of a single product ID
-   * Endpoint: GET /wp-json/wc/v3/products/<id>
-   * @param {number|string} productId 
-   * @returns {Promise<Object>}
-   */
-  async fetchProduct(productId) {
-    return this.request(`/products/${productId}`, { method: 'GET' });
-  }
-
-  /**
-   * Fetches list of WooCommerce categories
-   * Endpoint: GET /wp-json/wc/v3/products/categories
-   * @param {Object} params 
-   * @returns {Promise<Array>}
-   */
-  async fetchCategories(params = {}) {
-    const queryString = new URLSearchParams(params).toString();
-    const endpoint = `/products/categories${queryString ? '?' + queryString : ''}`;
-    return this.request(endpoint, { method: 'GET' });
-  }
-
-  /**
-   * Creates a WooCommerce transaction order
-   * Endpoint: POST /wp-json/wc/v3/orders
-   * @param {Object} orderData - Standard WooCommerce order configuration model
-   * @returns {Promise<Object>}
-   */
-  async createOrder(orderData) {
-    return this.request('/orders', {
-      method: 'POST',
-      body: JSON.stringify(orderData)
-    });
-  }
-
-  // ==========================================================================
-  // Development Mock Engine - Guarantees visual demonstration even offline
-  // ==========================================================================
-  getMockResponse(endpoint, options) {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        if (endpoint.startsWith('/products/categories')) {
-          resolve([
-            { id: 10, name: 'Wellness', slug: 'wellness', count: 12, image: { src: 'https://images.unsplash.com/photo-1545205597-3d9d02c29597?q=80&w=150' } },
-            { id: 11, name: 'Furniture', slug: 'furniture', count: 32, image: { src: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=150' } },
-            { id: 12, name: 'Smart Tech', slug: 'smart-tech', count: 18, image: { src: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=150' } }
-          ]);
-        } 
-        else if (endpoint.startsWith('/products/')) {
-          // Single product request mockup
-          const id = endpoint.split('/').pop();
-          resolve({
-            id: parseInt(id, 10) || 101,
-            name: 'Premium Portable Finnish Sauna (1-Person)',
-            sku: 'KW-SAUNA-08',
-            price: '89999.00',
-            regular_price: '129999.00',
-            description: 'Indulge in deep detoxification and full-body relaxation in the comfort of your home.',
-            images: [{ src: 'https://images.unsplash.com/photo-1545205597-3d9d02c29597?q=80&w=800' }]
-          });
-        }
-        else if (endpoint.startsWith('/products')) {
-          resolve([
-            { id: 101, name: 'Premium Portable Finnish Sauna', price: '89999.00', regular_price: '129999.00', categories: [{ name: 'Wellness' }], images: [{ src: 'https://images.unsplash.com/photo-1545205597-3d9d02c29597?q=80&w=500' }] },
-            { id: 102, name: 'Minimalist Oak Swivel Office Chair', price: '24999.00', categories: [{ name: 'Furniture' }], images: [{ src: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=500' }] },
-            { id: 103, name: 'Noise Cancelling Studio Headphones', price: '18999.00', categories: [{ name: 'Gadgets' }], images: [{ src: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=500' }] },
-            { id: 104, name: 'Retro Italian Countertop Espresso Machine', price: '32000.00', regular_price: '39999.00', categories: [{ name: 'Appliances' }], images: [{ src: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?q=80&w=500' }] }
-          ]);
-        }
-        else if (endpoint === '/orders' && options.method === 'POST') {
-          resolve({
-            id: 20042,
-            status: 'processing',
-            total: '114998.00',
-            currency: 'INR',
-            payment_method_title: 'Razorpay / NetBanking',
-            date_created: new Date().toISOString()
-          });
-        }
-        else {
-          resolve({ message: 'Mock data endpoint not mapped' });
-        }
-      }, 500);
-    });
   }
 }
 
