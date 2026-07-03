@@ -15,10 +15,11 @@ const apiUrl = process.env.WOOCOMMERCE_URL || 'http://62.72.31.43/';
 const cleanBaseUrl = apiUrl.replace(/\/wp-json\/wc\/v3\/?$/, '').replace(/\/$/, '');
 
 // Initialize WooCommerce Client securely in backend environment
+// This handles OAuth 1.0a automatically over plain HTTP connections
 const WooCommerce = new WooCommerceRestApi({
   url: cleanBaseUrl,
-  consumerKey: process.env.WOOCOMMERCE_CONSUMER_KEY,
-  consumerSecret: process.env.WOOCOMMERCE_CONSUMER_SECRET,
+  consumerKey: 'ck_84b3f85945d9469298cde6477760969934a87500',
+  consumerSecret: 'cs_69f239ab232a550d72399add41cc85bf72193c03',
   version: 'wc/v3'
 });
 
@@ -34,7 +35,7 @@ app.all('/api/wc-proxy', (req, res) => {
   // Parse path and query parameters
   const [path, queryString] = endpoint.split('?');
   const cleanPath = path.replace(/^\//, '');
-  
+
   const params = {};
   if (queryString) {
     const urlSearchParams = new URLSearchParams(queryString);

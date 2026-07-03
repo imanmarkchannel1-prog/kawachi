@@ -137,7 +137,9 @@ async function loadLiveWooCommerceProducts() {
         weekly_sales: Math.round((p.total_sales || 100) / 4),
         description: p.description || p.short_description || "",
         short_description: p.short_description || "",
-        featured: p.featured || false
+        featured: p.featured || false,
+        tags: p.tags || [],
+        stock_status: p.stock_status || "instock"
       };
     };
 
@@ -171,12 +173,6 @@ async function loadLiveWooCommerceProducts() {
       return loadMockCatalogFallback();
     }
 
-    // Save specific rows globally
-    window.KawachiBestSellers = bestSellers;
-    window.KawachiTrendingNow = trendingNow;
-    window.KawachiFurniture = furniture;
-    window.KawachiKitchen = kitchen;
-
     // Combine and deduplicate for search and general loops
     const allProducts = [
       ...bestSellers,
@@ -188,6 +184,47 @@ async function loadLiveWooCommerceProducts() {
     const uniqueProducts = allProducts.filter((p, index, self) => 
       self.findIndex(t => t.id === p.id) === index
     );
+
+    // Save specific rows globally with dynamic rules:
+    // 1. Best Sellers: Sort by total_sales (popularity) from the catalog
+    window.KawachiBestSellers = [...uniqueProducts]
+      .sort((a, b) => (b.sales_count || 0) - (a.sales_count || 0))
+      .slice(0, 8);
+
+    // 2. Trending Now: Filter by 'trending' tag, otherwise select a random assortment
+    const trendingTagProducts = uniqueProducts.filter(p => 
+      p.tags && p.tags.some(t => t.name.toLowerCase() === 'trending' || t.slug === 'trending')
+    );
+    if (trendingTagProducts.length > 0) {
+      window.KawachiTrendingNow = trendingTagProducts.slice(0, 8);
+    } else {
+      // Random shuffle fallback
+      window.KawachiTrendingNow = [...uniqueProducts]
+        .sort(() => 0.5 - Math.random())
+        .slice(0, 8);
+    }
+
+    // 3. Home Furniture: Filter dynamically from unique catalog based on keywords, fallback to query row
+    const furnitureCategoryProducts = uniqueProducts.filter(p => 
+      p.category && (
+        p.category.toLowerCase().includes('furniture') || 
+        p.category.toLowerCase().includes('desk') || 
+        p.category.toLowerCase().includes('table') || 
+        p.category.toLowerCase().includes('chair')
+      )
+    );
+    window.KawachiFurniture = furnitureCategoryProducts.length > 0 ? furnitureCategoryProducts.slice(0, 8) : furniture;
+
+    // 4. Kitchen Storage: Filter dynamically from unique catalog based on keywords, fallback to query row
+    const kitchenCategoryProducts = uniqueProducts.filter(p => 
+      p.category && (
+        p.category.toLowerCase().includes('kitchen') || 
+        p.category.toLowerCase().includes('rack') || 
+        p.category.toLowerCase().includes('spice') || 
+        p.category.toLowerCase().includes('organizer')
+      )
+    );
+    window.KawachiKitchen = kitchenCategoryProducts.length > 0 ? kitchenCategoryProducts.slice(0, 8) : kitchen;
 
     window.KawachiProducts = uniqueProducts;
     console.log(`[WooCommerce REST Client] Loaded dynamic product rows successfully. Unique count: ${uniqueProducts.length}`);
