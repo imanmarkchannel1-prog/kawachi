@@ -235,9 +235,6 @@ async function loadLiveWooCommerceProducts() {
   }
 }
 
-// Start products retrieval immediately on script parse
-window.KawachiProductsPromise = loadLiveWooCommerceProducts();
-
 class WooCommerceClient {
   /**
    * Initializes the WooCommerce API client connection
@@ -401,6 +398,9 @@ class WooCommerceClient {
     });
   }
 }
+
+// Start products retrieval immediately after WooCommerceClient is initialized
+window.KawachiProductsPromise = loadLiveWooCommerceProducts();
 
 // ==========================================================================
 // 2. Global Headless Cart System & Dynamic Formatting
