@@ -1298,6 +1298,16 @@ async function hydrateDetailPage() {
       galleryShimmer.style.display = "none";
     }
 
+    // Hydrate and show real price, hide price skeleton loader
+    const priceShimmer = document.getElementById("price-skeleton-shimmer");
+    if (priceShimmer) {
+      priceShimmer.style.display = "none";
+    }
+    const priceRealContent = document.getElementById("price-real-content");
+    if (priceRealContent) {
+      priceRealContent.style.opacity = "1";
+    }
+
     // Hydrate category link
     const categoryEls = document.querySelectorAll(".category-link, .product-category-detail");
     categoryEls.forEach(el => {

@@ -1520,7 +1520,6 @@ ul, ol {
   background-size: 200% 100%;
   border-radius: 4px;
   animation: shimmer-anim 1.5s linear infinite;
-  animation-delay: 2s; /* Starts shimmering after exactly 2 seconds */
 }
 
 .skeleton-img {
