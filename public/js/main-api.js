@@ -1278,11 +1278,24 @@ async function hydrateDetailPage() {
       deliveryEl.textContent = date.toLocaleDateString('en-IN', options);
     }
 
-    // Hydrate main gallery image
+    // Hydrate main gallery image and hide skeleton loaders
     const mainImg = document.getElementById("gallery-main-img");
     if (mainImg) {
       mainImg.src = product.image;
       mainImg.alt = product.name;
+      mainImg.style.display = "block"; // Show real image
+    }
+    const galleryContainer = document.getElementById("zoom-lens-container");
+    if (galleryContainer) {
+      galleryContainer.classList.remove("skeleton-card");
+    }
+    const galleryOverlay = document.getElementById("gallery-skeleton-overlay");
+    if (galleryOverlay) {
+      galleryOverlay.style.display = "none";
+    }
+    const galleryShimmer = document.getElementById("gallery-skeleton-shimmer");
+    if (galleryShimmer) {
+      galleryShimmer.style.display = "none";
     }
 
     // Hydrate category link

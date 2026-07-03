@@ -11863,14 +11863,40 @@ main.static-page-card .btn-primary-marquee:hover,
   .product-gallery-3col .thumbnail-vertical-strip {
     display: flex !important;
     flex-direction: row !important;
+    flex-wrap: wrap !important;
     gap: 8px !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
+    overflow-x: visible !important;
+    overflow-y: visible !important;
     width: 100% !important;
     max-height: none !important;
     padding-bottom: 4px !important;
-    justify-content: center !important;
+    justify-content: flex-start !important;
   }
+  .purchase-widget-card {
+    display: none !important;
+  }
+  #marketplace-links-container > div {
+    flex-direction: row !important;
+    gap: 10px !important;
+  }
+  #marketplace-links-container .premium-marketplace-btn {
+    margin-top: 0 !important;
+    font-size: 12.5px !important;
+    padding: 10px 12px !important;
+    flex: 1 1 0% !important;
+  }
+}
+
+#tab-description iframe {
+  width: 100% !important;
+  max-width: 800px !important;
+  aspect-ratio: 16 / 9 !important;
+  height: auto !important;
+  border-radius: 16px !important;
+  border: none !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+  margin: 16px auto !important;
+  display: block !important;
 }
 
 /* Column 2: Center Details */
