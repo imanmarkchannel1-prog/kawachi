@@ -1468,56 +1468,100 @@ ul, ol {
   text-decoration: line-through;
 }
 
-/* Skeleton Loading Animation */
-.skeleton-pulse {
-  background: linear-gradient(90deg, #F1F5F9 25%, #E2E8F0 50%, #F1F5F9 75%);
-  background-size: 200% 100%;
-  animation: loading-skeleton-anim 1.5s infinite;
-}
-
-@keyframes loading-skeleton-anim {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
-
+/* Two-Stage Skeleton Loading Animation */
 .skeleton-card {
   border: 1px solid var(--color-border);
   background-color: var(--color-bg-white);
   border-radius: var(--radius-lg);
   padding: 16px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  width: 100%;
+  min-width: 240px;
+}
+
+/* Stage 1 (0 to 2 seconds): Circular loading spinner overlay */
+.skeleton-spinner-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--color-bg-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  opacity: 1;
+  visibility: visible;
+  animation: fadeOutSpinner 0.4s forwards;
+  animation-delay: 2s; /* Fades out after exactly 2 seconds */
+}
+
+.skeleton-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3.5px solid #e2e8f0;
+  border-top: 3.5px solid #1463FF;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+/* Stage 2 (2 seconds onwards): Grow and shrink pulsing animation */
+.skeleton-el {
+  background-color: #cbd5e1;
+  border-radius: 4px;
+  opacity: 0.35;
+  animation: pulse 1.6s ease-in-out infinite;
+  animation-delay: 2s; /* Starts pulsing after exactly 2 seconds */
 }
 
 .skeleton-img {
   aspect-ratio: 1;
+  width: 100%;
   border-radius: var(--radius-md);
   margin-bottom: 16px;
 }
 
 .skeleton-text-sm {
   height: 12px;
-  border-radius: 4px;
   width: 40%;
   margin-bottom: 12px;
 }
 
 .skeleton-text-lg {
   height: 18px;
-  border-radius: 4px;
   width: 90%;
   margin-bottom: 8px;
 }
 
 .skeleton-text-md {
   height: 14px;
-  border-radius: 4px;
   width: 70%;
   margin-bottom: 20px;
 }
 
 .skeleton-price {
   height: 20px;
-  border-radius: 4px;
   width: 30%;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeOutSpinner {
+  0% { opacity: 1; visibility: visible; }
+  100% { opacity: 0; visibility: hidden; }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.35; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.02); }
 }
 
 /* ==========================================================================
