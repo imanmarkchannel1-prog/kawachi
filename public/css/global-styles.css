@@ -10702,7 +10702,57 @@ main.static-page-card .btn-primary-marquee:hover,
 .split-section-subtitle {
   font-size: 11.5px !important;
   color: var(--color-text-muted) !important;
-  margin: -12px 0 16px 0 !important;
+  margin: -20px 0 16px 0 !important;
+}
+
+/* Sidebar list row item skeleton loading layout */
+.skeleton-row-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+  padding: 12px !important;
+  border-radius: 12px !important;
+  border: 1px solid transparent !important;
+  position: relative;
+  overflow: hidden;
+  height: 104px;
+  box-sizing: border-box;
+}
+
+.skeleton-row-img {
+  width: 78px !important;
+  height: 78px !important;
+  border-radius: 10px !important;
+  flex-shrink: 0;
+}
+
+.skeleton-row-meta {
+  display: flex !important;
+  flex-direction: column !important;
+  flex-grow: 1;
+}
+
+.skeleton-row-name {
+  height: 15px;
+  width: 85%;
+  margin-bottom: 6px;
+}
+
+.skeleton-row-category {
+  height: 11px;
+  width: 45%;
+  margin-bottom: 6px;
+}
+
+.skeleton-row-rating {
+  height: 11px;
+  width: 30%;
+  margin-bottom: 8px;
+}
+
+.skeleton-row-price {
+  height: 16px;
+  width: 40%;
 }
 
 .bubble-categories-row {
@@ -11638,15 +11688,16 @@ main.static-page-card .btn-primary-marquee:hover,
 .split-promo-banner {
   margin-top: 24px !important;
   background: linear-gradient(135deg, #091e3a 0%, #1e3c72 100%) !important;
-  border-radius: 16px !important;
-  padding: 22px 24px !important;
+  border-radius: 12px !important;
+  padding: 24px !important;
+  height: 180px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
   overflow: hidden !important;
   position: relative !important;
   box-shadow: var(--shadow-sm) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-sizing: border-box !important;
   transition: all 0.3s ease !important;
   text-decoration: none !important;
 }
@@ -11654,31 +11705,32 @@ main.static-page-card .btn-primary-marquee:hover,
 .split-promo-banner:hover {
   transform: translateY(-2px) !important;
   box-shadow: var(--shadow-md) !important;
-  border-color: rgba(255, 255, 255, 0.15) !important;
 }
 
 .split-promo-banner .banner-content {
-  max-width: 65% !important;
+  max-width: 60% !important;
   z-index: 2 !important;
   text-align: left !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
 }
 
 .split-promo-banner .banner-badge {
-  background: rgba(255, 255, 255, 0.15) !important;
+  background: rgba(255, 255, 255, 0.25) !important;
   color: #FFFFFF !important;
-  font-size: 9px !important;
-  font-weight: 800 !important;
-  padding: 3.5px 10px !important;
+  font-size: 8.5px !important;
+  font-weight: 850 !important;
+  padding: 3px 8px !important;
   border-radius: 30px !important;
   letter-spacing: 0.5px !important;
   text-transform: uppercase !important;
   display: inline-block !important;
-  margin-bottom: 8px !important;
+  margin-bottom: 10px !important;
 }
 
 .split-promo-banner .banner-title {
-  font-family: var(--font-display) !important;
-  font-size: 17px !important;
+  font-size: 18px !important;
   font-weight: 800 !important;
   line-height: 1.25 !important;
   color: #FFFFFF !important;
@@ -11710,7 +11762,8 @@ main.static-page-card .btn-primary-marquee:hover,
 }
 
 .split-promo-banner .banner-image-wrap {
-  width: 30% !important;
+  width: 35% !important;
+  height: 100% !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -11718,14 +11771,17 @@ main.static-page-card .btn-primary-marquee:hover,
 }
 
 .split-promo-banner .banner-image-wrap img {
-  max-width: 100px !important;
-  height: auto !important;
-  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.25)) !important;
-  transition: transform 0.3s ease !important;
+  max-height: 140px !important;
+  width: auto !important;
+  max-width: 100% !important;
+  object-fit: contain !important;
+  filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.25)) !important;
+  transform: translateY(10px) scale(1.05) !important;
+  transition: transform 0.4s ease !important;
 }
 
 .split-promo-banner:hover .banner-image-wrap img {
-  transform: scale(1.08) rotate(-2deg) !important;
+  transform: translateY(10px) scale(1.1) rotate(-1deg) !important;
 }
 
 /* ==========================================================================

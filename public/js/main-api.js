@@ -14,8 +14,7 @@ class WooCommerceClient {
    * @param {string} config.consumerSecret - WooCommerce consumer secret (cs_...)
    * @param {boolean} config.useProxy - If true, requests are channeled through an intermediate proxy routing
    */
-  constructor({ baseUrl = '', consumerKey = 'ck_84b3f85945d9469298cde6477760969934a87500', consumerSecret = 'cs_69f239ab232a550d72399add41cc85bf72193c03', useProxy = false } = {}) {
-    this.baseUrl = baseUrl.replace(/\/$/, ''); // Strip trailing slash
+  constructor({ baseUrl = 'http://62.72.31.43', consumerKey = 'ck_84b3f85945d9469298cde6477760969934a87500', consumerSecret = 'cs_69f239ab232a550d72399add41cc85bf72193c03', useProxy = true } = {}) {
     this.consumerKey = consumerKey;
     this.consumerSecret = consumerSecret;
     this.useProxy = useProxy;
@@ -129,7 +128,7 @@ class WooCommerceClient {
             { id: 11, name: 'Furniture', slug: 'furniture', count: 32, image: { src: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=150' } },
             { id: 12, name: 'Smart Tech', slug: 'smart-tech', count: 18, image: { src: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=150' } }
           ]);
-        } 
+        }
         else if (endpoint.startsWith('/products/')) {
           // Single product request mockup
           const id = endpoint.split('/').pop();
@@ -267,7 +266,7 @@ const MOCK_CATALOG = [
 ];
 
 function loadMockCatalogFallback() {
-  window.KawachiBestSellers = MOCK_CATALOG.filter(p => p.sales_count > 400).sort((a,b) => b.sales_count - a.sales_count);
+  window.KawachiBestSellers = MOCK_CATALOG.filter(p => p.sales_count > 400).sort((a, b) => b.sales_count - a.sales_count);
   window.KawachiTrendingNow = [...MOCK_CATALOG].reverse().slice(0, 8);
   window.KawachiFurniture = MOCK_CATALOG.filter(p => p.category === 'Home Furniture');
   window.KawachiKitchen = MOCK_CATALOG.filter(p => p.category === 'Kitchen Storage');
@@ -345,7 +344,7 @@ async function loadLiveWooCommerceProducts() {
       ...kitchen
     ];
 
-    const uniqueProducts = allProducts.filter((p, index, self) => 
+    const uniqueProducts = allProducts.filter((p, index, self) =>
       self.findIndex(t => t.id === p.id) === index
     );
 
@@ -356,7 +355,7 @@ async function loadLiveWooCommerceProducts() {
       .slice(0, 8);
 
     // 2. Trending Now: Filter by 'trending' tag, otherwise select a random assortment
-    const trendingTagProducts = uniqueProducts.filter(p => 
+    const trendingTagProducts = uniqueProducts.filter(p =>
       p.tags && p.tags.some(t => t.name.toLowerCase() === 'trending' || t.slug === 'trending')
     );
     if (trendingTagProducts.length > 0) {
@@ -369,22 +368,22 @@ async function loadLiveWooCommerceProducts() {
     }
 
     // 3. Home Furniture: Filter dynamically from unique catalog based on keywords, fallback to query row
-    const furnitureCategoryProducts = uniqueProducts.filter(p => 
+    const furnitureCategoryProducts = uniqueProducts.filter(p =>
       p.category && (
-        p.category.toLowerCase().includes('furniture') || 
-        p.category.toLowerCase().includes('desk') || 
-        p.category.toLowerCase().includes('table') || 
+        p.category.toLowerCase().includes('furniture') ||
+        p.category.toLowerCase().includes('desk') ||
+        p.category.toLowerCase().includes('table') ||
         p.category.toLowerCase().includes('chair')
       )
     );
     window.KawachiFurniture = furnitureCategoryProducts.length > 0 ? furnitureCategoryProducts.slice(0, 8) : furniture;
 
     // 4. Kitchen Storage: Filter dynamically from unique catalog based on keywords, fallback to query row
-    const kitchenCategoryProducts = uniqueProducts.filter(p => 
+    const kitchenCategoryProducts = uniqueProducts.filter(p =>
       p.category && (
-        p.category.toLowerCase().includes('kitchen') || 
-        p.category.toLowerCase().includes('rack') || 
-        p.category.toLowerCase().includes('spice') || 
+        p.category.toLowerCase().includes('kitchen') ||
+        p.category.toLowerCase().includes('rack') ||
+        p.category.toLowerCase().includes('spice') ||
         p.category.toLowerCase().includes('organizer')
       )
     );
@@ -419,7 +418,7 @@ function formatRupees(amount) {
 /**
  * Generates dynamic 5-star row with blue count link for cards
  */
-window.getCardRatingHtml = function(rating, reviews) {
+window.getCardRatingHtml = function (rating, reviews) {
   if (!rating) return "";
   const rVal = parseFloat(rating) || 4.5;
   let starsHtml = "";
@@ -455,24 +454,24 @@ window.getCardRatingHtml = function(rating, reviews) {
 /**
  * Generates dynamic price layout including limited time deal badge & inline discount for cards
  */
-window.getCardPriceRowHtml = function(p) {
+window.getCardPriceRowHtml = function (p) {
   const formattedPrice = formatRupees(p.price);
   const formattedRegularPrice = p.regular_price ? formatRupees(p.regular_price) : "";
-  
+
   let limitedDealHtml = "";
   if (p.limited_time_deal) {
     limitedDealHtml = `<span class="limited-deal-tag" style="background-color: #CC0C39; color: #FFFFFF; padding: 3px 6px; font-size: 10px; font-weight: 700; border-radius: 2px; display: inline-block; margin-bottom: 4px; line-height: 1; align-self: flex-start; text-transform: capitalize;">Limited time deal</span>`;
   }
-  
+
   let discountHtml = "";
   if (p.regular_price && p.regular_price > p.price) {
     const discountPct = Math.round(((p.regular_price - p.price) / p.regular_price) * 100);
     discountHtml = `<span style="color: #CC0C39; font-size: 15px; font-weight: 400; margin-right: 4px;">-${discountPct}%</span>`;
   }
-  
+
   const priceParts = formattedPrice.replace('₹', '').split('.');
   const wholePrice = priceParts[0];
-  
+
   return `
     <div style="display: flex; flex-direction: column; gap: 2px; align-items: flex-start; margin-top: 4px;">
       ${limitedDealHtml}
@@ -645,12 +644,12 @@ class CartSystem {
       if (pageSubtotal) {
         pageSubtotal.textContent = formatRupees(subtotal);
       }
-      
+
       const cartMobileTotal = document.getElementById("cart-mobile-total-val");
       if (cartMobileTotal) {
         cartMobileTotal.textContent = formatRupees(subtotal);
       }
-      
+
       const summaryContainer = document.getElementById("summary-cart-items");
       if (summaryContainer) {
         if (this.items.length === 0) {
@@ -1182,33 +1181,33 @@ async function hydrateDetailPage() {
   }
 
   if (product) {
-      // Hydrate title
-      const titleEls = document.querySelectorAll(".product-title-detail, .breadcrumb-product-title");
-      titleEls.forEach(el => {
-        el.textContent = product.name;
-      });
+    // Hydrate title
+    const titleEls = document.querySelectorAll(".product-title-detail, .breadcrumb-product-title");
+    titleEls.forEach(el => {
+      el.textContent = product.name;
+    });
 
-      // Hydrate average rating numerical values
-      const avgRatingVal = document.getElementById("avg-rating-val");
-      if (avgRatingVal) avgRatingVal.textContent = product.rating || "4.6";
+    // Hydrate average rating numerical values
+    const avgRatingVal = document.getElementById("avg-rating-val");
+    if (avgRatingVal) avgRatingVal.textContent = product.rating || "4.6";
 
-      const ratingCountVal = document.getElementById("rating-count-val");
-      if (ratingCountVal) ratingCountVal.textContent = product.reviews || "124";
+    const ratingCountVal = document.getElementById("rating-count-val");
+    if (ratingCountVal) ratingCountVal.textContent = product.reviews || "124";
 
-      // Hydrate dynamic stars
-      const starsRow = document.getElementById("detail-stars-row");
-      if (starsRow) {
-        const rating = parseFloat(product.rating) || 4.6;
-        let starsHtml = "";
-        for (let i = 1; i <= 5; i++) {
-          if (rating >= i) {
-            // Full star
-            starsHtml += `<svg width="15" height="15" fill="currentColor" viewBox="0 0 20 20" style="color: #DE7921; display: inline-block; vertical-align: middle; margin-right: 2px;"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>`;
-          } else if (rating > i - 1) {
-            // Fractional/Half star using a gradient fill
-            const pct = Math.round((rating - (i - 1)) * 100);
-            const gradId = `star-grad-${Math.random().toString(36).substr(2, 9)}`;
-            starsHtml += `
+    // Hydrate dynamic stars
+    const starsRow = document.getElementById("detail-stars-row");
+    if (starsRow) {
+      const rating = parseFloat(product.rating) || 4.6;
+      let starsHtml = "";
+      for (let i = 1; i <= 5; i++) {
+        if (rating >= i) {
+          // Full star
+          starsHtml += `<svg width="15" height="15" fill="currentColor" viewBox="0 0 20 20" style="color: #DE7921; display: inline-block; vertical-align: middle; margin-right: 2px;"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>`;
+        } else if (rating > i - 1) {
+          // Fractional/Half star using a gradient fill
+          const pct = Math.round((rating - (i - 1)) * 100);
+          const gradId = `star-grad-${Math.random().toString(36).substr(2, 9)}`;
+          starsHtml += `
               <svg width="15" height="15" viewBox="0 0 20 20" style="display: inline-block; vertical-align: middle; margin-right: 2px;">
                 <defs>
                   <linearGradient id="${gradId}">
@@ -1219,276 +1218,276 @@ async function hydrateDetailPage() {
                 <path fill="url(#${gradId})" d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
               </svg>
             `;
-          } else {
-            // Empty star
-            starsHtml += `<svg width="15" height="15" fill="#E5E7EB" viewBox="0 0 20 20" style="display: inline-block; vertical-align: middle; margin-right: 2px;"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>`;
-          }
-        }
-        starsRow.innerHTML = starsHtml;
-      }
-      
-      // Hydrate Limited Time Deal Badge
-      const pLimitedDeal = document.getElementById("p-limited-deal-badge");
-      if (pLimitedDeal) {
-        if (product.limited_time_deal) {
-          pLimitedDeal.style.display = "inline-block";
         } else {
-          pLimitedDeal.style.display = "none";
+          // Empty star
+          starsHtml += `<svg width="15" height="15" fill="#E5E7EB" viewBox="0 0 20 20" style="display: inline-block; vertical-align: middle; margin-right: 2px;"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>`;
         }
       }
+      starsRow.innerHTML = starsHtml;
+    }
 
-      // Hydrate price — always include ₹ symbol
-      const priceFormatted = '₹' + Number(product.price).toLocaleString('en-IN');
-      const priceDisplay = document.getElementById("p-price-display");
-      if (priceDisplay) priceDisplay.textContent = priceFormatted;
-      const priceDisplayLarge = document.getElementById("p-price-display-large");
-      if (priceDisplayLarge) priceDisplayLarge.textContent = Number(product.price).toLocaleString('en-IN');
-      const purchaseWidgetPrice = document.getElementById("purchase-widget-price");
-      if (purchaseWidgetPrice) purchaseWidgetPrice.textContent = priceFormatted;
-      
-      // Hydrate old price
-      const priceOldDisplays = document.querySelectorAll(".price-old");
-      priceOldDisplays.forEach(el => {
-        el.textContent = product.regular_price ? formatRupees(product.regular_price) : "";
-      });
-
-      // Calculate and hydrate discount badge / percentage
-      const discountPercentage = document.getElementById("product-discount-percentage");
-      const discountBadge = document.getElementById("product-discount-badge");
-      if (product.regular_price && product.regular_price > product.price) {
-        const pct = Math.round(((product.regular_price - product.price) / product.regular_price) * 100);
-        if (discountPercentage) {
-          discountPercentage.textContent = `-${pct}%`;
-          discountPercentage.style.display = "inline-block";
-        }
-        if (discountBadge) {
-          discountBadge.textContent = `SAVE ${pct}%`;
-          discountBadge.style.display = "inline-block";
-        }
+    // Hydrate Limited Time Deal Badge
+    const pLimitedDeal = document.getElementById("p-limited-deal-badge");
+    if (pLimitedDeal) {
+      if (product.limited_time_deal) {
+        pLimitedDeal.style.display = "inline-block";
       } else {
-        if (discountPercentage) discountPercentage.style.display = "none";
-        if (discountBadge) discountBadge.style.display = "none";
+        pLimitedDeal.style.display = "none";
       }
+    }
 
-      // Hydrate delivery estimate date
-      const deliveryEl = document.getElementById("delivery-date-estimate");
-      if (deliveryEl) {
-        const date = new Date();
-        date.setDate(date.getDate() + 5);
-        const options = { weekday: 'long', day: 'numeric', month: 'long' };
-        deliveryEl.textContent = date.toLocaleDateString('en-IN', options);
+    // Hydrate price — always include ₹ symbol
+    const priceFormatted = '₹' + Number(product.price).toLocaleString('en-IN');
+    const priceDisplay = document.getElementById("p-price-display");
+    if (priceDisplay) priceDisplay.textContent = priceFormatted;
+    const priceDisplayLarge = document.getElementById("p-price-display-large");
+    if (priceDisplayLarge) priceDisplayLarge.textContent = Number(product.price).toLocaleString('en-IN');
+    const purchaseWidgetPrice = document.getElementById("purchase-widget-price");
+    if (purchaseWidgetPrice) purchaseWidgetPrice.textContent = priceFormatted;
+
+    // Hydrate old price
+    const priceOldDisplays = document.querySelectorAll(".price-old");
+    priceOldDisplays.forEach(el => {
+      el.textContent = product.regular_price ? formatRupees(product.regular_price) : "";
+    });
+
+    // Calculate and hydrate discount badge / percentage
+    const discountPercentage = document.getElementById("product-discount-percentage");
+    const discountBadge = document.getElementById("product-discount-badge");
+    if (product.regular_price && product.regular_price > product.price) {
+      const pct = Math.round(((product.regular_price - product.price) / product.regular_price) * 100);
+      if (discountPercentage) {
+        discountPercentage.textContent = `-${pct}%`;
+        discountPercentage.style.display = "inline-block";
       }
-      
-      // Hydrate main gallery image
-      const mainImg = document.getElementById("gallery-main-img");
-      if (mainImg) {
-        mainImg.src = product.image;
-        mainImg.alt = product.name;
+      if (discountBadge) {
+        discountBadge.textContent = `SAVE ${pct}%`;
+        discountBadge.style.display = "inline-block";
       }
-      
-      // Hydrate category link
-      const categoryEls = document.querySelectorAll(".category-link, .product-category-detail");
-      categoryEls.forEach(el => {
-        el.textContent = product.category;
-      });
+    } else {
+      if (discountPercentage) discountPercentage.style.display = "none";
+      if (discountBadge) discountBadge.style.display = "none";
+    }
 
-      // Hydrate bought count badge
-      const boughtEl = document.getElementById("detail-bought-count");
-      if (boughtEl) {
-        const salesCount = product.sales_count || product.orders_count || 0;
-        const countVal = boughtEl.querySelector(".bought-count-val");
-        if (countVal && salesCount > 0) {
-          countVal.textContent = `${salesCount.toLocaleString('en-IN')}+ bought`;
-          boughtEl.style.display = "inline-flex";
-        } else {
-          boughtEl.style.display = "none";
-        }
+    // Hydrate delivery estimate date
+    const deliveryEl = document.getElementById("delivery-date-estimate");
+    if (deliveryEl) {
+      const date = new Date();
+      date.setDate(date.getDate() + 5);
+      const options = { weekday: 'long', day: 'numeric', month: 'long' };
+      deliveryEl.textContent = date.toLocaleDateString('en-IN', options);
+    }
+
+    // Hydrate main gallery image
+    const mainImg = document.getElementById("gallery-main-img");
+    if (mainImg) {
+      mainImg.src = product.image;
+      mainImg.alt = product.name;
+    }
+
+    // Hydrate category link
+    const categoryEls = document.querySelectorAll(".category-link, .product-category-detail");
+    categoryEls.forEach(el => {
+      el.textContent = product.category;
+    });
+
+    // Hydrate bought count badge
+    const boughtEl = document.getElementById("detail-bought-count");
+    if (boughtEl) {
+      const salesCount = product.sales_count || product.orders_count || 0;
+      const countVal = boughtEl.querySelector(".bought-count-val");
+      if (countVal && salesCount > 0) {
+        countVal.textContent = `${salesCount.toLocaleString('en-IN')}+ bought`;
+        boughtEl.style.display = "inline-flex";
+      } else {
+        boughtEl.style.display = "none";
       }
+    }
 
-      // Hydrate breadcrumbs
-      const breadcrumbCat = document.querySelector('nav[aria-label="Breadcrumb"] a[href*="categories"]');
-      if (breadcrumbCat) breadcrumbCat.textContent = product.category;
-      const breadcrumbTitle = document.querySelector('nav[aria-label="Breadcrumb"] span');
-      if (breadcrumbTitle) breadcrumbTitle.textContent = product.name;
+    // Hydrate breadcrumbs
+    const breadcrumbCat = document.querySelector('nav[aria-label="Breadcrumb"] a[href*="categories"]');
+    if (breadcrumbCat) breadcrumbCat.textContent = product.category;
+    const breadcrumbTitle = document.querySelector('nav[aria-label="Breadcrumb"] span');
+    if (breadcrumbTitle) breadcrumbTitle.textContent = product.name;
 
-      // Define descriptions mapping
-      const categoryKeywords = product.category.toLowerCase();
-      let briefText = `${product.name} is a high-performance, premium product designed to elevate your everyday living. Features state-of-the-art craftsmanship and highly durable materials.`;
-      let fullText = `The ${product.name} is meticulously engineered for comfort, durability, and convenience. Made with high-quality materials and smart utility concepts, this product offers an elite experience.`;
+    // Define descriptions mapping
+    const categoryKeywords = product.category.toLowerCase();
+    let briefText = `${product.name} is a high-performance, premium product designed to elevate your everyday living. Features state-of-the-art craftsmanship and highly durable materials.`;
+    let fullText = `The ${product.name} is meticulously engineered for comfort, durability, and convenience. Made with high-quality materials and smart utility concepts, this product offers an elite experience.`;
 
-      if (categoryKeywords.includes("furniture")) {
-        if (product.name.toLowerCase().includes("meditation")) {
-          briefText = "Experience ultimate comfort with our 5-position adjustable floor folding chair, ideal for reading, gaming, and meditation.";
-          fullText = "The Kawachi meditation floor chair offers superior back support with its reinforced iron frame adjustable across 5 angles. Wrapped in breathable fabric and padded with thick foam, it maintains its shape and comfort for long hours of seating. Perfect for cozy reading, movie nights, or group discussions.";
-        } else if (product.name.toLowerCase().includes("bedside")) {
-          briefText = "A sleek, modern 3-drawer bedside storage cabinet crafted with solid wood legs and premium hardware.";
-          fullText = "Add mid-century modern styling to your bedroom with the Kawachi Wooden Bedside Table. Features three spacious drawers with easy-glide rollers to organize essentials. Supported by solid pine legs for maximum stability, the top surface is waterproof and scratch-resistant, perfect for holding a bedside lamp and books.";
-        }
-      } else if (categoryKeywords.includes("kitchen")) {
-        briefText = "Perfect for kitchens, pantries, and storage rooms. Made with rust-proof steel and sturdy support panels.";
-        fullText = "Optimize your kitchen storage with this premium Kawachi rack. Meticulously designed for heavy loads, it is made of rust-proof carbon steel with a sleek protective finish. Its space-saving dimensions fit neatly into counters, cabinets, or floors to keep utensils and jars organized.";
-      } else if (categoryKeywords.includes("study") || categoryKeywords.includes("office") || product.name.toLowerCase().includes("desk") || /\btable\b/i.test(product.name)) {
-        briefText = "A highly versatile, space-saving foldable desk designed for study sessions, laptop work, and breakfast in bed. Features an integrated device slot and cup holder.";
-        fullText = "Maximize your comfort and productivity with the Kawachi Foldable Laptop Table. Meticulously designed for modern utility, it features a heavy-duty MDF top and carbon steel legs with anti-slip rubber protectors. The slot allows you to secure your iPad, Kindle or phone at the perfect viewing angle. Folds flat in seconds for easy storage under the bed or behind the door.";
-      } else if (categoryKeywords.includes("wellness") || categoryKeywords.includes("beauty") || product.name.toLowerCase().includes("sauna")) {
-        briefText = "A portable home steam sauna spa complete with a 2-liter steam pot, remote control, and folding chair.";
-        fullText = "Transform your home into a luxury wellness spa with the Kawachi Portable Steam Sauna Box. The multi-layered insulated tent retains steam and heat effectively. It features a digital remote control to adjust time and heat level across 9 settings. Ideal for muscle relaxation, skin detoxing, and overall health rejuvenation.";
-      } else if (categoryKeywords.includes("utility") || product.name.toLowerCase().includes("trolley") || product.name.toLowerCase().includes("cart")) {
-        briefText = "A mobile multi-tier steel utility storage cart with mesh baskets and lockable caster wheels.";
-        fullText = "Perfect for kitchens, offices, and bathrooms, the Kawachi Rolling Storage Cart features three deep wire mesh baskets that allow airflow to prevent moisture buildup. Heavy-duty carbon steel frame supports heavy loads, while 360-degree wheels (2 lockable) provide smooth mobility and steady placement.";
-      } else if (categoryKeywords.includes("decor") || product.name.toLowerCase().includes("shelf") || product.name.toLowerCase().includes("shelves")) {
-        briefText = "A set of rustic wooden floating display shelves with industrial iron brackets for wall decor.";
-        fullText = "Enhance your wall space with Kawachi rustic floating shelves. Ideal for displaying potted plants, photo frames, and collectables. Made of high-grade natural wood with matte black iron brackets, these shelves are a stylish combination of rustic warmth and industrial strength.";
+    if (categoryKeywords.includes("furniture")) {
+      if (product.name.toLowerCase().includes("meditation")) {
+        briefText = "Experience ultimate comfort with our 5-position adjustable floor folding chair, ideal for reading, gaming, and meditation.";
+        fullText = "The Kawachi meditation floor chair offers superior back support with its reinforced iron frame adjustable across 5 angles. Wrapped in breathable fabric and padded with thick foam, it maintains its shape and comfort for long hours of seating. Perfect for cozy reading, movie nights, or group discussions.";
+      } else if (product.name.toLowerCase().includes("bedside")) {
+        briefText = "A sleek, modern 3-drawer bedside storage cabinet crafted with solid wood legs and premium hardware.";
+        fullText = "Add mid-century modern styling to your bedroom with the Kawachi Wooden Bedside Table. Features three spacious drawers with easy-glide rollers to organize essentials. Supported by solid pine legs for maximum stability, the top surface is waterproof and scratch-resistant, perfect for holding a bedside lamp and books.";
       }
+    } else if (categoryKeywords.includes("kitchen")) {
+      briefText = "Perfect for kitchens, pantries, and storage rooms. Made with rust-proof steel and sturdy support panels.";
+      fullText = "Optimize your kitchen storage with this premium Kawachi rack. Meticulously designed for heavy loads, it is made of rust-proof carbon steel with a sleek protective finish. Its space-saving dimensions fit neatly into counters, cabinets, or floors to keep utensils and jars organized.";
+    } else if (categoryKeywords.includes("study") || categoryKeywords.includes("office") || product.name.toLowerCase().includes("desk") || /\btable\b/i.test(product.name)) {
+      briefText = "A highly versatile, space-saving foldable desk designed for study sessions, laptop work, and breakfast in bed. Features an integrated device slot and cup holder.";
+      fullText = "Maximize your comfort and productivity with the Kawachi Foldable Laptop Table. Meticulously designed for modern utility, it features a heavy-duty MDF top and carbon steel legs with anti-slip rubber protectors. The slot allows you to secure your iPad, Kindle or phone at the perfect viewing angle. Folds flat in seconds for easy storage under the bed or behind the door.";
+    } else if (categoryKeywords.includes("wellness") || categoryKeywords.includes("beauty") || product.name.toLowerCase().includes("sauna")) {
+      briefText = "A portable home steam sauna spa complete with a 2-liter steam pot, remote control, and folding chair.";
+      fullText = "Transform your home into a luxury wellness spa with the Kawachi Portable Steam Sauna Box. The multi-layered insulated tent retains steam and heat effectively. It features a digital remote control to adjust time and heat level across 9 settings. Ideal for muscle relaxation, skin detoxing, and overall health rejuvenation.";
+    } else if (categoryKeywords.includes("utility") || product.name.toLowerCase().includes("trolley") || product.name.toLowerCase().includes("cart")) {
+      briefText = "A mobile multi-tier steel utility storage cart with mesh baskets and lockable caster wheels.";
+      fullText = "Perfect for kitchens, offices, and bathrooms, the Kawachi Rolling Storage Cart features three deep wire mesh baskets that allow airflow to prevent moisture buildup. Heavy-duty carbon steel frame supports heavy loads, while 360-degree wheels (2 lockable) provide smooth mobility and steady placement.";
+    } else if (categoryKeywords.includes("decor") || product.name.toLowerCase().includes("shelf") || product.name.toLowerCase().includes("shelves")) {
+      briefText = "A set of rustic wooden floating display shelves with industrial iron brackets for wall decor.";
+      fullText = "Enhance your wall space with Kawachi rustic floating shelves. Ideal for displaying potted plants, photo frames, and collectables. Made of high-grade natural wood with matte black iron brackets, these shelves are a stylish combination of rustic warmth and industrial strength.";
+    }
 
-      // Hydrate descriptions
-      const briefDescEl = document.querySelector(".product-description-brief");
-      if (briefDescEl) briefDescEl.textContent = briefText;
-      const tabDescEl = document.querySelector("#tab-description p");
-      if (tabDescEl) tabDescEl.textContent = fullText;
+    // Hydrate descriptions
+    const briefDescEl = document.querySelector(".product-description-brief");
+    if (briefDescEl) briefDescEl.textContent = briefText;
+    const tabDescEl = document.querySelector("#tab-description p");
+    if (tabDescEl) tabDescEl.textContent = fullText;
 
-      // Hydrate specifications tab table depending on product type
-      const tabSpecsTable = document.querySelector("#tab-specs table tbody");
-      if (tabSpecsTable) {
-        let specsHtml = `
+    // Hydrate specifications tab table depending on product type
+    const tabSpecsTable = document.querySelector("#tab-specs table tbody");
+    if (tabSpecsTable) {
+      let specsHtml = `
           <tr style="border-bottom: 1px solid var(--color-border);"><td style="padding: 12px 0; font-weight: 600; color: var(--color-primary); width: 200px;">Product Name</td><td style="padding: 12px 0; color: var(--color-text-muted);">${product.name}</td></tr>
           <tr style="border-bottom: 1px solid var(--color-border);"><td style="padding: 12px 0; font-weight: 600; color: var(--color-primary);">Category</td><td style="padding: 12px 0; color: var(--color-text-muted);">${product.category}</td></tr>
           <tr style="border-bottom: 1px solid var(--color-border);"><td style="padding: 12px 0; font-weight: 600; color: var(--color-primary);">Price</td><td style="padding: 12px 0; color: var(--color-text-muted);">${formatRupees(product.price)}</td></tr>
         `;
 
-        if (categoryKeywords.includes("furniture") && product.name.toLowerCase().includes("meditation")) {
-          specsHtml += `
+      if (categoryKeywords.includes("furniture") && product.name.toLowerCase().includes("meditation")) {
+        specsHtml += `
             <tr style="border-bottom: 1px solid var(--color-border);"><td style="padding: 12px 0; font-weight: 600; color: var(--color-primary);">Material</td><td style="padding: 12px 0; color: var(--color-text-muted);">Linen Fabric, Metal Frame, Foam</td></tr>
             <tr style="border-bottom: 1px solid var(--color-border);"><td style="padding: 12px 0; font-weight: 600; color: var(--color-primary);">Adjustability</td><td style="padding: 12px 0; color: var(--color-text-muted);">5 Positions (90 to 180 degrees)</td></tr>
             <tr style="border-bottom: 1px solid var(--color-border);"><td style="padding: 12px 0; font-weight: 600; color: var(--color-primary);">Dimensions</td><td style="padding: 12px 0; color: var(--color-text-muted);">110 cm x 52 cm x 12 cm</td></tr>
             <tr style="border-bottom: 1px solid var(--color-border);"><td style="padding: 12px 0; font-weight: 600; color: var(--color-primary);">Weight Capacity</td><td style="padding: 12px 0; color: var(--color-text-muted);">Up to 120 kg</td></tr>
           `;
-        } else if (categoryKeywords.includes("furniture") && product.name.toLowerCase().includes("bedside")) {
-          specsHtml += `
+      } else if (categoryKeywords.includes("furniture") && product.name.toLowerCase().includes("bedside")) {
+        specsHtml += `
             <tr style="border-bottom: 1px solid var(--color-border);"><td style="padding: 12px 0; font-weight: 600; color: var(--color-primary);">Material</td><td style="padding: 12px 0; color: var(--color-text-muted);">Solid Pine Wood &amp; MDF Board</td></tr>
             <tr style="border-bottom: 1px solid var(--color-border);"><td style="padding: 12px 0; font-weight: 600; color: var(--color-primary);">Storage Drawers</td><td style="padding: 12px 0; color: var(--color-text-muted);">3 Drawers with soft-close rollers</td></tr>
             <tr style="border-bottom: 1px solid var(--color-border);"><td style="padding: 12px 0; font-weight: 600; color: var(--color-primary);">Dimensions</td><td style="padding: 12px 0; color: var(--color-text-muted);">45 cm x 40 cm x 60 cm</td></tr>
             <tr style="border-bottom: 1px solid var(--color-border);"><td style="padding: 12px 0; font-weight: 600; color: var(--color-primary);">Waterproof Finish</td><td style="padding: 12px 0; color: var(--color-text-muted);">Yes, Premium Matte Laminate</td></tr>
           `;
-        } else if (categoryKeywords.includes("study") || categoryKeywords.includes("office") || product.name.toLowerCase().includes("desk") || product.name.toLowerCase().includes("table")) {
-          specsHtml += `
+      } else if (categoryKeywords.includes("study") || categoryKeywords.includes("office") || product.name.toLowerCase().includes("desk") || product.name.toLowerCase().includes("table")) {
+        specsHtml += `
             <tr style="border-bottom: 1px solid var(--color-border);"><td style="padding: 12px 0; font-weight: 600; color: var(--color-primary);">Material</td><td style="padding: 12px 0; color: var(--color-text-muted);">Heavy-duty MDF top &amp; Carbon Steel legs</td></tr>
             <tr style="border-bottom: 1px solid var(--color-border);"><td style="padding: 12px 0; font-weight: 600; color: var(--color-primary);">Features</td><td style="padding: 12px 0; color: var(--color-text-muted);">Foldable legs, Cup holder, Tablet slot, Anti-slip rubber caps</td></tr>
             <tr style="border-bottom: 1px solid var(--color-border);"><td style="padding: 12px 0; font-weight: 600; color: var(--color-primary);">Dimensions</td><td style="padding: 12px 0; color: var(--color-text-muted);">60 cm x 40 cm x 28 cm</td></tr>
             <tr style="border-bottom: 1px solid var(--color-border);"><td style="padding: 12px 0; font-weight: 600; color: var(--color-primary);">Net Weight</td><td style="padding: 12px 0; color: var(--color-text-muted);">2.2 kg</td></tr>
           `;
-        } else if (categoryKeywords.includes("wellness") || categoryKeywords.includes("beauty") || product.name.toLowerCase().includes("sauna")) {
-          specsHtml += `
+      } else if (categoryKeywords.includes("wellness") || categoryKeywords.includes("beauty") || product.name.toLowerCase().includes("sauna")) {
+        specsHtml += `
             <tr style="border-bottom: 1px solid var(--color-border);"><td style="padding: 12px 0; font-weight: 600; color: var(--color-primary);">Material</td><td style="padding: 12px 0; color: var(--color-text-muted);">Waterproof Fabric &amp; Insulating Cotton</td></tr>
             <tr style="border-bottom: 1px solid var(--color-border);"><td style="padding: 12px 0; font-weight: 600; color: var(--color-primary);">Capacity</td><td style="padding: 12px 0; color: var(--color-text-muted);">2.0L Steam Generator with Digital Remote</td></tr>
             <tr style="border-bottom: 1px solid var(--color-border);"><td style="padding: 12px 0; font-weight: 600; color: var(--color-primary);">Power / Wattage</td><td style="padding: 12px 0; color: var(--color-text-muted);">1000W Max</td></tr>
             <tr style="border-bottom: 1px solid var(--color-border);"><td style="padding: 12px 0; font-weight: 600; color: var(--color-primary);">Safety</td><td style="padding: 12px 0; color: var(--color-text-muted);">Auto-off dry boil protection &amp; Timer control</td></tr>
           `;
-        } else if (categoryKeywords.includes("utility") || product.name.toLowerCase().includes("trolley") || product.name.toLowerCase().includes("cart")) {
-          specsHtml += `
+      } else if (categoryKeywords.includes("utility") || product.name.toLowerCase().includes("trolley") || product.name.toLowerCase().includes("cart")) {
+        specsHtml += `
             <tr style="border-bottom: 1px solid var(--color-border);"><td style="padding: 12px 0; font-weight: 600; color: var(--color-primary);">Material</td><td style="padding: 12px 0; color: var(--color-text-muted);">Rust-proof Powder Coated Carbon Steel</td></tr>
             <tr style="border-bottom: 1px solid var(--color-border);"><td style="padding: 12px 0; font-weight: 600; color: var(--color-primary);">Load Capacity</td><td style="padding: 12px 0; color: var(--color-text-muted);">Up to 60 kg total (20 kg per shelf)</td></tr>
             <tr style="border-bottom: 1px solid var(--color-border);"><td style="padding: 12px 0; font-weight: 600; color: var(--color-primary);">Casters / Wheels</td><td style="padding: 12px 0; color: var(--color-text-muted);">360-degree lockable caster wheels</td></tr>
             <tr style="border-bottom: 1px solid var(--color-border);"><td style="padding: 12px 0; font-weight: 600; color: var(--color-primary);">Finish</td><td style="padding: 12px 0; color: var(--color-text-muted);">Matte anti-corrosive mesh storage baskets</td></tr>
           `;
-        } else if (categoryKeywords.includes("decor") || product.name.toLowerCase().includes("shelf") || product.name.toLowerCase().includes("shelves")) {
-          specsHtml += `
+      } else if (categoryKeywords.includes("decor") || product.name.toLowerCase().includes("shelf") || product.name.toLowerCase().includes("shelves")) {
+        specsHtml += `
             <tr style="border-bottom: 1px solid var(--color-border);"><td style="padding: 12px 0; font-weight: 600; color: var(--color-primary);">Material</td><td style="padding: 12px 0; color: var(--color-text-muted);">Natural Paulownia Wood &amp; Metal Brackets</td></tr>
             <tr style="border-bottom: 1px solid var(--color-border);"><td style="padding: 12px 0; font-weight: 600; color: var(--color-primary);">Set Quantity</td><td style="padding: 12px 0; color: var(--color-text-muted);">Set of 3 display ledges (S, M, L)</td></tr>
             <tr style="border-bottom: 1px solid var(--color-border);"><td style="padding: 12px 0; font-weight: 600; color: var(--color-primary);">Mounting Hardware</td><td style="padding: 12px 0; color: var(--color-text-muted);">Wall anchors, screws, and leveler included</td></tr>
             <tr style="border-bottom: 1px solid var(--color-border);"><td style="padding: 12px 0; font-weight: 600; color: var(--color-primary);">Weight Rating</td><td style="padding: 12px 0; color: var(--color-text-muted);">Up to 15 kg per shelf</td></tr>
           `;
-        } else {
-          specsHtml += `
+      } else {
+        specsHtml += `
             <tr style="border-bottom: 1px solid var(--color-border);"><td style="padding: 12px 0; font-weight: 600; color: var(--color-primary);">Finish / Style</td><td style="padding: 12px 0; color: var(--color-text-muted);">Matte, modern utilities concept</td></tr>
             <tr style="border-bottom: 1px solid var(--color-border);"><td style="padding: 12px 0; font-weight: 600; color: var(--color-primary);">Quality Checked</td><td style="padding: 12px 0; color: var(--color-text-muted);">Yes, certified quality inspections</td></tr>
           `;
-        }
-        tabSpecsTable.innerHTML = specsHtml;
       }
+      tabSpecsTable.innerHTML = specsHtml;
+    }
 
-      // Render attributes/variations dynamically from WooCommerce if available
-      const variationSections = document.querySelectorAll(".variation-section");
-      variationSections.forEach(sec => {
-        if (product.attributes && product.attributes.length > 0) {
-          sec.style.display = "block";
-          const label = sec.querySelector("label");
-          const container = sec.querySelector("div");
-          
-          if (label && container) {
-            const attr = product.attributes[0];
-            label.textContent = `Select ${attr.name}:`;
-            
-            container.innerHTML = attr.options.map((opt, idx) => {
-              const isActive = idx === 0 ? "active" : "";
-              const activeStyle = idx === 0 ? "border: 1px solid #007185; background: #E7F4F5; color: #0F1111;" : "";
-              return `
+    // Render attributes/variations dynamically from WooCommerce if available
+    const variationSections = document.querySelectorAll(".variation-section");
+    variationSections.forEach(sec => {
+      if (product.attributes && product.attributes.length > 0) {
+        sec.style.display = "block";
+        const label = sec.querySelector("label");
+        const container = sec.querySelector("div");
+
+        if (label && container) {
+          const attr = product.attributes[0];
+          label.textContent = `Select ${attr.name}:`;
+
+          container.innerHTML = attr.options.map((opt, idx) => {
+            const isActive = idx === 0 ? "active" : "";
+            const activeStyle = idx === 0 ? "border: 1px solid #007185; background: #E7F4F5; color: #0F1111;" : "";
+            return `
                 <button class="btn btn-secondary ${isActive}" style="padding: 8px 16px; font-size: 12px; font-weight: 700; border-radius: 4px; ${activeStyle}">${opt}</button>
               `;
-            }).join("");
+          }).join("");
 
-            // Add click listeners to switch variations
-            const buttons = container.querySelectorAll("button");
-            buttons.forEach(btn => {
-              btn.addEventListener("click", () => {
-                buttons.forEach(b => {
-                  b.classList.remove("active");
-                  b.style.border = "";
-                  b.style.background = "";
-                  b.style.color = "";
-                });
-                btn.classList.add("active");
-                btn.style.border = "1px solid #007185";
-                btn.style.background = "#E7F4F5";
-                btn.style.color = "#0F1111";
+          // Add click listeners to switch variations
+          const buttons = container.querySelectorAll("button");
+          buttons.forEach(btn => {
+            btn.addEventListener("click", () => {
+              buttons.forEach(b => {
+                b.classList.remove("active");
+                b.style.border = "";
+                b.style.background = "";
+                b.style.color = "";
               });
+              btn.classList.add("active");
+              btn.style.border = "1px solid #007185";
+              btn.style.background = "#E7F4F5";
+              btn.style.color = "#0F1111";
             });
-          }
-        } else {
-          sec.style.display = "none";
+          });
         }
-      });
+      } else {
+        sec.style.display = "none";
+      }
+    });
 
-      // Hydrate SKU
-      const skuEl = document.getElementById("meta-sku");
-      if (skuEl) skuEl.textContent = `KW-${product.category.toUpperCase().replace(/[^A-Z0-9]/g, '')}-${product.id}`;
+    // Hydrate SKU
+    const skuEl = document.getElementById("meta-sku");
+    if (skuEl) skuEl.textContent = `KW-${product.category.toUpperCase().replace(/[^A-Z0-9]/g, '')}-${product.id}`;
 
-      // Build rich custom gallery for all products depending on WooCommerce images
-      const thumbnailRow = document.querySelector(".thumbnail-row");
-      if (thumbnailRow) {
-        let galleryImages = [];
-        if (product.images && product.images.length > 0) {
-          galleryImages = product.images.map(img => img.src);
-        } else if (product.image) {
-          galleryImages = [product.image];
-        } else {
-          galleryImages = ["https://via.placeholder.com/600/ffffff/0f172a?text=No+Image"];
-        }
+    // Build rich custom gallery for all products depending on WooCommerce images
+    const thumbnailRow = document.querySelector(".thumbnail-row");
+    if (thumbnailRow) {
+      let galleryImages = [];
+      if (product.images && product.images.length > 0) {
+        galleryImages = product.images.map(img => img.src);
+      } else if (product.image) {
+        galleryImages = [product.image];
+      } else {
+        galleryImages = ["https://via.placeholder.com/600/ffffff/0f172a?text=No+Image"];
+      }
 
-        thumbnailRow.innerHTML = galleryImages.map((imgUrl, index) => `
+      thumbnailRow.innerHTML = galleryImages.map((imgUrl, index) => `
           <div class="thumb-item ${index === 0 ? 'active' : ''}" data-img-url="${imgUrl}">
             <img src="${imgUrl}" alt="${product.name} Thumbnail ${index + 1}">
           </div>
         `).join('');
 
-        // Thumbnail switcher logic
-        const thumbs = thumbnailRow.querySelectorAll(".thumb-item");
-        thumbs.forEach(thumb => {
-          const selectImage = () => {
-            thumbs.forEach(t => t.classList.remove("active"));
-            thumb.classList.add("active");
-            mainImg.src = thumb.getAttribute("data-img-url");
-          };
-          thumb.addEventListener("mouseenter", selectImage);
-          thumb.addEventListener("click", selectImage);
-        });
-      }
+      // Thumbnail switcher logic
+      const thumbs = thumbnailRow.querySelectorAll(".thumb-item");
+      thumbs.forEach(thumb => {
+        const selectImage = () => {
+          thumbs.forEach(t => t.classList.remove("active"));
+          thumb.classList.add("active");
+          mainImg.src = thumb.getAttribute("data-img-url");
+        };
+        thumb.addEventListener("mouseenter", selectImage);
+        thumb.addEventListener("click", selectImage);
+      });
+    }
 
-      // Hydrate direct marketplace purchase buttons (Amazon navy #232F3E + Flipkart blue)
-      const marketplaceContainer = document.getElementById("marketplace-links-container");
-      if (marketplaceContainer) {
-        const query = encodeURIComponent("Kawachi " + product.name);
-        marketplaceContainer.innerHTML = `
+    // Hydrate direct marketplace purchase buttons (Amazon navy #232F3E + Flipkart blue)
+    const marketplaceContainer = document.getElementById("marketplace-links-container");
+    if (marketplaceContainer) {
+      const query = encodeURIComponent("Kawachi " + product.name);
+      marketplaceContainer.innerHTML = `
           <div style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
             <a href="https://www.amazon.in/s?k=${query}" target="_blank" class="premium-marketplace-btn amazon">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 16 16" style="flex-shrink:0;">
@@ -1505,77 +1504,77 @@ async function hydrateDetailPage() {
             </a>
           </div>
         `;
+    }
+
+    // Hydrate sticky bar
+    const stickyImg = document.querySelector(".sticky-atc-left img");
+    if (stickyImg) stickyImg.src = product.image;
+
+    const stickyTitle = document.querySelector(".sticky-atc-bar-title");
+    if (stickyTitle) stickyTitle.textContent = product.name;      // Dynamic Influencer Video Reviews Mapping
+    const productVideos = {
+      104: {
+        videoSrc: "https://assets.mixkit.co/videos/preview/mixkit-woman-enjoying-a-sauna-session-40019-large.mp4",
+        title: "Sauna Box experience by @wellness_guru",
+        desc: "A detailed review showing how to set up the 2-liter steam pot, remote control settings, and the general comfort of the portable folding chair. Highly recommended for daily relaxation and detoxing!"
+      },
+      101: {
+        videoSrc: "https://assets.mixkit.co/videos/preview/mixkit-freelancer-woman-working-on-a-laptop-42323-large.mp4",
+        title: "Smart Bed Desk demonstration by @tech_spaces",
+        desc: "Showing the device slots, heavy-duty build, and portable folding legs. Perfect for working from home in bed or on the sofa."
+      },
+      105: {
+        videoSrc: "https://assets.mixkit.co/videos/preview/mixkit-woman-sitting-on-a-cushion-meditating-41586-large.mp4",
+        title: "Meditation Chair posture review by @body_mind_spirit",
+        desc: "A review focusing on physical posture support, the 5 adjustable backrest angles, and fabric durability during daily meditation sessions."
+      },
+      102: {
+        videoSrc: "https://assets.mixkit.co/videos/preview/mixkit-chef-preparing-a-fresh-salad-41617-large.mp4",
+        title: "Kitchen storage rack organization hacks by @kitchen_pro",
+        desc: "Demonstrating load capacity, spacing for microwaves and spices, and mesh basket features for optimal kitchen de-cluttering."
       }
+    };
 
-      // Hydrate sticky bar
-      const stickyImg = document.querySelector(".sticky-atc-left img");
-      if (stickyImg) stickyImg.src = product.image;
-      
-      const stickyTitle = document.querySelector(".sticky-atc-bar-title");
-      if (stickyTitle) stickyTitle.textContent = product.name;      // Dynamic Influencer Video Reviews Mapping
-      const productVideos = {
-        104: {
-          videoSrc: "https://assets.mixkit.co/videos/preview/mixkit-woman-enjoying-a-sauna-session-40019-large.mp4",
-          title: "Sauna Box experience by @wellness_guru",
-          desc: "A detailed review showing how to set up the 2-liter steam pot, remote control settings, and the general comfort of the portable folding chair. Highly recommended for daily relaxation and detoxing!"
-        },
-        101: {
-          videoSrc: "https://assets.mixkit.co/videos/preview/mixkit-freelancer-woman-working-on-a-laptop-42323-large.mp4",
-          title: "Smart Bed Desk demonstration by @tech_spaces",
-          desc: "Showing the device slots, heavy-duty build, and portable folding legs. Perfect for working from home in bed or on the sofa."
-        },
-        105: {
-          videoSrc: "https://assets.mixkit.co/videos/preview/mixkit-woman-sitting-on-a-cushion-meditating-41586-large.mp4",
-          title: "Meditation Chair posture review by @body_mind_spirit",
-          desc: "A review focusing on physical posture support, the 5 adjustable backrest angles, and fabric durability during daily meditation sessions."
-        },
-        102: {
-          videoSrc: "https://assets.mixkit.co/videos/preview/mixkit-chef-preparing-a-fresh-salad-41617-large.mp4",
-          title: "Kitchen storage rack organization hacks by @kitchen_pro",
-          desc: "Demonstrating load capacity, spacing for microwaves and spices, and mesh basket features for optimal kitchen de-cluttering."
+    // Hydrate product video showcase (9:16 portrait, auto-plays muted)
+    const videoSection = document.getElementById("detail-video-section");
+    if (videoSection) {
+      const videoData = productVideos[product.id];
+      if (videoData) {
+        const videoElement = document.getElementById("product-video-element");
+        const videoTitle = document.getElementById("product-video-title");
+        const videoDesc = document.getElementById("product-video-desc");
+
+        if (videoElement) {
+          videoElement.src = videoData.videoSrc;
+          // Auto-play muted (portrait reel style)
+          videoElement.play().catch(() => { });
         }
-      };
+        if (videoTitle) videoTitle.textContent = videoData.title;
+        if (videoDesc) videoDesc.textContent = videoData.desc;
 
-      // Hydrate product video showcase (9:16 portrait, auto-plays muted)
-      const videoSection = document.getElementById("detail-video-section");
-      if (videoSection) {
-        const videoData = productVideos[product.id];
-        if (videoData) {
-          const videoElement = document.getElementById("product-video-element");
-          const videoTitle = document.getElementById("product-video-title");
-          const videoDesc = document.getElementById("product-video-desc");
-
-          if (videoElement) {
-            videoElement.src = videoData.videoSrc;
-            // Auto-play muted (portrait reel style)
-            videoElement.play().catch(() => {});
-          }
-          if (videoTitle) videoTitle.textContent = videoData.title;
-          if (videoDesc) videoDesc.textContent = videoData.desc;
-
-          videoSection.style.display = "block";
-        } else {
-          videoSection.style.display = "none";
-        }
+        videoSection.style.display = "block";
+      } else {
+        videoSection.style.display = "none";
       }
+    }
 
-      // Initialize Main Image Hover Zoom Lens Effect
-      initImageZoom();
+    // Initialize Main Image Hover Zoom Lens Effect
+    initImageZoom();
 
-      // Hydrate trending products strip ("You May Also Like")
-      const trendingStrip = document.getElementById("detail-trending-strip");
-      const trendingGrid = document.getElementById("detail-trending-products");
-      if (trendingStrip && trendingGrid && window.KawachiProducts) {
-        const related = window.KawachiProducts
-          .filter(p => p.id !== product.id)
-          .sort((a, b) => (b.weekly_sales || 0) - (a.weekly_sales || 0))
-          .slice(0, 8);
-        if (related.length > 0) {
-          trendingGrid.innerHTML = related.map(p => {
-            const disc = p.regular_price && p.regular_price > p.price
-              ? Math.round(((p.regular_price - p.price) / p.regular_price) * 100)
-              : null;
-            return `
+    // Hydrate trending products strip ("You May Also Like")
+    const trendingStrip = document.getElementById("detail-trending-strip");
+    const trendingGrid = document.getElementById("detail-trending-products");
+    if (trendingStrip && trendingGrid && window.KawachiProducts) {
+      const related = window.KawachiProducts
+        .filter(p => p.id !== product.id)
+        .sort((a, b) => (b.weekly_sales || 0) - (a.weekly_sales || 0))
+        .slice(0, 8);
+      if (related.length > 0) {
+        trendingGrid.innerHTML = related.map(p => {
+          const disc = p.regular_price && p.regular_price > p.price
+            ? Math.round(((p.regular_price - p.price) / p.regular_price) * 100)
+            : null;
+          return `
               <a href="single-product.html?id=${p.id}" style="flex-shrink:0;width:140px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;text-decoration:none;color:inherit;transition:box-shadow 0.2s,transform 0.2s;" onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 8px 18px rgba(0,0,0,0.09)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
                 <div style="aspect-ratio:1;background:#f8fafc;display:flex;align-items:center;justify-content:center;padding:10px;position:relative;">
                   ${disc ? `<span style="position:absolute;top:6px;left:6px;background:#CC0C39;color:#fff;font-size:10px;font-weight:700;padding:2px 5px;border-radius:3px;">-${disc}%</span>` : ''}
@@ -1586,12 +1585,12 @@ async function hydrateDetailPage() {
                   <span style="font-size:13px;font-weight:700;color:#0f1111;">&#8377;${Number(p.price).toLocaleString('en-IN')}</span>
                 </div>
               </a>`;
-          }).join('');
-          trendingStrip.style.display = 'block';
-        }
+        }).join('');
+        trendingStrip.style.display = 'block';
       }
     }
   }
+}
 }
 
 function initImageZoom() {
@@ -1611,7 +1610,7 @@ function initImageZoom() {
     // Reset zoom image size so it will be recalculated on next mouseenter
     resultImg.style.width = "";
     resultImg.style.height = "";
-    
+
     // Auto-reset click zoom state when swapping images
     if (clickZoomed) {
       clickZoomed = false;
@@ -1678,13 +1677,13 @@ function initImageZoom() {
     if (lensY > imgRect.height - lens.offsetHeight) lensY = imgRect.height - lens.offsetHeight;
 
     lens.style.left = (img.offsetLeft + lensX) + "px";
-    lens.style.top  = (img.offsetTop  + lensY) + "px";
+    lens.style.top = (img.offsetTop + lensY) + "px";
 
-    const cx = result.offsetWidth  / lens.offsetWidth;
+    const cx = result.offsetWidth / lens.offsetWidth;
     const cy = result.offsetHeight / lens.offsetHeight;
 
     resultImg.style.left = "-" + (lensX * cx) + "px";
-    resultImg.style.top  = "-" + (lensY * cy) + "px";
+    resultImg.style.top = "-" + (lensY * cy) + "px";
   });
 
   // Mobile Pinch-to-Zoom & Pan Gesture Handler
@@ -1722,7 +1721,7 @@ function initImageZoom() {
         let scale = currentDistance / initialDistance;
         // Clamp scale between 1x and 3.5x
         scale = Math.max(1, Math.min(scale, 3.5));
-        
+
         // Calculate translation displacement (panning)
         const panX = currentMidX - initialMidX;
         const panY = currentMidY - initialMidY;
@@ -1755,7 +1754,7 @@ function initImageZoom() {
   // Mobile Click-to-Zoom Toggle Handler
   img.addEventListener("click", (e) => {
     if (window.innerWidth > 768) return;
-    
+
     // Ignore click events if they were part of a pinch gesture
     if (isPinching) return;
 
@@ -1766,7 +1765,7 @@ function initImageZoom() {
       img.style.zIndex = "100";
       container.style.overflow = "auto";
       img.style.cursor = "zoom-out";
-      
+
       // Auto-scroll parent container to center the enlarged image
       setTimeout(() => {
         container.scrollLeft = (img.offsetWidth * 2.5 - container.offsetWidth) / 2;
@@ -1789,7 +1788,7 @@ function initUnifiedSearchBar() {
   const searchContainer = document.querySelector(".search-container");
   const form = document.getElementById("header-search-form");
   const inner = document.querySelector(".search-bar-inner");
-  
+
   if (selectContainer && searchContainer && form && inner) {
     // Clear inline onchange
     const select = selectContainer.querySelector(".all-categories-select");
@@ -1797,7 +1796,7 @@ function initUnifiedSearchBar() {
       select.name = "cat"; // Assign name so it submits natively
       select.onchange = null;
       select.removeAttribute("onchange");
-      
+
       // Convert option values to keywords
       const options = select.querySelectorAll("option");
       options.forEach(opt => {
@@ -1809,7 +1808,7 @@ function initUnifiedSearchBar() {
           opt.value = "all";
         }
       });
-      
+
       // Keep selected option based on URL parameters (for page reload sync)
       const urlParams = new URLSearchParams(window.location.search);
       const currentCat = urlParams.get("cat");
@@ -1817,17 +1816,17 @@ function initUnifiedSearchBar() {
         select.value = currentCat;
       }
     }
-    
+
     // Move selectContainer inside the form, right before the inner search bar
     form.insertBefore(selectContainer, inner);
-    
+
     // Wrap the entire form in the unified search bar container
     const parent = searchContainer.parentNode;
     const wrapper = document.createElement("div");
     wrapper.className = "unified-search-wrapper";
     parent.insertBefore(wrapper, searchContainer);
     wrapper.appendChild(form); // move the form into the wrapper
-    
+
     // Remove the now empty searchContainer container
     if (searchContainer.parentNode) {
       searchContainer.parentNode.removeChild(searchContainer);
@@ -1920,7 +1919,7 @@ function syncHeaderUtilitiesAndIcons() {
 // ==========================================================================
 // WordPress REST API Custom ACF Homepage Integration Settings
 // ==========================================================================
-window.renderHeroBanners = function(banners) {
+window.renderHeroBanners = function (banners) {
   const track = document.getElementById("hero-slides-track");
   const dots = document.getElementById("hero-dots-indicator");
   if (!track || !banners || !banners.length) return;
@@ -1950,7 +1949,7 @@ window.renderHeroBanners = function(banners) {
   }
 };
 
-window.renderShoppableVideos = function(videos) {
+window.renderShoppableVideos = function (videos) {
   const track = document.getElementById("video-spotlight-track");
   if (!track || !videos || !videos.length) return;
 
@@ -1961,9 +1960,9 @@ window.renderShoppableVideos = function(videos) {
 
     const influencer = videoData.influencer || "@kawachi_live";
     const title = videoData.title || "Customer Review";
-    
+
     // Automatically extract YouTube thumbnails if available, otherwise use premium generic fallback
-    let thumbnail = "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=600&q=80"; 
+    let thumbnail = "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=600&q=80";
     if (videoSrc.includes("youtube.com") || videoSrc.includes("youtu.be")) {
       let videoId = "";
       if (videoSrc.includes("watch?v=")) videoId = videoSrc.split("v=")[1].split("&")[0];
@@ -1992,7 +1991,7 @@ window.renderShoppableVideos = function(videos) {
   track.innerHTML = cardsHtml;
 };
 
-window.renderPromoBanners = function(banners) {
+window.renderPromoBanners = function (banners) {
   const row = document.getElementById("promo-banners-row");
   if (!row || !banners || !banners.length) return;
 
@@ -2003,7 +2002,7 @@ window.renderPromoBanners = function(banners) {
       'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)'
     ];
     const gradient = gradients[idx % gradients.length];
-    
+
     // Extract dynamic texts configured by the owner in the WordPress options panel
     const badge = b.badge_tag || b.promo_badge || "OFFER";
     const title = b.title || b.promo_title || "Deal Spotlight";
@@ -2025,7 +2024,7 @@ window.renderPromoBanners = function(banners) {
   }).join("");
 };
 
-window.loadHomepageACFSettings = async function() {
+window.loadHomepageACFSettings = async function () {
   try {
     const env = await loadEnv();
     let apiUrl = "http://62.72.31.43/wp-json/wc/v3";
@@ -2037,7 +2036,7 @@ window.loadHomepageACFSettings = async function() {
       if (env.VITE_WOO_CONSUMER_SECRET) consumerSecret = env.VITE_WOO_CONSUMER_SECRET;
     }
     const cleanBaseUrl = apiUrl.replace(/\/wp-json\/wc\/v3\/?$/, '').replace(/\/$/, '');
-    
+
     // We will query the standard WordPress Pages API first for slug 'home'
     const pagesUrl = `${cleanBaseUrl}/wp-json/wp/v2/pages?slug=home`;
     const url = new URL(pagesUrl);
@@ -2236,12 +2235,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     const currentPriceEl = card.querySelector(".price-current, .deal-price-current, .row-item-price");
     const oldPriceEl = card.querySelector(".price-old, .deal-price-old");
     const badgeEl = card.querySelector(".product-badge.sale, .deal-badge");
-    
+
     if (currentPriceEl && oldPriceEl) {
       const parsePrice = (text) => parseFloat(text.replace(/[^\d.]/g, ''));
       const currentVal = parsePrice(currentPriceEl.textContent);
       const oldVal = parsePrice(oldPriceEl.textContent);
-      
+
       if (!isNaN(currentVal) && !isNaN(oldVal) && oldVal > currentVal) {
         const pct = Math.round(((oldVal - currentVal) / oldVal) * 100);
         if (badgeEl) {
@@ -2327,20 +2326,20 @@ document.addEventListener("DOMContentLoaded", async () => {
       const id = quickAddBtn.getAttribute("data-id");
       const name = quickAddBtn.getAttribute("data-name");
       const price = parseFloat(quickAddBtn.getAttribute("data-price"));
-      
+
       const card = quickAddBtn.closest(".product-card, .flash-deal-box");
       let image = "";
       let category = "General";
-      
+
       if (card) {
         const imgEl = card.querySelector(".product-image, img");
         if (imgEl) image = imgEl.src;
         const catEl = card.querySelector(".product-category");
         if (catEl) category = catEl.textContent;
       }
-      
+
       window.KawachiCart.addItem({ id, name, price, image, category, quantity: 1 });
-      
+
       // Open drawer overlay
       const drawer = document.getElementById("cart-drawer-overlay");
       const openBtn = document.getElementById("cart-drawer-trigger");
@@ -2404,7 +2403,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const qty = parseInt(document.getElementById("qty-value").value || 1, 10);
       const imgEl = document.getElementById("gallery-main-img");
       const image = imgEl ? imgEl.src : "";
-      
+
       const urlParams = new URLSearchParams(window.location.search);
       const currentId = parseInt(urlParams.get("id"), 10) || 101;
       const product = window.KawachiProducts.find(x => x.id === currentId);
@@ -2418,7 +2417,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         category,
         quantity: qty
       });
-      
+
       window.location.href = "checkout.html";
     };
 
@@ -2437,7 +2436,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         .sort((a, b) => (b.orders_count || 0) - (a.orders_count || 0))
         .slice(0, 3);
     }
-    
+
     const bestsellersHtml = bestsellers.map(p => `
       <a href="single-product.html?id=${p.id}" class="search-trending-item">
         <img src="${p.image}" alt="${p.name}" class="search-trending-img">
@@ -2482,8 +2481,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   };
 
   const getResultsHtml = (query) => {
-    const matches = window.KawachiProducts.filter(p => 
-      p.name.toLowerCase().includes(query) || 
+    const matches = window.KawachiProducts.filter(p =>
+      p.name.toLowerCase().includes(query) ||
       p.category.toLowerCase().includes(query)
     );
 
@@ -2510,14 +2509,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   searchContainers.forEach(container => {
     const form = container.querySelector("form");
     const input = container.querySelector(".search-input");
-    
+
     let resultsBox = container.querySelector(".search-autocomplete-results");
     if (!resultsBox) {
       resultsBox = document.createElement("div");
       resultsBox.classList.add("search-autocomplete-results");
       container.appendChild(resultsBox);
     }
-    
+
     if (form) {
       form.action = "search.html";
       form.method = "GET";
@@ -2525,11 +2524,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         input.name = "q";
       }
     }
-    
+
     if (input) {
       const openSuggestions = () => {
         if (searchBackdrop) searchBackdrop.classList.add("active");
-        
+
         const query = input.value.trim().toLowerCase();
         if (query.length < 2) {
           resultsBox.innerHTML = getSuggestionsHtml();
@@ -2613,10 +2612,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Initialize position caching
     updateTrendingOffset();
-    
+
     // Recalculate on load and resize
     window.addEventListener("load", updateTrendingOffset);
-    
+
     let resizeTimeout;
     window.addEventListener("resize", () => {
       clearTimeout(resizeTimeout);
@@ -2676,7 +2675,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         scrollScheduled = true;
       }
     }, { passive: true });
-    
+
     handleScroll();
 
     // Smooth scroll back to top when clicking Home link or Logo on homepage
@@ -2731,7 +2730,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
 
       let groupHtml = '<div class="logo-scroll-group">';
-      partnerBrands.forEach(function(brand) {
+      partnerBrands.forEach(function (brand) {
         groupHtml += `
           <div class="partner-logo-item">
             <img src="${brand.logo}" alt="${brand.name}" onerror="this.style.display='none'">
@@ -2763,7 +2762,7 @@ function toggleFaq(btn) {
   const isOpen = faqItem.classList.contains('open');
 
   // Close all other FAQ items first (accordion behavior)
-  document.querySelectorAll('.faq-item-2026.open').forEach(function(item) {
+  document.querySelectorAll('.faq-item-2026.open').forEach(function (item) {
     if (item !== faqItem) {
       item.classList.remove('open');
       const p = item.querySelector('.faq-answer-panel');
@@ -2800,8 +2799,8 @@ function hydrateDealPodium() {
   if (!podiumProducts) return;
 
   var imgs = podiumProducts.querySelectorAll('img');
-  config.productIds.forEach(function(pid, i) {
-    var product = window.KawachiProducts.find(function(p) { return p.id === pid; });
+  config.productIds.forEach(function (pid, i) {
+    var product = window.KawachiProducts.find(function (p) { return p.id === pid; });
     if (product && imgs[i]) {
       imgs[i].src = product.image;
       imgs[i].alt = product.name;
@@ -2865,7 +2864,7 @@ function hydrateStaticProductMarquees() {
 
     // Render cards
     track.innerHTML = products.map(createFullCardHtml).join('');
-    
+
     // Inject rectangular navigation buttons
     const prevBtn = document.createElement('button');
     prevBtn.className = 'static-slider-arrow prev';
@@ -3013,7 +3012,7 @@ function hydrateStaticTrendingGrid() {
   }).join("");
 }
 
-document.addEventListener('DOMContentLoaded', async function() {
+document.addEventListener('DOMContentLoaded', async function () {
   if (window.KawachiProductsPromise) {
     try {
       await window.KawachiProductsPromise;
@@ -3058,7 +3057,7 @@ function initProductGallerySlideshow() {
     var dots = card.querySelectorAll('.gallery-dot');
 
     // If index 0 = main image (no gallery-active), else show gallery image at index-1
-    galleryImgs.forEach(function(img) {
+    galleryImgs.forEach(function (img) {
       img.classList.remove('gallery-active');
     });
 
@@ -3071,14 +3070,14 @@ function initProductGallerySlideshow() {
     }
 
     // Update dots
-    dots.forEach(function(dot) {
+    dots.forEach(function (dot) {
       dot.classList.remove('dot-active');
     });
     if (dots[index]) dots[index].classList.add('dot-active');
   }
 
   // Hover delegation: reveal secondary image on enter, restore main image on leave
-  document.body.addEventListener('mouseenter', function(e) {
+  document.body.addEventListener('mouseenter', function (e) {
     var card = e.target.closest('.product-card');
     if (card) {
       var totalImages = parseInt(card.getAttribute('data-gallery-count') || '1', 10);
@@ -3089,7 +3088,7 @@ function initProductGallerySlideshow() {
     }
   }, true);
 
-  document.body.addEventListener('mouseleave', function(e) {
+  document.body.addEventListener('mouseleave', function (e) {
     var card = e.target.closest('.product-card');
     if (card) {
       // Restore the main product image (index 0) when hover exits
@@ -3098,7 +3097,7 @@ function initProductGallerySlideshow() {
   }, true);
 
   // Manual dot navigation (tap/click behavior) to view specific slides
-  document.body.addEventListener('click', function(e) {
+  document.body.addEventListener('click', function (e) {
     var dot = e.target.closest('.gallery-dot');
     if (dot) {
       e.stopPropagation();
