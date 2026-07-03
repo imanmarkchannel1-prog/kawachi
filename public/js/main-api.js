@@ -1342,9 +1342,11 @@ async function hydrateDetailPage() {
 
     // Hydrate descriptions
     const briefDescEl = document.querySelector(".product-description-brief");
-    if (briefDescEl) briefDescEl.textContent = briefText;
-    const tabDescEl = document.querySelector("#tab-description p");
-    if (tabDescEl) tabDescEl.textContent = fullText;
+    if (briefDescEl) briefDescEl.innerHTML = product.short_description || product.description || briefText;
+    const tabDescContainer = document.getElementById("tab-description");
+    if (tabDescContainer) {
+      tabDescContainer.innerHTML = product.description || `<p style="font-size: 14px; color: #333; line-height: 1.6;">${fullText}</p>`;
+    }
 
     // Hydrate specifications tab table depending on product type
     const tabSpecsTable = document.querySelector("#tab-specs table tbody");
@@ -1403,6 +1405,22 @@ async function hydrateDetailPage() {
             <tr style="border-bottom: 1px solid var(--color-border);"><td style="padding: 12px 0; font-weight: 600; color: var(--color-primary);">Quality Checked</td><td style="padding: 12px 0; color: var(--color-text-muted);">Yes, certified quality inspections</td></tr>
           `;
       }
+
+      // Append custom WooCommerce attributes dynamically
+      if (product.attributes && product.attributes.length > 0) {
+        product.attributes.forEach(attr => {
+          const values = attr.options ? attr.options.join(", ") : "";
+          if (values) {
+            specsHtml += `
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 12px 0; font-weight: 600; color: var(--color-primary);">${attr.name}</td>
+                <td style="padding: 12px 0; color: var(--color-text-muted);">${values}</td>
+              </tr>
+            `;
+          }
+        });
+      }
+
       tabSpecsTable.innerHTML = specsHtml;
     }
 
@@ -1590,7 +1608,6 @@ async function hydrateDetailPage() {
       }
     }
   }
-}
 }
 
 function initImageZoom() {
@@ -2026,15 +2043,9 @@ window.renderPromoBanners = function (banners) {
 
 window.loadHomepageACFSettings = async function () {
   try {
-    const env = await loadEnv();
     let apiUrl = "http://62.72.31.43/wp-json/wc/v3";
-    let consumerKey = "";
-    let consumerSecret = "";
-    if (env) {
-      if (env.VITE_WOO_API_URL) apiUrl = env.VITE_WOO_API_URL;
-      if (env.VITE_WOO_CONSUMER_KEY) consumerKey = env.VITE_WOO_CONSUMER_KEY;
-      if (env.VITE_WOO_CONSUMER_SECRET) consumerSecret = env.VITE_WOO_CONSUMER_SECRET;
-    }
+    let consumerKey = "ck_84b3f85945d9469298cde6477760969934a87500";
+    let consumerSecret = "cs_69f239ab232a550d72399add41cc85bf72193c03";
     const cleanBaseUrl = apiUrl.replace(/\/wp-json\/wc\/v3\/?$/, '').replace(/\/$/, '');
 
     // We will query the standard WordPress Pages API first for slug 'home'
