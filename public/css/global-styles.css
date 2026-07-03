@@ -11915,13 +11915,13 @@ main.static-page-card .btn-primary-marquee:hover,
 }
 
 .offer-card {
-  border: 1px solid rgba(15, 30, 54, 0.08) !important;
-  border-radius: 12px !important;
-  padding: 16px !important;
-  min-width: 140px !important;
+  border: 1px solid rgba(15, 30, 54, 0.06) !important;
+  border-radius: 10px !important;
+  padding: 12px !important;
+  min-width: 110px !important;
   flex: 1 !important;
   background: linear-gradient(135deg, #FFFFFF 0%, #FAFCFD 100%) !important;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02) !important;
   text-align: left !important;
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
   cursor: default !important;

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Product Details - Kawachi</title>
   <meta name="description" content="Explore detailed features, warranty structures, and purchase options for Kawachi utility products.">
-  <link rel="stylesheet" href="css/global-styles.css?v=7.06">
+  <link rel="stylesheet" href="css/global-styles.css?v=7.07">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <style>
     body {
@@ -292,40 +292,48 @@
         bottom: 0 !important;
         left: 0 !important;
         right: 0 !important;
-        height: 56px !important;
+        height: 58px !important;
         background-color: #ffffff !important;
-        box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1) !important;
+        box-shadow: 0 -2px 16px rgba(0, 0, 0, 0.08) !important;
         z-index: 9999 !important;
-        padding: 0 !important;
+        padding: 8px 12px !important;
+        gap: 10px !important;
+        align-items: center !important;
       }
       .mobile-action-btn {
         flex: 1 !important;
-        height: 100% !important;
+        height: 42px !important;
         border: none !important;
         font-family: inherit !important;
-        font-size: 15px !important;
+        font-size: 13.5px !important;
         font-weight: 700 !important;
         cursor: pointer !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
+        gap: 6px !important;
         transition: all 0.2s ease !important;
         outline: none !important;
+        border-radius: 10px !important;
+        letter-spacing: 0.2px !important;
       }
       .mobile-btn-atc {
-        background-color: #ffffff !important;
-        color: #003366 !important;
-        border-top: 1px solid #e2e8f0 !important;
+        background-color: #F0F4FF !important;
+        color: #1a3c6e !important;
+        border: 1.5px solid #c7d4e8 !important;
       }
       .mobile-btn-atc:active {
-        background-color: #f1f5f9 !important;
+        background-color: #dfe7f5 !important;
+        transform: scale(0.97) !important;
       }
       .mobile-btn-buy {
-        background-color: #FF5E00 !important;
+        background: linear-gradient(135deg, #e05e3f 0%, #d44820 100%) !important;
         color: #ffffff !important;
+        box-shadow: 0 3px 10px rgba(224, 94, 63, 0.3) !important;
       }
       .mobile-btn-buy:active {
-        background-color: #e05400 !important;
+        background: linear-gradient(135deg, #c94b2d 0%, #b83d1a 100%) !important;
+        transform: scale(0.97) !important;
       }
       
       /* Hide desktop elements on mobile */
@@ -335,11 +343,92 @@
       .sticky-atc-bar {
         display: none !important;
       }
+
+      /* Compact spacing for mobile PDP */
+      .product-meta-details-mid h1 {
+        font-size: 18px !important;
+        line-height: 1.3 !important;
+      }
+      .offers-row {
+        gap: 8px !important;
+        margin: 10px 0 !important;
+        padding-bottom: 4px !important;
+      }
+      .offer-card {
+        padding: 10px !important;
+        min-width: 100px !important;
+      }
+      .offer-card-desc {
+        display: none !important;
+      }
+      .services-highlights-strip {
+        margin: 8px 0 !important;
+        padding: 10px 0 !important;
+        gap: 6px !important;
+      }
+      .service-highlight-icon {
+        width: 30px !important;
+        height: 30px !important;
+      }
+      .service-highlight-text {
+        font-size: 9px !important;
+      }
+      .tabs-container {
+        margin-top: 24px !important;
+        padding-top: 20px !important;
+      }
+      .tab-trigger {
+        font-size: 13px !important;
+        padding: 4px 8px !important;
+      }
+      #tab-description {
+        font-size: 13px !important;
+      }
+      #tab-description p, #tab-description li, #tab-description span, #tab-description div {
+        font-size: 13px !important;
+        line-height: 1.55 !important;
+      }
       
       /* Prevent footer overlap */
       body {
-        padding-bottom: 60px !important;
+        padding-bottom: 64px !important;
       }
+    }
+
+    /* Collapsible description styles */
+    .desc-collapse-wrapper {
+      position: relative;
+      max-height: 140px;
+      overflow: hidden;
+      transition: max-height 0.4s ease;
+    }
+    .desc-collapse-wrapper.expanded {
+      max-height: 5000px;
+    }
+    .desc-collapse-wrapper:not(.expanded)::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
+      pointer-events: none;
+    }
+    .desc-read-more-btn {
+      display: block;
+      margin: 8px 0 0;
+      padding: 8px 0;
+      background: none;
+      border: none;
+      color: #007185;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .desc-read-more-btn:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
@@ -505,36 +594,36 @@
             </div>
           </div>
 
-          <!-- Divider -->
-          <div style="border-top: 1px solid #E7E7E7; margin-bottom: 16px;"></div>
+          <!-- Marketplace Referral Buttons (moved above benefits) -->
+          <div id="marketplace-links-above" style="margin-bottom: 12px;"></div>
 
           <!-- Offers Grid Section -->
-          <div style="margin-bottom: 20px;">
-            <div style="display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 700; color: #0F1111; margin-bottom: 10px;">
-              <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16" style="color: #e05e3f;"><path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/></svg>
+          <div style="margin-bottom: 12px;">
+            <div style="display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; color: #0F1111; margin-bottom: 8px;">
+              <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16" style="color: #e05e3f;"><path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/></svg>
               <span>Product Benefits</span>
             </div>
             <div class="offers-row">
               <div class="offer-card">
-                <div class="offer-icon-wrapper" style="width: 36px; height: 36px; border-radius: 50%; background-color: rgba(255, 107, 0, 0.08); display: flex; align-items: center; justify-content: center; color: #FF6B00; margin-bottom: 10px;">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                <div class="offer-icon-wrapper" style="width: 30px; height: 30px; border-radius: 50%; background-color: rgba(255, 107, 0, 0.08); display: flex; align-items: center; justify-content: center; color: #FF6B00; margin-bottom: 6px;">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
                 </div>
                 <span class="offer-card-tag">Free Shipping</span>
-                <span class="offer-card-desc">Enjoy free delivery across India on this item</span>
+                <span class="offer-card-desc">Free delivery across India</span>
               </div>
               <div class="offer-card">
-                <div class="offer-icon-wrapper" style="width: 36px; height: 36px; border-radius: 50%; background-color: rgba(255, 107, 0, 0.08); display: flex; align-items: center; justify-content: center; color: #FF6B00; margin-bottom: 10px;">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                <div class="offer-icon-wrapper" style="width: 30px; height: 30px; border-radius: 50%; background-color: rgba(255, 107, 0, 0.08); display: flex; align-items: center; justify-content: center; color: #FF6B00; margin-bottom: 6px;">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
                 </div>
-                <span class="offer-card-tag">1-Year Warranty</span>
-                <span class="offer-card-desc">Official warranty coverage with priority support</span>
+                <span class="offer-card-tag">Assured Quality</span>
+                <span class="offer-card-desc">Quality inspected &amp; certified</span>
               </div>
               <div class="offer-card">
-                <div class="offer-icon-wrapper" style="width: 36px; height: 36px; border-radius: 50%; background-color: rgba(255, 107, 0, 0.08); display: flex; align-items: center; justify-content: center; color: #FF6B00; margin-bottom: 10px;">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                <div class="offer-icon-wrapper" style="width: 30px; height: 30px; border-radius: 50%; background-color: rgba(255, 107, 0, 0.08); display: flex; align-items: center; justify-content: center; color: #FF6B00; margin-bottom: 6px;">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
                 </div>
                 <span class="offer-card-tag">Secure Checkout</span>
-                <span class="offer-card-desc">100% safe transactions via card, UPI & Net Banking</span>
+                <span class="offer-card-desc">Safe payments via card &amp; UPI</span>
               </div>
             </div>
           </div>
@@ -543,28 +632,28 @@
           <div style="border-top: 1px solid #E7E7E7; margin-bottom: 16px;"></div>
 
           <!-- Services highlight horizontal strip -->
-          <div class="services-highlights-strip" style="border: none; margin: 12px 0; padding: 12px 0; background-color: #F8F9FA; border-radius: 8px;">
+          <div class="services-highlights-strip" style="border: none; margin: 8px 0; padding: 10px 0; background-color: #F8F9FA; border-radius: 8px;">
             <div class="service-highlight-item">
               <div class="service-highlight-icon">
-                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
               </div>
-              <span class="service-highlight-text">Free<br>Installation</span>
+              <span class="service-highlight-text">Pre-Installation<br>Guide</span>
             </div>
             <div class="service-highlight-item">
               <div class="service-highlight-icon">
-                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
               </div>
-              <span class="service-highlight-text">1 Year<br>Warranty</span>
+              <span class="service-highlight-text">Assured<br>Quality</span>
             </div>
             <div class="service-highlight-item">
               <div class="service-highlight-icon">
-                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 7.89H18"/></svg>
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 7.89H18"/></svg>
               </div>
               <span class="service-highlight-text">10 Days<br>Replacement</span>
             </div>
             <div class="service-highlight-item">
               <div class="service-highlight-icon">
-                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12a3 3 0 11-6 0 3 3 0 016 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
               </div>
               <span class="service-highlight-text">Secure<br>Transaction</span>
             </div>
@@ -671,7 +760,10 @@
         </div>
         
         <div class="tab-content active" id="tab-description">
-          <p style="font-size: 14px; color: #333; line-height: 1.6;">Description loading...</p>
+          <div class="desc-collapse-wrapper" id="desc-collapse-wrapper">
+            <p style="font-size: 14px; color: #333; line-height: 1.6;">Description loading...</p>
+          </div>
+          <button class="desc-read-more-btn" id="desc-read-more-btn" onclick="toggleDescCollapse()">Read More ▾</button>
         </div>
         <div class="tab-content" id="tab-specs" style="display: none;">
           <table style="width: 100%; max-width: 600px; border-collapse: collapse; font-size: 14px; line-height: 1.6;">
@@ -725,8 +817,14 @@
 
   <!-- Mobile Sticky Action Bar (Flipkart/Amazon style bottom action bar) -->
   <div class="mobile-sticky-action-bar">
-    <button id="mobile-add-to-cart-btn" class="mobile-action-btn mobile-btn-atc">Add to Cart</button>
-    <button id="mobile-buy-now-btn" class="mobile-action-btn mobile-btn-buy">Buy Now</button>
+    <button id="mobile-add-to-cart-btn" class="mobile-action-btn mobile-btn-atc">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
+      Add to Cart
+    </button>
+    <button id="mobile-buy-now-btn" class="mobile-action-btn mobile-btn-buy">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      Buy Now
+    </button>
   </div>
 
   <!-- 9. Side Drawer Cart Overlay Component -->
@@ -844,7 +942,7 @@
     </div>
   </footer>
 
-  <script src="js/main-api.js?v=7.06"></script>
+  <script src="js/main-api.js?v=7.07"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       // General drawer controls
@@ -890,6 +988,14 @@
       const targetContent = document.getElementById('tab-' + tabId);
       if (targetTrigger) targetTrigger.classList.add('active');
       if (targetContent) targetContent.style.display = 'block';
+    }
+
+    function toggleDescCollapse() {
+      const wrapper = document.getElementById('desc-collapse-wrapper');
+      const btn = document.getElementById('desc-read-more-btn');
+      if (!wrapper || !btn) return;
+      const isExpanded = wrapper.classList.toggle('expanded');
+      btn.textContent = isExpanded ? 'Show Less \u25b4' : 'Read More \u25be';
     }
 
     document.addEventListener("DOMContentLoaded", () => {
