@@ -7505,7 +7505,7 @@ main.static-page-card blockquote {
   width: 100% !important;
   max-width: 1400px !important;
   margin: 0 auto !important;
-  padding: 12px 24px !important;
+  padding: 12px 0 !important;
   box-sizing: border-box !important;
 }
 
@@ -7530,8 +7530,8 @@ main.static-page-card blockquote {
   transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1) !important;
   width: max-content !important;
   animation: none !important;
-  padding-left: 44px !important; /* give space for arrows */
-  padding-right: 44px !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
 }
 
 /* Amazon-style vertical rectangular arrows for static sliders */
