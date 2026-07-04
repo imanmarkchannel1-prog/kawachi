@@ -11947,58 +11947,46 @@ main.static-page-card .btn-primary-marquee:hover,
   display: block !important;
 }
 
-/* PDP Modern Inline Benefit Pills */
-.pdp-benefits-strip {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 12px 0 16px;
+/* PDP Premium Unified Trust Badges Card */
+.pdp-trust-badges-card {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 12px !important;
+  background: #F8FAFC !important;
+  border: 1.5px solid #E2E8F0 !important;
+  border-radius: 8px !important;
+  padding: 14px 10px !important;
+  margin: 16px 0 20px !important;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.02) !important;
 }
-.pdp-benefit-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 11.5px;
-  font-weight: 700;
-  white-space: nowrap;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+.pdp-trust-badge {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  text-align: center !important;
+  gap: 4px !important;
+  transition: all 0.2s ease !important;
 }
-.pdp-benefit-pill.shipping {
-  background: rgba(22, 163, 74, 0.05) !important;
-  border: 1px solid rgba(22, 163, 74, 0.15) !important;
-  color: #166534 !important;
+.pdp-trust-badge svg {
+  width: 20px !important;
+  height: 20px !important;
+  flex-shrink: 0 !important;
+  margin-bottom: 2px !important;
 }
-.pdp-benefit-pill.quality {
-  background: rgba(37, 99, 235, 0.05) !important;
-  border: 1px solid rgba(37, 99, 235, 0.15) !important;
-  color: #1e40af !important;
+.pdp-trust-badge .badge-title {
+  font-size: 11.5px !important;
+  font-weight: 800 !important;
+  color: #0F172A !important;
+  line-height: 1.25 !important;
 }
-.pdp-benefit-pill.secure {
-  background: rgba(220, 38, 38, 0.05) !important;
-  border: 1px solid rgba(220, 38, 38, 0.15) !important;
-  color: #991b1b !important;
+.pdp-trust-badge .badge-desc {
+  font-size: 10px !important;
+  font-weight: 500 !important;
+  color: #64748B !important;
+  line-height: 1.3 !important;
 }
-.pdp-benefit-pill:hover {
+.pdp-trust-badge:hover {
   transform: translateY(-1px) !important;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04) !important;
-}
-.pdp-benefit-pill.shipping:hover {
-  background: rgba(22, 163, 74, 0.09) !important;
-  border-color: rgba(22, 163, 74, 0.25) !important;
-}
-.pdp-benefit-pill.quality:hover {
-  background: rgba(37, 99, 235, 0.09) !important;
-  border-color: rgba(37, 99, 235, 0.25) !important;
-}
-.pdp-benefit-pill.secure:hover {
-  background: rgba(220, 38, 38, 0.09) !important;
-  border-color: rgba(220, 38, 38, 0.25) !important;
-}
-.pdp-benefit-pill svg {
-  flex-shrink: 0;
 }
 
 /* Services highlights horizontal strip */
