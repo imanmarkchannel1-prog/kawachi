@@ -1,3 +1,4 @@
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
@@ -11,15 +12,15 @@ app.use(cors());
 app.use(express.json());
 
 // Clean up WOO API URL to get base WordPress path
-const apiUrl = process.env.WOOCOMMERCE_URL || 'http://62.72.31.43/';
+const apiUrl = process.env.WOOCOMMERCE_URL || 'https://wordpress-3ht1.srv1774889.hstgr.cloud/';
 const cleanBaseUrl = apiUrl.replace(/\/wp-json\/wc\/v3\/?$/, '').replace(/\/$/, '');
 
 // Initialize WooCommerce Client securely in backend environment
 // This handles OAuth 1.0a automatically over plain HTTP connections
 const WooCommerce = new WooCommerceRestApi({
   url: cleanBaseUrl,
-  consumerKey: 'ck_84b3f85945d9469298cde6477760969934a87500',
-  consumerSecret: 'cs_69f239ab232a550d72399add41cc85bf72193c03',
+  consumerKey: process.env.WOOCOMMERCE_CONSUMER_KEY || 'ck_e0bb10c03f926e6e59294b13c65712fb5ef1a872',
+  consumerSecret: process.env.WOOCOMMERCE_CONSUMER_SECRET || 'cs_71d46fbb1e0197e39838a294437c61e581ece91f',
   version: 'wc/v3'
 });
 

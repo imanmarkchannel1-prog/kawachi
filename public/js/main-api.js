@@ -14,11 +14,17 @@ class WooCommerceClient {
    * @param {string} config.consumerSecret - WooCommerce consumer secret (cs_...)
    * @param {boolean} config.useProxy - If true, requests are channeled through an intermediate proxy routing
    */
-  constructor({ baseUrl = 'http://62.72.31.43', consumerKey = 'ck_84b3f85945d9469298cde6477760969934a87500', consumerSecret = 'cs_69f239ab232a550d72399add41cc85bf72193c03', useProxy = true } = {}) {
+  constructor({
+    baseUrl = 'https://wordpress-3ht1.srv1774889.hstgr.cloud',
+    consumerKey = 'ck_e0bb10c03f926e6e59294b13c65712fb5ef1a872',
+    consumerSecret = 'cs_71d46fbb1e0197e39838a294437c61e581ece91f',
+    useProxy = true
+  } = {}) {
+    this.baseUrl = baseUrl;
     this.consumerKey = consumerKey;
     this.consumerSecret = consumerSecret;
     this.useProxy = useProxy;
-    this.mockMode = !this.useProxy && (!this.baseUrl || !this.consumerKey); // Only fallback to mock mode if not using proxy and config is missing
+    this.mockMode = !this.useProxy && (!this.baseUrl || !this.consumerKey); // Only fallback to mock mode if missing
   }
 
   /**
@@ -1369,17 +1375,17 @@ async function hydrateDetailPage() {
     const descCollapseWrapper = document.getElementById("desc-collapse-wrapper");
     if (descCollapseWrapper) {
       const rawDescHtml = product.description || `<p style="font-size: 14px; color: #333; line-height: 1.6;">${fullText}</p>`;
-      
+
       // Parse description HTML to check for iframes/videos
       const parser = new DOMParser();
       const doc = parser.parseFromString(rawDescHtml, 'text/html');
       const iframe = doc.querySelector('iframe, video');
-      
+
       if (iframe) {
         const iframeHtml = iframe.outerHTML;
         iframe.remove();
         const textHtml = doc.body.innerHTML;
-        
+
         descCollapseWrapper.innerHTML = `
           <div class="desc-video-holder" style="margin-bottom: 12px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1); max-width: 100%; aspect-ratio: 16/9;">
             ${iframeHtml}
@@ -1397,7 +1403,7 @@ async function hydrateDetailPage() {
         `;
         descCollapseWrapper.classList.remove('has-video');
       }
-      
+
       // Reset collapse state
       descCollapseWrapper.classList.remove('expanded');
       const readMoreBtn = document.getElementById('desc-read-more-btn');
