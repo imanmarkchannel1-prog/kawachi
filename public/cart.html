@@ -1648,7 +1648,18 @@
 
     <script src="js/main-api.js?v=8.00"></script>
     <script>
-      document.addEventListener("DOMContentLoaded", () => {
+      document.addEventListener("DOMContentLoaded", async () => {
+        // Await product catalog so cart images can be resolved from KawachiProducts
+        if (window.KawachiProductsPromise) {
+          try {
+            await window.KawachiProductsPromise;
+          } catch (e) {
+            console.warn("[cart.html] KawachiProductsPromise failed:", e);
+          }
+          // Re-render cart now that product images are available
+          if (window.KawachiCart) window.KawachiCart.render();
+        }
+
         // General drawer controls
         const drawer = document.getElementById("cart-drawer-overlay");
         const drawerSheet = document.getElementById("cart-drawer-sheet");
