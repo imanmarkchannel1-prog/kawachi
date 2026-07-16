@@ -1649,16 +1649,48 @@
     <script src="js/main-api.js?v=8.00"></script>
     <script>
       document.addEventListener("DOMContentLoaded", async () => {
-        // Await product catalog so cart images can be resolved from KawachiProducts
-        if (window.KawachiProductsPromise) {
-          try {
-            await window.KawachiProductsPromise;
-          } catch (e) {
-            console.warn("[cart.html] KawachiProductsPromise failed:", e);
+        // Heal cart item images: run after products load, then fall back to direct WC API fetch
+        const healCartImages = async () => {
+          if (!window.KawachiCart || !window.KawachiCart.items.length) return;
+          let needsRender = false;
+          for (const item of window.KawachiCart.items) {
+            const rawImg = item.image || "";
+            const isValidImg = /\.(jpg|jpeg|png|gif|webp|svg|avif|bmp)(\?|$)/i.test(rawImg) || rawImg.startsWith("data:");
+            if (!isValidImg) {
+              // 1. Try KawachiProducts first (fast, in-memory)
+              const prod = window.KawachiProducts && window.KawachiProducts.find((p) => p.id == item.id);
+              if (prod && prod.image) {
+                item.image = prod.image;
+                needsRender = true;
+                continue;
+              }
+              // 2. Fall back: fetch directly from WooCommerce proxy
+              try {
+                const res = await fetch(`/api/wc-proxy?endpoint=products/${item.id}`);
+                if (res.ok) {
+                  const data = await res.json();
+                  if (data && data.images && data.images.length > 0) {
+                    item.image = data.images[0].src;
+                    needsRender = true;
+                  }
+                }
+              } catch (err) {
+                console.warn("[cart.html] Failed to fetch image for item", item.id, err);
+              }
+            }
           }
-          // Re-render cart now that product images are available
-          if (window.KawachiCart) window.KawachiCart.render();
+          if (needsRender) {
+            // Persist healed images to localStorage and re-render
+            window.KawachiCart.save();
+          }
+        };
+
+        // Run after catalog loads (or immediately if already loaded)
+        if (window.KawachiProductsPromise) {
+          try { await window.KawachiProductsPromise; } catch (e) {}
         }
+        await healCartImages();
+
 
         // General drawer controls
         const drawer = document.getElementById("cart-drawer-overlay");
