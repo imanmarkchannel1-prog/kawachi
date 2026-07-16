@@ -812,7 +812,19 @@ class CartSystem {
       } else {
         cartTableBody.innerHTML = this.items
           .map((item) => {
-            const cleanedImg = (item.image || "").replace(
+            // Recover image from KawachiProducts if stored image is missing or is clearly not an image URL
+            let rawImg = item.image || "";
+            const looksLikeImage =
+              /\.(jpg|jpeg|png|gif|webp|svg|avif)(\?|$)/i.test(rawImg) ||
+              rawImg.startsWith("data:");
+            if (!rawImg || !looksLikeImage) {
+              // Try to get the real image from the loaded product catalog
+              const productData =
+                window.KawachiProducts &&
+                window.KawachiProducts.find((p) => p.id == item.id);
+              if (productData && productData.image) rawImg = productData.image;
+            }
+            const cleanedImg = rawImg.replace(
               /62\.72\.31\.43|wordpress-3ht1\.srv1774889\.hstgr.cloud/g,
               "kawachigroup.com",
             );
@@ -3515,13 +3527,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       const priceText = document.getElementById("p-price-display").textContent;
       const price = parseFloat(priceText.replace(/[^\d.]/g, ""));
       const qty = parseInt(document.getElementById("qty-value").value || 1, 10);
-      const imgEl = document.getElementById("gallery-main-img");
-      const image = imgEl ? imgEl.src : "";
 
       const urlParams = new URLSearchParams(window.location.search);
       const currentId = parseInt(urlParams.get("id"), 10) || 101;
       const product = window.KawachiProducts.find((x) => x.id === currentId);
       const category = product ? product.category : "Wellness";
+      // Always get image from the product data (not imgEl.src which resolves to page URL when src is empty)
+      const imgEl = document.getElementById("gallery-main-img");
+      const image =
+        (product && product.image) ||
+        (imgEl ? imgEl.getAttribute("src") : "") ||
+        "";
 
       // Add item to cart
       window.KawachiCart.addItem({
@@ -3554,13 +3570,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       const priceText = document.getElementById("p-price-display").textContent;
       const price = parseFloat(priceText.replace(/[^\d.]/g, ""));
       const qty = parseInt(document.getElementById("qty-value").value || 1, 10);
-      const imgEl = document.getElementById("gallery-main-img");
-      const image = imgEl ? imgEl.src : "";
 
       const urlParams = new URLSearchParams(window.location.search);
       const currentId = parseInt(urlParams.get("id"), 10) || 101;
       const product = window.KawachiProducts.find((x) => x.id === currentId);
       const category = product ? product.category : "Wellness";
+      // Always get image from the product data (not imgEl.src which resolves to page URL when src is empty)
+      const imgEl = document.getElementById("gallery-main-img");
+      const image =
+        (product && product.image) ||
+        (imgEl ? imgEl.getAttribute("src") : "") ||
+        "";
 
       window.KawachiCart.addItem({
         id: currentId,
