@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kawachi - Premium Headless WooCommerce Marketplace</title>
   <meta name="description" content="Explore a curated selection of lifestyle, wellness, home appliances, and smart gadgets at Kawachi. High-performance, premium utility shopping.">
-  <link rel="stylesheet" href="css/global-styles.css?v=7.17">
+  <link rel="stylesheet" href="css/global-styles.css?v=7.22">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@1,700;1,800&family=Bebas+Neue&family=Caveat:wght@700&family=Inter:wght@400;500;600;700;800;900&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
   <style>
@@ -53,16 +53,18 @@
     .video-spotlight-track-container {
       position: relative !important;
       width: 100% !important;
-      overflow: hidden !important;
+      overflow-x: clip !important;   /* clip horizontal but allow vertical for scale */
+      overflow-y: visible !important;
     }
     
     .video-spotlight-track {
       display: flex !important;
-      gap: 16px !important;
+      gap: 60px !important;
       overflow-x: auto !important;
       scroll-behavior: smooth !important;
-      padding: 4px 24px 16px 24px !important; /* Spacing from screen corners for the list layout */
-      scrollbar-width: none !important; /* Hide Firefox scrollbar */
+      padding: 60px 24px 80px 24px !important; /* 60px top and 80px bottom padding so scaled card & text are not clipped */
+      scrollbar-width: none !important;
+      scroll-snap-type: x mandatory !important;
     }
     
     .video-spotlight-track::-webkit-scrollbar {
@@ -96,6 +98,32 @@
       position: absolute !important;
       top: 0 !important;
       left: 0 !important;
+    }
+    .video-card iframe {
+      position: absolute !important;
+      top: 50% !important;
+      left: 50% !important;
+      transform: translate(-50%, -50%) !important;
+      border: none !important;
+      pointer-events: none !important;
+    }
+
+    /* Instagram embeds: clean edge-to-edge layout matching modal */
+    .video-card iframe[src*="instagram.com"] {
+      width: 100% !important;
+      height: 100% !important;
+      position: absolute !important;
+      top: 0 !important;
+      left: 0 !important;
+      transform: none !important;
+      background: #ffffff !important;
+    }
+
+    /* YouTube embeds: expand 16:9 player frame to crop black sidebar pillars (edge-to-edge) */
+    .video-card iframe[src*="youtube"],
+    .video-card iframe[src*="youtu.be"] {
+      width: 213.33% !important;
+      height: 120% !important;
     }
     
     /* No overlay inside video card — clean look */
@@ -140,6 +168,8 @@
       flex: 0 0 250px !important;
       width: 250px !important;
       gap: 10px !important;
+      scroll-snap-align: center !important;
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
     }
 
     .video-card-caption {
@@ -222,13 +252,15 @@
     
     .video-modal-right {
       flex: 0.9 !important;
-      padding: 32px !important;
+      padding: 20px 24px !important;
       display: flex !important;
       flex-direction: column !important;
-      justify-content: space-between !important;
+      justify-content: flex-start !important;
+      gap: 12px !important;
       background: #ffffff !important;
       height: 100% !important;
       border-left: 1px solid #f1f5f9 !important;
+      box-sizing: border-box !important;
     }
     
     .video-modal-close-btn {
@@ -280,10 +312,10 @@
     
     .modal-product-info {
       display: flex !important;
-      flex-direction: row !important;
-      justify-content: space-between !important;
-      align-items: center !important;
-      padding: 0 4px !important;
+      flex-direction: column !important;
+      align-items: flex-start !important;
+      gap: 8px !important;
+      padding: 8px 4px 4px 4px !important;
     }
     
     .modal-product-title {
@@ -294,9 +326,29 @@
     }
     
     .modal-product-price {
-      font-size: 17px !important;
+      font-size: 18px !important;
       font-weight: 800 !important;
-      color: #003366 !important;
+      color: #FF5E00 !important;
+      margin-top: 2px !important;
+    }
+
+    #modal-product-shop-link, #modal-product-view-link {
+      transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1) !important;
+    }
+    #modal-product-shop-link:hover {
+      transform: scale(1.03) !important;
+      box-shadow: 0 6px 20px rgba(255, 94, 0, 0.2) !important;
+    }
+    #modal-product-shop-link:active {
+      transform: scale(0.97) !important;
+    }
+    #modal-product-view-link:hover {
+      transform: scale(1.03) !important;
+      background-color: rgba(0, 51, 102, 0.05) !important;
+      box-shadow: 0 4px 15px rgba(0, 51, 102, 0.08) !important;
+    }
+    #modal-product-view-link:active {
+      transform: scale(0.97) !important;
     }
 
     /* Navigation: large hazy rectangular buttons */
@@ -369,7 +421,7 @@
         width: 55% !important;
         padding: 12px !important;
         border-left: 1px solid #f1f5f9 !important;
-        border-bottom: none !important;
+        border-top: none !important;
         display: flex !important;
         flex-direction: column !important;
         justify-content: space-between !important;
@@ -386,47 +438,51 @@
       .modal-product-card {
         flex-direction: column !important;
         align-items: stretch !important;
-        padding: 10px !important;
+        padding: 8px !important;
         gap: 8px !important;
-        margin-top: 8px !important;
+        margin-top: 6px !important;
+        background: #f8fafc !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 12px !important;
       }
       .modal-product-img {
         width: 100% !important;
         height: 120px !important;
         object-fit: contain !important;
         background: #ffffff !important;
-        border: 1px solid #e2e8f0 !important;
-        border-radius: 10px !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 8px !important;
         padding: 6px !important;
-        box-sizing: border-box !important;
       }
       .modal-product-info {
         display: flex !important;
         flex-direction: column !important;
-        align-items: flex-start !important;
-        gap: 2px !important;
-        padding: 0 4px !important;
+        gap: 4px !important;
+        padding: 4px 0 0 0 !important;
       }
       .modal-product-title {
         font-size: 12px !important;
         font-weight: 700 !important;
         color: #0f172a !important;
-        line-height: 1.25 !important;
+        line-height: 1.3 !important;
       }
       .modal-product-price {
-        font-size: 13px !important;
-        font-weight: 800 !important;
-        color: #003366 !important;
+        font-size: 17px !important;
+        font-weight: 900 !important;
+        color: #FF5E00 !important;
+        margin-top: 5px !important;
+        display: block !important;
       }
-      #modal-product-shop-link {
-        padding: 10px !important;
+      #modal-product-shop-link, #modal-product-view-link {
+        padding: 10px 8px !important;
         font-size: 12px !important;
-        margin-top: 8px !important;
+        margin-top: 6px !important;
+        border-radius: 6px !important;
       }
       /* Adjust text size on right side for mobile */
       .video-modal-right h3 {
-        font-size: 14px !important;
-        margin: 4px 0 2px !important;
+        font-size: 13.5px !important;
+        margin: 2px 0 6px !important;
       }
       .video-modal-right p {
         font-size: 11px !important;
@@ -454,10 +510,23 @@
       .spotlight-subtitle {
         display: none !important; /* Hide subtitle completely on mobile */
       }
+      .video-spotlight-track {
+        gap: 28px !important;
+      }
       .video-card-wrap {
         flex: 0 0 145px !important; /* Make cards much smaller on mobile */
         width: 145px !important;
         gap: 6px !important;
+        scroll-snap-align: center !important;
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+      }
+      .video-card iframe[src*="instagram.com"] {
+        width: 100% !important;
+        height: 100% !important;
+        transform: none !important;
+        top: 0 !important;
+        left: 0 !important;
+        background: #ffffff !important;
       }
       .video-card-caption .vc-product-name {
         font-size: 11px !important;
@@ -540,10 +609,9 @@
         </a>
         <a href="orders.html" class="utility-link">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 8v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8"></path>
-            <path d="M21 8H3V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-            <path d="M8 14h6a2 2 0 0 0 2-2v0a2 2 0 0 0-2-2H9.5"></path>
-            <polyline points="11.5 8 9.5 10 11.5 12"></polyline>
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+            <line x1="12" y1="22.08" x2="12" y2="12"></line>
           </svg>
           <span>Orders &amp; Returns</span>
         </a>
@@ -577,6 +645,7 @@
           <a href="search.html?q=Office" class="sub-nav-link">Office</a>
           <a href="search.html?q=new" class="sub-nav-link">New Arrivals</a>
           <a href="#deals-of-the-day" class="sub-nav-link highlighted-link">Deals</a>
+          <a href="https://optiedge.in" target="_blank" rel="noopener noreferrer" class="sub-nav-link">eCommerce Solution</a>
           <a href="contact.html?type=bulk" class="sub-nav-link">Bulk Orders</a>
         </div>
       </div>
@@ -587,6 +656,7 @@
   </header>
 <main id="main-content">
   <!-- 1. Hero Auto-Scrolling Banner Carousel (Moved outside to be full bleed/edge-to-edge) -->
+
   <section class="hero-carousel-section full-bleed">
     <div class="carousel-container-inner">
       <!-- Navigation Arrows (sit outside the clip box) -->
@@ -649,8 +719,6 @@
           <span class="spotlight-title-script" style="font-size: 40px; font-weight: 900; font-style: italic; font-family: 'Pacifico', cursive; background: linear-gradient(135deg, #FF5E00, #FF9A3C); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1.3; padding: 0 4px 10px 4px; display: inline-block;">shared by you</span>
           <span class="spotlight-title-emoji" style="font-size: 32px; line-height: 1;">💙</span>
         </div>
-        <!-- Subtitle -->
-        <p class="spotlight-subtitle" style="font-size: 15px; color: #64748b; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 400; max-width: 480px; line-height: 1.6; margin: 0;">Real moments from real people &mdash; see how our community lives, loves, and transforms their homes.</p>
       </div>
       
       <div class="video-spotlight-track-container">
@@ -794,25 +862,18 @@
         <div class="video-modal-left" id="modal-video-container">
           <!-- iframe injected here by JS -->
         </div>
-        <!-- Right: Product info -->
+        <!-- Right: Product details only -->
         <div class="video-modal-right">
-          <div>
-            <span style="font-size: 11px; font-weight: 700; color: #FF5E00; text-transform: uppercase; letter-spacing: 0.8px;">Customer Review</span>
-            <h3 id="modal-video-title" style="font-size: 20px; font-weight: 800; color: #0f172a; margin: 8px 0 6px; line-height: 1.25;">Review Title</h3>
-            <p id="modal-video-influencer" style="font-size: 13px; font-weight: 600; color: #64748b; margin-bottom: 20px;">@username</p>
-            <p style="font-size: 13px; color: #334155; line-height: 1.65; font-weight: 500;">Watch how this product fits into your real lifestyle. Click to shop directly.</p>
-          </div>
-          <div>
-            <p style="font-size: 11px; font-weight: 700; color: #003366; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px;">Featured Product</p>
-            <div class="modal-product-card">
-              <img id="modal-product-img" src="" alt="Product Image" class="modal-product-img">
-              <div class="modal-product-info">
-                <span id="modal-product-name" class="modal-product-title">Product Name</span>
-                <span id="modal-product-price" class="modal-product-price">₹0</span>
-              </div>
+          <h3 class="modal-right-heading" style="font-size:16px; font-weight:850; color:#0f172a; text-transform:uppercase; letter-spacing:0.05em; margin: 0; text-align:center;">Product Details</h3>
+          <div class="modal-product-card" style="margin-top:0; border:none; background:transparent; padding:0;">
+            <img id="modal-product-img" src="" alt="Product Image" class="modal-product-img" style="height:160px; object-fit:contain; border-radius:12px; background:#f8fafc; border:1px solid #e2e8f0;">
+            <div class="modal-product-info" style="padding: 8px 0 0 0 !important; gap: 6px !important;">
+              <span id="modal-product-name" class="modal-product-title" style="font-size:16px; font-weight:800; color:#0f172a; line-height:1.35; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; text-overflow:ellipsis;">Product Name</span>
+              <span id="modal-product-price" class="modal-product-price">₹0</span>
             </div>
-            <a id="modal-product-shop-link" href="#" class="btn btn-primary" style="display:block;text-align:center;margin-top:16px;padding:13px;border-radius:8px;font-weight:700;font-size:14px;text-decoration:none;">Shop This Product →</a>
           </div>
+          <a id="modal-product-view-link" href="#" style="display:block; text-align:center; margin-top:auto; padding:10px; border-radius:8px; font-weight:700; font-size:14px; text-decoration:none; color:#003366; border:2px solid #003366; background:transparent; transition: all 0.2s ease;">View Product Details</a>
+          <a id="modal-product-shop-link" href="#" class="btn btn-primary" style="display:block;text-align:center;margin-top:0px;padding:11px;border-radius:8px;font-weight:700;font-size:14px;text-decoration:none;">Shop This Product →</a>
         </div>
       </div>
     </div>
@@ -823,7 +884,7 @@
         
         <!-- Box 1: Trending Now -->
         <div class="discovery-card">
-          <h3 class="discovery-card-title">Trending Now</h3>
+          <h3 class="discovery-card-title" id="tile-title-trending">Trending Now</h3>
           <p class="discovery-card-subtitle">Most popular items right now</p>
           <div class="discovery-card-2x2" id="discovery-trending-grid">
             <a href="single-product.html?id=105" class="discovery-grid-item">
@@ -843,12 +904,12 @@
               <span>Trolley Rack</span>
             </a>
           </div>
-          <a href="search.html?orderby=date" class="discovery-card-link">Explore all</a>
+          <a href="search.html?orderby=date" class="discovery-card-link" id="more-link-trending">more ></a>
         </div>
 
         <!-- Box 2: Bestsellers -->
         <div class="discovery-card">
-          <h3 class="discovery-card-title">Bestsellers</h3>
+          <h3 class="discovery-card-title" id="tile-title-bestsellers">Bestsellers</h3>
           <p class="discovery-card-subtitle">Top picks by our customers</p>
           <div class="discovery-card-2x2" id="discovery-bestsellers-grid">
             <a href="single-product.html?id=102" class="discovery-grid-item">
@@ -868,12 +929,12 @@
               <span>Study Table</span>
             </a>
           </div>
-          <a href="search.html?orderby=popularity" class="discovery-card-link">Explore all</a>
+          <a href="search.html?orderby=popularity" class="discovery-card-link" id="more-link-bestsellers">more ></a>
         </div>
 
         <!-- Box 3: Home Makeover -->
         <div class="discovery-card">
-          <h3 class="discovery-card-title">Home Makeover</h3>
+          <h3 class="discovery-card-title" id="tile-title-makeover">Kitchen Furniture</h3>
           <p class="discovery-card-subtitle">Style your space</p>
           <div class="discovery-card-2x2" id="discovery-makeover-grid">
             <a href="single-product.html?id=103" class="discovery-grid-item">
@@ -893,12 +954,12 @@
               <span>Storage Cart</span>
             </a>
           </div>
-          <a href="search.html?category=home-furniture" class="discovery-card-link">Explore all</a>
+          <a href="search.html?category=home-furniture" class="discovery-card-link" id="more-link-makeover">more ></a>
         </div>
 
         <!-- Box 4: Smart Utilities (Replacing sign in) -->
         <div class="discovery-card">
-          <h3 class="discovery-card-title">Smart Utilities</h3>
+          <h3 class="discovery-card-title" id="tile-title-utilities">Smart Utilities</h3>
           <p class="discovery-card-subtitle">Clever household hacks</p>
           <div class="discovery-card-2x2" id="discovery-utilities-grid">
             <a href="single-product.html?id=113" class="discovery-grid-item">
@@ -918,7 +979,7 @@
               <span>Study Desk</span>
             </a>
           </div>
-          <a href="search.html?category=kitchen-storage" class="discovery-card-link">Explore all</a>
+          <a href="search.html?category=kitchen-storage" class="discovery-card-link" id="more-link-utilities">more ></a>
         </div>
 
       </div>
@@ -941,7 +1002,7 @@
             </div>
           </div>
         </div>
-        <a href="search.html?orderby=popularity" class="deals-view-all">View all &rarr;</a>
+        <a href="search.html?orderby=popularity" class="deals-view-all" id="more-link-deals">more ></a>
       </div>
 
       <div class="deals-slider-outer">
@@ -1082,29 +1143,13 @@
             </div>
 
             <!-- Premium Promo Banner inside the categories card to balance layout height -->
-            <a href="#home-furniture" class="split-promo-banner" style="margin-top: 8px !important;">
-              <div class="banner-content">
-                <span class="banner-badge">Featured Deals</span>
-                <h4 class="banner-title">Transform Your Home with Space Savers</h4>
-                <p class="banner-text">Get up to 40% off on all folding tables and multipurpose racks.</p>
-                <span class="banner-btn">Shop Collection &rarr;</span>
-              </div>
-              <div class="banner-image-wrap">
-                <img src="images/products/laptop_desk.png" alt="Smart Table">
-              </div>
+            <a id="below-category-banner-1" href="#home-furniture" class="split-promo-banner" style="margin-top: 8px !important; padding: 0 !important; overflow: hidden !important;">
+              <img src="images/products/laptop_desk.png" alt="Smart Table" style="width: 100% !important; height: 100% !important; object-fit: cover !important; border-radius: 12px !important; display: block !important;">
             </a>
 
             <!-- Second Premium Promo Banner for Kitchen/Utility Deals to balance height with Best Sellers list -->
-            <a href="#kitchen-storage" class="split-promo-banner" style="background: linear-gradient(135deg, #D97706 0%, #92400E 100%) !important; margin-top: 0px !important;">
-              <div class="banner-content">
-                <span class="banner-badge" style="background: rgba(255, 255, 255, 0.2) !important;">Kitchen Deals</span>
-                <h4 class="banner-title">De-clutter Your Kitchen Space</h4>
-                <p class="banner-text">Save up to 35% on multi-tier steel racks and trolley organizers.</p>
-                <span class="banner-btn" style="color: #92400E !important;">Explore Kitchen &rarr;</span>
-              </div>
-              <div class="banner-image-wrap">
-                <img src="images/products/kitchen_rack.png" alt="Kitchen Rack">
-              </div>
+            <a id="below-category-banner-2" href="#kitchen-storage" class="split-promo-banner" style="background: linear-gradient(135deg, #D97706 0%, #92400E 100%) !important; margin-top: 0px !important; padding: 0 !important; overflow: hidden !important;">
+              <img src="images/products/kitchen_rack.png" alt="Kitchen Rack" style="width: 100% !important; height: 100% !important; object-fit: cover !important; border-radius: 12px !important; display: block !important;">
             </a>
 
           </div>
@@ -1115,11 +1160,10 @@
           <div class="split-card-header" style="padding: 18px 20px;">
             <div class="list-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0 !important;">
               <h3 class="split-section-title" style="margin: 0 !important;">Best Sellers</h3>
-              <a href="search.html?orderby=popularity" class="list-view-all">View all &rarr;</a>
+              <a href="search.html?orderby=popularity" class="list-view-all" id="more-link-bestsellers-sidebar">more ></a>
             </div>
           </div>
-          <div class="split-card-body" style="padding: 24px 20px; flex-grow: 1;">
-            <p class="split-section-subtitle">Most loved by customers</p>
+          <div class="split-card-body" style="padding: 10px 20px 24px; flex-grow: 1; display: flex; flex-direction: column;">
             <div class="split-best-sellers-products" id="split-best-sellers-products-container">
               <div class="skeleton-row-item">
                 <div class="skeleton-spinner-overlay" style="border-radius: 12px;"><div class="skeleton-spinner"></div></div>
@@ -1127,7 +1171,6 @@
                 <div class="skeleton-row-meta">
                   <div class="skeleton-el skeleton-row-name"></div>
                   <div class="skeleton-el skeleton-row-category"></div>
-                  <div class="skeleton-el skeleton-row-rating"></div>
                   <div class="skeleton-el skeleton-row-price"></div>
                 </div>
               </div>
@@ -1137,7 +1180,6 @@
                 <div class="skeleton-row-meta">
                   <div class="skeleton-el skeleton-row-name"></div>
                   <div class="skeleton-el skeleton-row-category"></div>
-                  <div class="skeleton-el skeleton-row-rating"></div>
                   <div class="skeleton-el skeleton-row-price"></div>
                 </div>
               </div>
@@ -1147,7 +1189,6 @@
                 <div class="skeleton-row-meta">
                   <div class="skeleton-el skeleton-row-name"></div>
                   <div class="skeleton-el skeleton-row-category"></div>
-                  <div class="skeleton-el skeleton-row-rating"></div>
                   <div class="skeleton-el skeleton-row-price"></div>
                 </div>
               </div>
@@ -1157,7 +1198,6 @@
                 <div class="skeleton-row-meta">
                   <div class="skeleton-el skeleton-row-name"></div>
                   <div class="skeleton-el skeleton-row-category"></div>
-                  <div class="skeleton-el skeleton-row-rating"></div>
                   <div class="skeleton-el skeleton-row-price"></div>
                 </div>
               </div>
@@ -1168,68 +1208,7 @@
       </div>
     </section>
 
-    <!-- 6. Best Sellers Strip (Horizontal product slider) -->
-    <section class="product-slider-section" id="best-sellers-section" style="background-color: var(--color-bg-white); padding: 40px 24px; border-bottom: 1px solid var(--color-border); border-radius: 20px; box-shadow: var(--shadow-sm); margin-bottom: 30px;">
-      <div class="container">
-        <div class="sec-header-row">
-          <div>
-            <h2 class="kawachi-sec-title">Best Sellers</h2>
-            <p class="kawachi-sec-desc">Our most popular products loved by customers.</p>
-          </div>
-          <a href="search.html?orderby=popularity" style="font-size: 14px; font-weight: 700; color: #1463FF; display: flex; align-items: center; gap: 4px; text-decoration: none;">
-            View All &rarr;
-          </a>
-        </div>
-        <div class="slider-container-outer" style="position: relative;">
-          <button class="slider-arrow-btn prev" aria-label="Previous Slide">
-            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path></svg>
-          </button>
-          <button class="slider-arrow-btn next" aria-label="Next Slide">
-            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
-          </button>
-          <div class="product-slider-wrapper" style="overflow: hidden; padding: 12px 4px;">
-            <div class="product-slider-track" id="track-best-sellers" style="display: flex; gap: 24px; transition: transform 0.5s ease;">
-              <div class="skeleton-card">
-                <div class="skeleton-spinner-overlay"><div class="skeleton-spinner"></div></div>
-                <div class="skeleton-el skeleton-img"></div>
-                <div class="skeleton-el skeleton-text-category"></div>
-                <div class="skeleton-el skeleton-text-title"></div>
-                <div class="skeleton-el skeleton-text-rating"></div>
-                <div class="skeleton-el skeleton-price-row"></div>
-                <div class="skeleton-el skeleton-action-btn"></div>
-              </div>
-              <div class="skeleton-card">
-                <div class="skeleton-spinner-overlay"><div class="skeleton-spinner"></div></div>
-                <div class="skeleton-el skeleton-img"></div>
-                <div class="skeleton-el skeleton-text-category"></div>
-                <div class="skeleton-el skeleton-text-title"></div>
-                <div class="skeleton-el skeleton-text-rating"></div>
-                <div class="skeleton-el skeleton-price-row"></div>
-                <div class="skeleton-el skeleton-action-btn"></div>
-              </div>
-              <div class="skeleton-card">
-                <div class="skeleton-spinner-overlay"><div class="skeleton-spinner"></div></div>
-                <div class="skeleton-el skeleton-img"></div>
-                <div class="skeleton-el skeleton-text-category"></div>
-                <div class="skeleton-el skeleton-text-title"></div>
-                <div class="skeleton-el skeleton-text-rating"></div>
-                <div class="skeleton-el skeleton-price-row"></div>
-                <div class="skeleton-el skeleton-action-btn"></div>
-              </div>
-              <div class="skeleton-card">
-                <div class="skeleton-spinner-overlay"><div class="skeleton-spinner"></div></div>
-                <div class="skeleton-el skeleton-img"></div>
-                <div class="skeleton-el skeleton-text-category"></div>
-                <div class="skeleton-el skeleton-text-title"></div>
-                <div class="skeleton-el skeleton-text-rating"></div>
-                <div class="skeleton-el skeleton-price-row"></div>
-                <div class="skeleton-el skeleton-action-btn"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+
 
     <!-- 7. Trending Now Strip (Horizontal product slider) -->
     <section class="product-slider-section" id="trending-now-section" style="background-color: var(--color-bg-white); padding: 40px 24px; border-bottom: 1px solid var(--color-border); border-radius: 20px; box-shadow: var(--shadow-sm); margin-bottom: 30px;">
@@ -1237,10 +1216,10 @@
         <div class="sec-header-row">
           <div>
             <h2 class="kawachi-sec-title">Trending Now</h2>
-            <p class="kawachi-sec-desc">Discover our latest arrivals and newest additions automatically.</p>
+
           </div>
-          <a href="search.html?orderby=date" style="font-size: 14px; font-weight: 700; color: #1463FF; display: flex; align-items: center; gap: 4px; text-decoration: none;">
-            View All &rarr;
+          <a href="search.html?orderby=date" id="more-link-trending-slider" style="font-size: 14px; font-weight: 700; color: #1463FF; display: flex; align-items: center; gap: 4px; text-decoration: none;">
+            more >
           </a>
         </div>
         <div class="slider-container-outer" style="position: relative;">
@@ -1294,47 +1273,46 @@
       </div>
     </section>
 
+
+
     <!-- 8. Three Promo Banners Row (Up to 50% off) -->
     <section class="promo-banners-triple-section">
       <div class="promo-banners-triple-row" id="promo-banners-row">
         
         <!-- Banner 1: Up to 50% Off -->
-        <div class="promo-box-triple" style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: #ffffff;">
+        <div class="promo-box-triple" id="promo-card-blue" style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: #ffffff;">
           <div class="promo-box-left">
-            <span class="promo-badge-tag">MEGA SALE</span>
             <h3 class="promo-title">Up to 50% Off</h3>
             <p class="promo-text">Home Essentials</p>
-            <a href="#home-furniture" class="promo-btn-white">Shop Now &rarr;</a>
           </div>
           <div class="promo-box-right">
             <img src="images/products/meditation_chair.png" alt="Furniture Sale">
           </div>
+          <a href="#home-furniture" class="promo-btn-white">Shop Now</a>
         </div>
 
         <!-- Banner 2: Smart Storage Solutions -->
-        <div class="promo-box-triple" style="background: linear-gradient(135deg, #e65c00 0%, #f9d423 100%); color: #ffffff;">
+        <div class="promo-box-triple" id="promo-card-orange" style="background: linear-gradient(135deg, #e65c00 0%, #f9d423 100%); color: #ffffff;">
           <div class="promo-box-left">
-            <span class="promo-badge-tag" style="background-color: rgba(255,255,255,0.2);">SPACE SAVERS</span>
             <h3 class="promo-title">Smart Storage</h3>
             <p class="promo-text">Organize your space</p>
-            <a href="#kitchen-storage" class="promo-btn-white" style="color: #e65c00;">Shop Now &rarr;</a>
           </div>
           <div class="promo-box-right">
             <img src="images/products/trolley_organizer.png" alt="Storage Sale">
           </div>
+          <a href="#kitchen-storage" class="promo-btn-white" style="color: #e65c00;">Shop Now</a>
         </div>
 
         <!-- Banner 3: New Season Arrivals -->
-        <div class="promo-box-triple" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: #ffffff;">
+        <div class="promo-box-triple" id="promo-card-green" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: #ffffff;">
           <div class="promo-box-left">
-            <span class="promo-badge-tag" style="background-color: rgba(255,255,255,0.2);">JUST IN</span>
             <h3 class="promo-title">New Season</h3>
             <p class="promo-text">Fresh collections weekly</p>
-            <a href="search.html?q=new" class="promo-btn-white" style="color: #11998e;">Explore Now &rarr;</a>
           </div>
           <div class="promo-box-right">
             <img src="images/products/wall_shelves.png" alt="New Arrivals">
           </div>
+          <a href="search.html?q=new" class="promo-btn-white" style="color: #11998e;">Explore Now</a>
         </div>
 
       </div>
@@ -1346,10 +1324,10 @@
         <div class="sec-header-row">
           <div>
             <h2 class="kawachi-sec-title">Home Furniture</h2>
-            <p class="kawachi-sec-desc">Space-saving study desks, laptop tables, and support units.</p>
+
           </div>
-          <a href="search.html?category=home-furniture" style="font-size: 14px; font-weight: 700; color: #1463FF; display: flex; align-items: center; gap: 4px; text-decoration: none;">
-            View All &rarr;
+          <a href="search.html?category=home-furniture" id="more-link-furniture-slider" style="font-size: 14px; font-weight: 700; color: #1463FF; display: flex; align-items: center; gap: 4px; text-decoration: none;">
+            more >
           </a>
         </div>
         <div class="slider-container-outer" style="position: relative;">
@@ -1409,10 +1387,10 @@
         <div class="sec-header-row">
           <div>
             <h2 class="kawachi-sec-title">Kitchen Storage</h2>
-            <p class="kawachi-sec-desc">Premium multi-tier organizers, microwave racks, and mobile trolleys.</p>
+
           </div>
-          <a href="search.html?category=kitchen-storage" style="font-size: 14px; font-weight: 700; color: #1463FF; display: flex; align-items: center; gap: 4px; text-decoration: none;">
-            View All &rarr;
+          <a href="search.html?category=kitchen-storage" id="more-link-kitchen-slider" style="font-size: 14px; font-weight: 700; color: #1463FF; display: flex; align-items: center; gap: 4px; text-decoration: none;">
+            more >
           </a>
         </div>
         <div class="slider-container-outer" style="position: relative;">
@@ -1466,76 +1444,27 @@
       </div>
     </section>
 
+
+
     <!-- 4. Marketplace Features Trust Strip -->
-    <section class="marketplace-trust-section">
-      <div class="trust-container-inner">
-        
-        <!-- Trust Box 1 -->
-        <div class="trust-item-box">
-          <div class="trust-item-icon">
-            <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
-              <path stroke-linecap="round" stroke-linejoin="round" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10M13 8h7.88a1 1 0 01.97.757l1.37 5.5A1 1 0 0122.25 15.5h-1.25" />
-            </svg>
-          </div>
-          <div class="trust-item-info">
-            <h4 class="trust-title">Free Delivery</h4>
-            <p class="trust-desc">On orders above ₹12,000</p>
-          </div>
+    <section class="marketplace-trust-section" style="background: transparent !important; padding: 0 !important; border: none !important; box-shadow: none !important; margin: 30px 0 !important;">
+      <div class="pdp-trust-badges-card">
+        <div class="pdp-trust-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#1a4a7a" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="2"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5" fill="#FFFFFF"/><circle cx="18.5" cy="18.5" r="2.5" fill="#FFFFFF"/></svg>
+          <span class="badge-title">Free Shipping</span>
         </div>
-
-        <!-- Trust Box 2 -->
-        <div class="trust-item-box">
-          <div class="trust-item-icon">
-            <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 7.89M9 11l3 3L21 4"></path>
-            </svg>
-          </div>
-          <div class="trust-item-info">
-            <h4 class="trust-title">Easy Returns</h4>
-            <p class="trust-desc">Within 7 days</p>
-          </div>
+        <div class="pdp-trust-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#1a4a7a" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 11 2 2 4-4"/></svg>
+          <span class="badge-title">Assured Quality</span>
         </div>
-
-        <!-- Trust Box 3 -->
-        <div class="trust-item-box">
-          <div class="trust-item-icon">
-            <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-            </svg>
-          </div>
-          <div class="trust-item-info">
-            <h4 class="trust-title">Secure Payments</h4>
-            <p class="trust-desc">100% safe &amp; secure</p>
-          </div>
+        <div class="pdp-trust-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#1a4a7a" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <span class="badge-title">Secure Checkout</span>
         </div>
-
-        <!-- Trust Box 4 -->
-        <div class="trust-item-box">
-          <div class="trust-item-icon">
-            <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138z"></path>
-            </svg>
-          </div>
-          <div class="trust-item-info">
-            <h4 class="trust-title">Quality Assured</h4>
-            <p class="trust-desc">Tested &amp; Trusted</p>
-          </div>
+        <div class="pdp-trust-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#1a4a7a" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><circle cx="12" cy="11" r="3"/><path d="m9 11 2 2 4-4"/></svg>
+          <span class="badge-title">6-12 Months Warranty</span>
         </div>
-
-        <!-- Trust Box 5 -->
-        <div class="trust-item-box">
-          <div class="trust-item-icon">
-            <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
-            </svg>
-          </div>
-          <div class="trust-item-info">
-            <h4 class="trust-title">24/7 Support</h4>
-            <p class="trust-desc">We're here to help</p>
-          </div>
-        </div>
-
       </div>
     </section>
 
@@ -1625,72 +1554,102 @@
       <div class="container">
         <div style="margin-bottom: 32px; text-align: center;">
           <h2 class="kawachi-sec-title">Frequently Asked Questions</h2>
-          <p class="kawachi-sec-desc">Everything you need to know about our products, shipping, and returns policies.</p>
         </div>
-        
-        <div class="faq-list-2026" style="max-width: 900px; margin: 0 auto;">
-          <!-- FAQ 1 -->
-          <div class="faq-item-2026">
-            <button class="faq-question-btn" onclick="toggleFaq(this)">
-              <span>What is the delivery timeline for my order?</span>
-              <svg class="faq-icon-svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path>
-              </svg>
-            </button>
-            <div class="faq-answer-panel">
-              <div class="faq-answer-content">
-                Orders are processed and dispatched within 24-48 hours. Delivery usually takes 3-5 business days for metropolitan areas and 5-7 business days for other parts of India. You will receive an SMS and email with tracking details as soon as your shipment leaves our warehouse.
-              </div>
-            </div>
-          </div>
 
-          <!-- FAQ 2 -->
-          <div class="faq-item-2026">
-            <button class="faq-question-btn" onclick="toggleFaq(this)">
-              <span>Do you offer cash on delivery (COD)?</span>
-              <svg class="faq-icon-svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path>
-              </svg>
-            </button>
-            <div class="faq-answer-panel">
-              <div class="faq-answer-content">
-                Yes, we offer Cash on Delivery (COD) across most pincodes in India, alongside secure online UPI, debit/credit cards, and NetBanking checkout options.
-              </div>
-            </div>
-          </div>
+        <!-- Single container — JS renders exactly 5 questions here -->
+        <div id="faq-live-list" class="faq-list-2026" style="max-width: 900px; margin: 0 auto; transition: opacity 0.4s ease, transform 0.4s ease; opacity: 1; transform: translateY(0);"></div>
 
-          <!-- FAQ 3 -->
-          <div class="faq-item-2026">
-            <button class="faq-question-btn" onclick="toggleFaq(this)">
-              <span>What is your return policy?</span>
-              <svg class="faq-icon-svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path>
-              </svg>
-            </button>
-            <div class="faq-answer-panel">
-              <div class="faq-answer-content">
-                We offer a 7-day return and replacement policy on our flagship products. If you receive a damaged or incorrect product, contact us at crm@kawachigroup.com within 7 days of delivery, and we will coordinate a replacement.
-              </div>
-            </div>
-          </div>
+        <!-- Page dots -->
+        <div id="faq-live-dots" style="display:flex; gap:7px; justify-content:center; margin-top:20px;"></div>
 
-          <!-- FAQ 4 -->
-          <div class="faq-item-2026">
-            <button class="faq-question-btn" onclick="toggleFaq(this)">
-              <span>How do I contact customer support?</span>
-              <svg class="faq-icon-svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path>
-              </svg>
-            </button>
-            <div class="faq-answer-panel">
-              <div class="faq-answer-content">
-                You can reach our help desk by calling +91 9326-110-110 or emailing crm@kawachigroup.com. Our support hours are Monday to Saturday, 10 AM to 6 PM.
-              </div>
-            </div>
-          </div>
-
+        <!-- View All FAQs -->
+        <div style="text-align:center;">
+          <a href="faq.html" style="display:inline-block; margin-top:24px; padding:13px 32px; background:#1E3E7A; color:#fff; font-size:14px; font-weight:700; border-radius:10px; text-decoration:none; letter-spacing:0.03em; transition:background 0.2s ease, transform 0.15s ease;"
+             onmouseover="this.style.background='#163066';this.style.transform='translateY(-2px)';"
+             onmouseout="this.style.background='#1E3E7A';this.style.transform='translateY(0)';">
+            View All FAQs
+          </a>
         </div>
       </div>
+
+      <script>
+      (function() {
+        var faqs = [
+          { q: "What is the delivery timeline for my order?", a: "Orders are processed and dispatched within 24–48 hours. Delivery takes 3–5 business days for metros and 5–7 for other parts of India. You will receive an SMS and email with tracking details once shipped." },
+          { q: "Do you offer cash on delivery (COD)?", a: "Yes, we offer COD across most pincodes in India, alongside UPI, debit/credit cards, and NetBanking." },
+          { q: "What is your return policy?", a: "We offer a 7-day return and replacement policy. If you receive a damaged or incorrect product, contact us at crm@kawachigroup.com within 7 days of delivery." },
+          { q: "How do I contact customer support?", a: "Call us at +91 9326-110-110 or email crm@kawachigroup.com. Support hours: Monday–Saturday, 10 AM–6 PM." },
+          { q: "Are Kawachi products covered under warranty?", a: "Yes, most Kawachi products come with a 6-month to 1-year manufacturer warranty against defects. Refer to the individual product page for specific warranty terms." },
+          { q: "Can I modify or cancel my order after placing it?", a: "Orders can be modified or cancelled within 12 hours of placement by contacting our support team. Once dispatched, cancellations are not possible but returns can be requested post-delivery." },
+          { q: "Do you ship pan-India including remote areas?", a: "Yes, we ship to 20,000+ pincodes across India including tier-2 and tier-3 cities. Delivery times may be slightly longer for remote locations." },
+          { q: "How do I track my order?", a: "Once your order is shipped, you will receive an SMS/email with a tracking link. You can also log in and visit 'My Orders' to view real-time status." },
+          { q: "Are the products on Kawachi authentic and original?", a: "Absolutely. All products are sourced directly from manufacturers or authorised distributors. We do not sell counterfeit or grey-market goods." },
+          { q: "Do you have bulk or wholesale pricing?", a: "Yes! Kawachi offers special B2B pricing for bulk orders. Click the 'Bulk Orders' button at the top or email crm@kawachigroup.com with your requirements." }
+        ];
+
+        var PER_PAGE = 5;
+        var totalPages = Math.ceil(faqs.length / PER_PAGE);
+        var currentPage = 0;
+        var timer = null;
+        var container = document.getElementById('faq-live-list');
+        var dotsEl = document.getElementById('faq-live-dots');
+
+        // Build dots
+        for (var d = 0; d < totalPages; d++) {
+          var dot = document.createElement('span');
+          dot.style.cssText = 'width:8px;height:8px;border-radius:50%;background:#CBD5E1;cursor:pointer;transition:background 0.3s;display:inline-block;';
+          dot.setAttribute('data-page', d);
+          dot.addEventListener('click', (function(pg) {
+            return function() { clearInterval(timer); showPage(pg); startTimer(); };
+          })(d));
+          dotsEl.appendChild(dot);
+        }
+
+        function updateDots() {
+          dotsEl.querySelectorAll('span').forEach(function(dot, i) {
+            dot.style.background = (i === currentPage) ? '#1E3E7A' : '#CBD5E1';
+          });
+        }
+
+        function renderPage(pg) {
+          var slice = faqs.slice(pg * PER_PAGE, pg * PER_PAGE + PER_PAGE);
+          container.innerHTML = slice.map(function(item) {
+            return '<div class="faq-item-2026">' +
+              '<button class="faq-question-btn" onclick="toggleFaq(this)">' +
+              '<span>' + item.q + '</span>' +
+              '<svg class="faq-icon-svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path></svg>' +
+              '</button>' +
+              '<div class="faq-answer-panel"><div class="faq-answer-content">' + item.a + '</div></div>' +
+              '</div>';
+          }).join('');
+        }
+
+        function showPage(pg) {
+          currentPage = ((pg % totalPages) + totalPages) % totalPages;
+          // Fade out
+          container.style.opacity = '0';
+          container.style.transform = 'translateY(10px)';
+          setTimeout(function() {
+            renderPage(currentPage);
+            updateDots();
+            // Fade in
+            container.style.opacity = '1';
+            container.style.transform = 'translateY(0)';
+          }, 380);
+        }
+
+        function startTimer() {
+          timer = setInterval(function() {
+            showPage(currentPage + 1);
+          }, 7500);
+        }
+
+        // Init: render page 0 immediately (no fade needed on load)
+        renderPage(0);
+        updateDots();
+        startTimer();
+      })();
+      </script>
     </section>
 
   </div>
@@ -1720,46 +1679,31 @@
       // Rendering product cards helper
       function renderCard(p, isSlide = false) {
         if (!p) return "";
-        const savings = p.regular_price ? Math.round(((p.regular_price - p.price) / p.regular_price) * 100) : 0;
-        const savingsHtml = savings > 0 ? `<span class="product-badge sale">-${savings}%</span>` : "";
         const slideClass = isSlide ? "product-slide-card" : "";
+        const mainImg = p.image || (p.images && p.images.length > 0 ? p.images[0].src : "https://via.placeholder.com/600/ffffff/0f172a?text=No+Image");
+        const hoverImg = (p.images && p.images.length > 1) ? p.images[1].src : mainImg;
 
-        // Sales count badge
-        const salesCount = p.sales_count || p.orders_count || 0;
-        const salesHtml = salesCount > 0 ? `
-          <div class="product-sales-badge">
-            <svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
-            <span>${salesCount.toLocaleString('en-IN')}+ bought</span>
-          </div>
-        ` : "";
+        const savings = p.regular_price ? Math.round(((p.regular_price - p.price) / p.regular_price) * 100) : 0;
+        const savingsHtml = savings > 0 ? `<span class="deal-discount-badge" style="position: absolute !important; top: 10px !important; left: 10px !important; z-index: 2 !important;">${savings}% OFF</span>` : "";
 
         return `
-          <article class="product-card ${slideClass}" onclick="if(!event.target.closest('button')) window.location.href='single-product.html?id=${p.id}'">
-            <div class="product-image-container">
+          <div class="product-card marquee-product-card ${slideClass}" data-gallery-count="2" onclick="if(!event.target.closest('button')) window.location.href='single-product.html?id=${p.id}'">
+            <div class="product-image-container" style="position: relative;">
               ${savingsHtml}
-              <img src="${p.image}" alt="${p.name}" class="product-image" loading="lazy">
-              <div class="product-card-actions">
-                <button class="product-action-btn add-to-cart-quick" data-id="${p.id}" data-name="${p.name}" data-price="${p.price}" aria-label="Add to Cart" onclick="event.stopPropagation();">
-                  <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path>
-                  </svg>
-                </button>
+              <img src="${mainImg}" alt="${p.name}" class="product-image" loading="lazy">
+              <img src="${hoverImg}" alt="${p.name}" class="product-image product-gallery-img" loading="lazy">
+              <div class="gallery-dots">
+                <span class="gallery-dot dot-active" data-dot-index="0"></span>
+                <span class="gallery-dot" data-dot-index="1"></span>
               </div>
             </div>
             <div class="product-info">
-              <span class="product-category">${p.category}</span>
+              <span class="product-category">${p.category || 'lifestyle'}</span>
               <h3 class="product-title" onclick="window.location.href='single-product.html?id=${p.id}'">${p.name}</h3>
-              <div class="product-rating" style="display: flex; gap: 2px; margin-bottom: 4px; color: var(--color-warning);">
-                <svg width="14" height="14" fill="currentColor" viewBox="0 0 20 20" style="color: #FBBF24;"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                <span style="font-size: 11px; font-weight: 700; color: var(--color-text-muted); margin-left: 4px;">${p.rating}</span>
-              </div>
-              ${salesHtml}
-              <div class="product-price-row">
-                <span class="price-current">${formatRupees(p.price)}</span>
-                ${p.regular_price ? `<span class="price-old">${formatRupees(p.regular_price)}</span>` : ""}
-              </div>
+              ${window.getCardRatingHtml(p.rating, p.reviews)}
+              ${window.getCardPriceRowHtml(p)}
             </div>
-          </article>
+          </div>
         `;
       }
 
@@ -1850,20 +1794,27 @@
 
         dealsTrack.innerHTML = dealsList.map(p => {
           const savings = p.regular_price ? Math.round(((p.regular_price - p.price) / p.regular_price) * 100) : 0;
-          const savingsHtml = savings > 0 ? `<span class="deal-discount-badge">${savings}% OFF</span>` : "";
+          const savingsHtml = savings > 0 ? `<span class="deal-discount-badge" style="position: absolute !important; top: 10px !important; left: 10px !important; z-index: 2 !important;">${savings}% OFF</span>` : "";
+          
+          const mainImg = p.image || (p.images && p.images.length > 0 ? p.images[0].src : "https://via.placeholder.com/600/ffffff/0f172a?text=No+Image");
+          const hoverImg = (p.images && p.images.length > 1) ? p.images[1].src : mainImg;
+
           return `
-            <div class="deal-product-item-card" onclick="window.location.href='single-product.html?id=${p.id}'">
-              ${savingsHtml}
-              <img src="${p.image}" alt="${p.name}" class="deal-product-image">
-              <h4 class="deal-product-title">${p.name}</h4>
-              <div class="deal-product-rating">
-                <span class="stars-fill">★</span>
-                <span class="rating-val">${p.rating}</span>
-                <span class="reviews-count">(${p.reviews})</span>
+            <div class="product-card marquee-product-card product-slide-card" data-gallery-count="2" onclick="if(!event.target.closest('button')) window.location.href='single-product.html?id=${p.id}'">
+              <div class="product-image-container" style="position: relative;">
+                ${savingsHtml}
+                <img src="${mainImg}" alt="${p.name}" class="product-image" loading="lazy">
+                <img src="${hoverImg}" alt="${p.name}" class="product-image product-gallery-img" loading="lazy">
+                <div class="gallery-dots">
+                  <span class="gallery-dot dot-active" data-dot-index="0"></span>
+                  <span class="gallery-dot" data-dot-index="1"></span>
+                </div>
               </div>
-              <div class="deal-price-line">
-                <span class="price-now">${formatRupees(p.price)}</span>
-                ${p.regular_price ? `<span class="price-was">${formatRupees(p.regular_price)}</span>` : ""}
+              <div class="product-info">
+                <span class="product-category">${p.category || 'lifestyle'}</span>
+                <h3 class="product-title" onclick="window.location.href='single-product.html?id=${p.id}'">${p.name}</h3>
+                ${window.getCardRatingHtml(p.rating, p.reviews)}
+                ${window.getCardPriceRowHtml(p)}
               </div>
             </div>
           `;
@@ -1875,18 +1826,14 @@
         const container = document.getElementById("split-best-sellers-products-container");
         if (!container || !products.length) return;
 
-        const bestList = [...products].sort((a,b) => b.sales_count - a.sales_count).slice(0, 4);
+        const bestList = [...products].sort((a,b) => b.sales_count - a.sales_count).slice(0, 7);
         container.innerHTML = bestList.map(p => `
           <a href="single-product.html?id=${p.id}" class="split-bestseller-item">
             <img src="${p.image}" alt="${p.name}">
             <div class="item-meta">
               <span class="item-name">${p.name}</span>
               <span class="item-category">${p.category}</span>
-              <div class="item-rating-row">
-                <span style="color: #FBBF24;">★</span>
-                <span>${p.rating}</span>
-              </div>
-              <span class="item-price">${formatRupees(p.price)}</span>
+              <span class="item-price" style="margin-top: 2px !important;">${formatRupees(p.price)}</span>
             </div>
           </a>
         `).join("");
@@ -2327,30 +2274,47 @@
         });
       }
 
-      // Deals Countdown Clock (starts at 08 : 45 : 32 and ticks down)
-      function startDealsCountdown() {
+      // Deals Countdown Clock — driven by site-settings deal_end_time; falls back to 8h offset
+      function startDealsCountdown(endTimeStr) {
         const clockH = document.getElementById("clock-h");
         const clockM = document.getElementById("clock-m");
         const clockS = document.getElementById("clock-s");
         if (!clockH || !clockM || !clockS) return;
 
-        let totalSeconds = 8 * 3600 + 45 * 60 + 32;
+        // Cleanup previous interval loop if any exists to prevent compound timer flashing
+        if (window.dealsCountdownInterval) {
+          clearInterval(window.dealsCountdownInterval);
+        }
+
+        let endEpoch;
+        if (endTimeStr) {
+          // Clean/standard client-side date parsing
+          const cleanStr = endTimeStr.trim().replace(' ', 'T');
+          const parsed = new Date(cleanStr.includes('T') && !cleanStr.includes('+') && !cleanStr.includes('Z') ? cleanStr + '+05:30' : cleanStr);
+          endEpoch = isNaN(parsed.getTime()) ? null : parsed.getTime();
+        }
 
         const updateClock = () => {
-          if (totalSeconds <= 0) {
-            totalSeconds = 8 * 3600 + 45 * 60 + 32; // Reset loop
+          let totalSeconds;
+          if (endEpoch) {
+            totalSeconds = Math.max(0, Math.floor((endEpoch - Date.now()) / 1000));
+          } else {
+            // Fallback: static loop starting at 8h 45m 32s
+            if (typeof window._dealFallbackSeconds === 'undefined') window._dealFallbackSeconds = 8 * 3600 + 45 * 60 + 32;
+            if (window._dealFallbackSeconds <= 0) window._dealFallbackSeconds = 8 * 3600 + 45 * 60 + 32;
+            window._dealFallbackSeconds--;
+            totalSeconds = window._dealFallbackSeconds;
           }
-          totalSeconds--;
           const hrs = Math.floor(totalSeconds / 3600);
           const mins = Math.floor((totalSeconds % 3600) / 60);
           const secs = totalSeconds % 60;
-
           clockH.textContent = String(hrs).padStart(2, '0');
           clockM.textContent = String(mins).padStart(2, '0');
           clockS.textContent = String(secs).padStart(2, '0');
         };
 
-        setInterval(updateClock, 1000);
+        updateClock();
+        window.dealsCountdownInterval = setInterval(updateClock, 1000);
       }
 
       // Hydrations & Init
@@ -2363,8 +2327,11 @@
       initSliders();
       startDealsCountdown();
 
-      // Export initHeroCarousel for dynamic ACF banner hydrations
+      // Export functions for dynamic hydration / settings update
       window.initHeroCarousel = initHeroCarousel;
+      window.initSlidersGlobal = initSliders;
+      window.initDealsSliderGlobal = initDealsSlider;
+      window.startDealsCountdownFromSiteSettings = startDealsCountdown;
     });
   </script>
 </main>
@@ -2468,8 +2435,8 @@
           <div>
             <h4 class="footer-column-title">Get In Touch</h4>
             <div class="footer-contact-details" style="font-size: var(--text-xs); color: var(--color-text-muted); line-height: 1.6; display: grid; gap: 8px;">
-              <div><strong>Email:</strong> <a href="mailto:crm@kawachigroup.com" style="color: var(--color-primary); text-decoration: none;">crm@kawachigroup.com</a></div>
-              <div><strong>Phone:</strong> <a href="tel:+919326110110" style="color: var(--color-primary); text-decoration: none;">+91 9326-110-110</a></div>
+              <div><strong>Email:</strong> <a href="mailto:crm@kawachigroup.com" style="color: #ffffff; text-decoration: none;">crm@kawachigroup.com</a></div>
+              <div><strong>Phone:</strong> <a href="tel:+919326110110" style="color: #ffffff; text-decoration: none;">+91 9326-110-110</a></div>
             </div>
           </div>
         </div>
@@ -2484,7 +2451,7 @@
     </div>
   </footer>
 
-  <script src="js/main-api.js?v=7.17"></script>
+  <script src="js/main-api.js?v=7.22"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       // General drawer controls
@@ -2522,125 +2489,375 @@
 
   <!-- Video spotlight control script -->
   <script>
+    window.hydrateSearchAssistanceTags = function() {
+      console.log("[SearchTagChips] Fallback tag cloud hydration handler executed.");
+    };
+
     document.addEventListener("DOMContentLoaded", () => {
       const track = document.getElementById("video-spotlight-track");
       const prevBtn = document.getElementById("video-track-prev");
       const nextBtn = document.getElementById("video-track-next");
-      const videoCards = document.querySelectorAll(".video-card");
       
       const modal = document.getElementById("influencer-video-modal");
-      const modalVideo = document.getElementById("modal-video-player");
-      const modalTitle = document.getElementById("modal-video-title");
-      const modalInfluencer = document.getElementById("modal-video-influencer");
       const modalProductImg = document.getElementById("modal-product-img");
       const modalProductName = document.getElementById("modal-product-name");
       const modalProductPrice = document.getElementById("modal-product-price");
       const modalShopLink = document.getElementById("modal-product-shop-link");
+      const modalViewLink = document.getElementById("modal-product-view-link");
       const modalClose = document.getElementById("video-modal-close");
       
-      // 1. Auto-scroll animation logic
-      let autoScrollTimer = null;
-      
-      function startAutoScroll() {
-        autoScrollTimer = setInterval(() => {
-          if (!track) return;
-          const maxScroll = track.scrollWidth - track.clientWidth;
-          if (track.scrollLeft >= maxScroll - 10) {
-            track.scrollTo({ left: 0, behavior: "smooth" });
+      let activeIndex = 0;  // logical index into original cards array
+      let N = 0;            // number of original wrappers
+      let autoPlayTimer = null;
+      let isDragging = false;
+      let startX = 0;
+      let scrollLeftVal = 0;
+      let scrollTimeout = null;
+      let isJumping = false;       // prevents re-entrant jump on scroll
+      let isInitializing = false;  // ignores scroll events during card/clone setup
+      let currentPlayingIdx = -1;  // tracking variable to prevent video stutter/autoplay reload loops
+
+      let countdownTimer = null;
+      let countdownSec = 5;
+
+      function startCountdown(redirectUrl) {
+        clearInterval(countdownTimer);
+        countdownSec = 5;
+        if (!modalShopLink) return;
+
+        modalShopLink.textContent = `Shop This Product (Redirecting in ${countdownSec}s...)`;
+        modalShopLink.href = redirectUrl;
+
+        countdownTimer = setInterval(() => {
+          countdownSec--;
+          if (countdownSec <= 0) {
+            clearInterval(countdownTimer);
+            window.location.href = redirectUrl;
           } else {
-            track.scrollBy({ left: 200, behavior: "smooth" });
+            modalShopLink.textContent = `Shop This Product (Redirecting in ${countdownSec}s...)`;
           }
-        }, 3000);
+        }, 1000);
       }
-      
-      function stopAutoScroll() {
-        if (autoScrollTimer) {
-          clearInterval(autoScrollTimer);
-          autoScrollTimer = null;
+
+      function stopCountdown() {
+        if (countdownTimer) {
+          clearInterval(countdownTimer);
+          countdownTimer = null;
         }
       }
-      
-      if (track) {
-        startAutoScroll();
 
-        // ---- Pause on hover over ANY video card, resume when mouse leaves ----
-        let isHovering = false;
-        const cardWraps = document.querySelectorAll(".video-card-wrap");
-        cardWraps.forEach(wrap => {
-          wrap.addEventListener("mouseenter", () => {
-            isHovering = true;
-            stopAutoScroll();
-          });
-          wrap.addEventListener("mouseleave", () => {
-            isHovering = false;
-            if (!isDown) startAutoScroll();
-          });
-        });
+      // ── Helper 1: Get card wrapper at visual index ─────────────────────
+      function getWrapAt(visualIdx) {
+        if (!track) return null;
+        return track.querySelectorAll(".video-card-wrap")[visualIdx];
+      }
+
+      // ── Helper 2: Scroll to a visual index (overriding snap behavior when instant) ──────────────────────────────
+      function scrollToVisualIdx(visualIdx, smooth) {
+        const wrap = getWrapAt(visualIdx);
+        if (!wrap || !track) return;
+        const trackRect = track.getBoundingClientRect();
+        const wrapRect = wrap.getBoundingClientRect();
+        const offset = wrapRect.left - trackRect.left - (trackRect.width - wrapRect.width) / 2;
         
-        // Prev / Next button actions
-        if (prevBtn) {
-          prevBtn.addEventListener("click", () => {
-            track.scrollBy({ left: -250, behavior: "smooth" });
-          });
+        if (!smooth) {
+          // Temporarily disable smooth scrolling via styling
+          track.style.setProperty("scroll-behavior", "auto", "important");
+          track.scrollBy({ left: offset, behavior: "auto" });
+          // Force reflow
+          void track.offsetWidth;
+          // Restore to let CSS stylesheet smooth scroll apply
+          track.style.setProperty("scroll-behavior", "");
+        } else {
+          track.style.setProperty("scroll-behavior", "smooth", "important");
+          track.scrollBy({ left: offset, behavior: "smooth" });
         }
-        if (nextBtn) {
-          nextBtn.addEventListener("click", () => {
-            track.scrollBy({ left: 250, behavior: "smooth" });
-          });
-        }
+      }
 
-        // Mouse Drag to Scroll (Thread)
-        let isDown = false;
-        let startX;
-        let scrollLeft;
+      // ── Helper 3: Update visual scaling of active card ──────────────────
+      function updateVisualScales() {
+        if (!track || N <= 0) return 0;
+        const allWraps = track.querySelectorAll(".video-card-wrap");
+        const trackRect = track.getBoundingClientRect();
+        const trackCenter = trackRect.left + trackRect.width / 2;
 
-        track.addEventListener("mousedown", (e) => {
-          isDown = true;
-          track.style.cursor = "grabbing";
-          startX = e.pageX - track.offsetLeft;
-          scrollLeft = track.scrollLeft;
-          stopAutoScroll();
+        let closestVisualIdx = 0;
+        let minDiff = Infinity;
+
+        allWraps.forEach((w, idx) => {
+          const wRect = w.getBoundingClientRect();
+          const diff = Math.abs(wRect.left + wRect.width / 2 - trackCenter);
+          if (diff < minDiff) { minDiff = diff; closestVisualIdx = idx; }
         });
 
-        track.addEventListener("mouseleave", () => {
-          if (isDown) {
-            isDown = false;
-            track.style.cursor = "grab";
-            if (!isHovering) startAutoScroll();
+        allWraps.forEach((w, idx) => {
+          if (idx === closestVisualIdx) {
+            w.classList.add("active-video-card");
+            w.style.transform = "scale(1.25)";
+            w.style.zIndex = "10";
+          } else {
+            w.classList.remove("active-video-card");
+            w.style.transform = "scale(1.0)";
+            w.style.zIndex = "1";
           }
         });
 
-        track.addEventListener("mouseup", () => {
-          isDown = false;
-          track.style.cursor = "grab";
-          if (!isHovering) startAutoScroll();
-        });
-
-        track.addEventListener("mousemove", (e) => {
-          if (!isDown) return;
-          e.preventDefault();
-          const x = e.pageX - track.offsetLeft;
-          const walk = (x - startX) * 1.5; // Drag sensitivity
-          track.scrollLeft = scrollLeft - walk;
-        });
-
-        // Set initial grab style
-        track.style.cursor = "grab";
+        // Derive logical activeIndex from visual index
+        activeIndex = ((closestVisualIdx - N) % N + N) % N;
+        return closestVisualIdx;
       }
-      
-      // 2. Hover play/pause preview disabled (play button displayed via CSS hover overlay)
 
-      // 3. Click to open modal popup and play (using event delegation to support dynamic shoppable video additions)
+      // ── Helper 4: Seamless clone boundaries jump (using instant behavior) ────────────────────────
+      function handleInfiniteJump() {
+        if (isJumping || N <= 0 || !track) return;
+        const allWraps = track.querySelectorAll(".video-card-wrap");
+        const trackRect = track.getBoundingClientRect();
+        const trackCenter = trackRect.left + trackRect.width / 2;
+
+        let closestVisualIdx = 0;
+        let minDiff = Infinity;
+        allWraps.forEach((w, idx) => {
+          const wRect = w.getBoundingClientRect();
+          const diff = Math.abs(wRect.left + wRect.width / 2 - trackCenter);
+          if (diff < minDiff) { minDiff = diff; closestVisualIdx = idx; }
+        });
+
+        if (closestVisualIdx < N) {
+          isJumping = true;
+          const realIdx = closestVisualIdx + N;
+          scrollToVisualIdx(realIdx, false);
+          setTimeout(() => { isJumping = false; }, 50);
+        } else if (closestVisualIdx >= 2 * N) {
+          isJumping = true;
+          const realIdx = closestVisualIdx - N;
+          scrollToVisualIdx(realIdx, false);
+          setTimeout(() => { isJumping = false; }, 50);
+        }
+      }
+
+      // ── Helper 5: Inject active video player/mockup (based on physical center proximity) ──────────────────────
+      function loadActiveVideo() {
+        if (!track || N <= 0) return;
+        const allWraps = track.querySelectorAll(".video-card-wrap");
+        
+        // Find which visual card is currently closest to center
+        const trackRect = track.getBoundingClientRect();
+        const trackCenter = trackRect.left + trackRect.width / 2;
+        let closestVisualIdx = 0;
+        let minDiff = Infinity;
+        allWraps.forEach((w, idx) => {
+          const wRect = w.getBoundingClientRect();
+          const diff = Math.abs(wRect.left + wRect.width / 2 - trackCenter);
+          if (diff < minDiff) { minDiff = diff; closestVisualIdx = idx; }
+        });
+
+        if (closestVisualIdx === currentPlayingIdx) return;
+        currentPlayingIdx = closestVisualIdx;
+
+        // Stop playing all other cards
+        allWraps.forEach((w, idx) => {
+          if (idx !== closestVisualIdx) {
+            const card = w.querySelector(".video-card");
+            if (card && card.dataset.originalHtml) {
+              card.innerHTML = card.dataset.originalHtml;
+              delete card.dataset.originalHtml;
+            }
+          }
+        });
+
+        // Load active video player for the card currently in the center
+        const activeWrap = allWraps[closestVisualIdx];
+        if (!activeWrap) return;
+        const card = activeWrap.querySelector(".video-card");
+        if (!card) return;
+        const videoSrc = card.getAttribute("data-video-src") || "";
+        if (!videoSrc) return;
+        if (card.dataset.originalHtml) return; // already loaded
+
+        card.dataset.originalHtml = card.innerHTML;
+
+        if (videoSrc.includes("instagram.com") || videoSrc.includes("/reel/")) {
+          // Instagram: iframe is already rendered from start, keep undisturbed
+          return;
+        } else if (videoSrc.includes("youtube.com") || videoSrc.includes("youtu.be") || videoSrc.includes("/embed/")) {
+          let videoId = "";
+          if (videoSrc.includes("watch?v=")) videoId = videoSrc.split("v=")[1].split("&")[0];
+          else if (videoSrc.includes("/embed/")) videoId = videoSrc.split("/embed/")[1].split("?")[0];
+          else videoId = videoSrc.substring(videoSrc.lastIndexOf('/') + 1);
+          const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=0&playsinline=1&enablejsapi=1&rel=0&loop=1&playlist=${videoId}`;
+          card.innerHTML = `<iframe src="${embedUrl}" style="width:100%;height:100%;border:none;pointer-events:none;" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+        } else {
+          const vid = document.createElement("video");
+          vid.muted = true; vid.autoplay = true; vid.loop = true;
+          vid.setAttribute("playsinline", "");
+          vid.style.cssText = "width:100%;height:100%;object-fit:cover;";
+          const src = document.createElement("source");
+          src.src = videoSrc; src.type = "video/mp4";
+          vid.appendChild(src);
+          card.innerHTML = "";
+          card.appendChild(vid);
+          vid.play().catch(e => console.log("Autoplay blocked:", e));
+        }
+      }
+
+      // ── Helper 6: Scroll to logical index ───────────────────────────────
+      function scrollToLogical(logicalIdx, smooth = true) {
+        if (N <= 0) return;
+        const clampedLogical = ((logicalIdx % N) + N) % N;
+        activeIndex = clampedLogical;
+        scrollToVisualIdx(N + clampedLogical, smooth);
+      }
+
+      // ── Helper 7: Auto loop controls ─────────────────────────────────────
+      function startLoop() {
+        stopLoop();
+        autoPlayTimer = setInterval(() => {
+          scrollToLogical(activeIndex + 1, true);
+        }, 10000);
+      }
+
+      function stopLoop() {
+        if (autoPlayTimer) { clearInterval(autoPlayTimer); autoPlayTimer = null; }
+      }
+
+      // ── Register Event Listeners (Once Only) ──────────────────────────────
+      if (track) {
+        track.addEventListener("scroll", () => {
+          if (isInitializing) return; // Ignore layout scroll events during card setup
+          
+          if (!isJumping) updateVisualScales();
+
+          clearTimeout(scrollTimeout);
+          scrollTimeout = setTimeout(() => {
+            handleInfiniteJump();
+            setTimeout(() => {
+              loadActiveVideo();
+              if (!autoPlayTimer && !isDragging) startLoop();
+            }, 60);
+          }, 150);
+        });
+
+        // Desktop mouse drag
+        track.onmousedown = (e) => { isDragging = true; stopLoop(); startX = e.pageX - track.offsetLeft; scrollLeftVal = track.scrollLeft; track.style.cursor = "grabbing"; };
+        track.onmouseleave = () => { if (isDragging) { isDragging = false; track.style.cursor = "grab"; startLoop(); } };
+        track.onmouseup = () => { if (isDragging) { isDragging = false; track.style.cursor = "grab"; startLoop(); } };
+        track.onmousemove = (e) => { if (!isDragging) return; const x = e.pageX - track.offsetLeft; track.scrollLeft = scrollLeftVal - (x - startX) * 1.5; };
+
+        // Mobile touch controls
+        track.addEventListener("touchstart", () => { isDragging = true; stopLoop(); }, { passive: true });
+        track.addEventListener("touchend", () => { isDragging = false; }, { passive: true });
+      }
+
+      const spotlightSec = document.querySelector(".video-spotlight-section");
+      if (spotlightSec) {
+        spotlightSec.addEventListener("mouseenter", () => {
+          stopLoop();
+        });
+        spotlightSec.addEventListener("mouseleave", () => {
+          if (!isDragging) startLoop();
+        });
+      }
+
+      if (prevBtn) prevBtn.onclick = () => { stopLoop(); scrollToLogical(activeIndex - 1); };
+      if (nextBtn) nextBtn.onclick = () => { stopLoop(); scrollToLogical(activeIndex + 1); };
+
+      // ── Window Initializer function ─────────────────────────────────────
+      window.initVideoSpotlightCarousel = function() {
+        if (!track) return;
+        isInitializing = true;
+        currentPlayingIdx = -1;
+        stopLoop();
+
+        // 1. Remove previous clones (prevent nesting/duplication)
+        track.querySelectorAll(".video-card-wrap[data-clone]").forEach(el => el.remove());
+
+        // 2. Set wrappers list
+        const origWraps = Array.from(track.querySelectorAll(".video-card-wrap"));
+        if (!origWraps.length) {
+          isInitializing = false;
+          return;
+        }
+        N = origWraps.length;
+
+        // 3. Clone wraps at START and END
+        const clonesBefore = origWraps.map(w => {
+          const c = w.cloneNode(true);
+          c.setAttribute("data-clone", "before");
+          return c;
+        });
+        const clonesAfter = origWraps.map(w => {
+          const c = w.cloneNode(true);
+          c.setAttribute("data-clone", "after");
+          return c;
+        });
+
+        clonesBefore.forEach(c => track.insertBefore(c, origWraps[0]));
+        clonesAfter.forEach(c => track.appendChild(c));
+
+        // 4. Calculate dynamic padding
+        function applyPadding() {
+          const trackRect = track.getBoundingClientRect();
+          const firstWrap = track.querySelectorAll(".video-card-wrap")[0];
+          if (!firstWrap) return;
+          const cardW = firstWrap.offsetWidth;
+          const pad = Math.max(16, (trackRect.width - cardW) / 2);
+          track.style.setProperty("padding-left", pad + "px", "important");
+          track.style.setProperty("padding-right", pad + "px", "important");
+        }
+        applyPadding();
+        // 5. Initial visual center alignment (force instant jump)
+        scrollToVisualIdx(N, false);
+        
+        // 6. Update scales and load active video immediately
+        updateVisualScales();
+        loadActiveVideo();
+
+        // 7. Finish initialization and start loop after layout settles
+        setTimeout(() => {
+          isInitializing = false;
+          startLoop();
+        }, 150);
+      };
+      
+      // Click to open modal popup and play (using event delegation)
       document.addEventListener("click", (e) => {
         const card = e.target.closest(".video-card");
         if (card) {
+          const wrap = card.closest(".video-card-wrap");
+          if (wrap && track) {
+            const allWraps = Array.from(track.querySelectorAll(".video-card-wrap"));
+            const targetIdx = allWraps.indexOf(wrap);
+            if (targetIdx !== -1 && !wrap.classList.contains("active-video-card")) {
+              stopLoop();
+              scrollToVisualIdx(targetIdx, true);
+              e.preventDefault();
+              e.stopPropagation();
+              return;
+            }
+          }
           const productId = card.getAttribute("data-product-id");
           const influencer = card.getAttribute("data-influencer");
           const title = card.getAttribute("data-title");
           const videoSrc = card.getAttribute("data-video-src");
-          const productName = card.getAttribute("data-product-name");
-          const productPrice = card.getAttribute("data-product-price");
-          const productImage = card.getAttribute("data-product-image");
+          
+          let productName = card.getAttribute("data-product-name") || "";
+          let productPrice = card.getAttribute("data-product-price") || "";
+          let productImage = card.getAttribute("data-product-image") || "";
+
+          // Resolve from memory cache if populated
+          if (productId && window.KawachiProducts && (!productName || !productPrice || !productImage)) {
+            const prod = window.KawachiProducts.find(p => String(p.id) === String(productId));
+            if (prod) {
+              productName = prod.name || "";
+              productImage = prod.image || "";
+              const price = parseFloat(prod.price) || 0;
+              productPrice = price > 0 ? ("₹" + price.toLocaleString('en-IN')) : "";
+              
+              card.setAttribute("data-product-name", productName);
+              card.setAttribute("data-product-price", productPrice);
+              card.setAttribute("data-product-image", productImage);
+            }
+          }
           
           if (modal) {
             const container = document.getElementById("modal-video-container");
@@ -2657,9 +2874,11 @@
                 const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&enablejsapi=1&rel=0&playsinline=1`;
                 container.innerHTML = `<iframe src="${embedUrl}" style="width:100%;height:100%;border:none;" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>`;
               } else if (videoSrc.includes("instagram.com")) {
+                const match = videoSrc.match(/(?:\/p\/|\/reel\/|\/tv\/)([A-Za-z0-9_-]+)/);
+                const shortcode = match ? match[1] : null;
                 let embedUrl = videoSrc;
-                if (!videoSrc.endsWith("/embed/")) {
-                  embedUrl = videoSrc.replace(/\/?$/, "/embed/");
+                if (shortcode) {
+                  embedUrl = `https://www.instagram.com/reel/${shortcode}/embed/`;
                 }
                 container.innerHTML = `<iframe src="${embedUrl}" style="width: 100%; height: 100%; border: none;" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
               } else {
@@ -2683,22 +2902,22 @@
               }
             }
             
-            if (modalTitle) modalTitle.textContent = title;
-            if (modalInfluencer) modalInfluencer.textContent = influencer;
-            
-            // Set initial loading states
-            if (modalProductName) modalProductName.textContent = "Loading details...";
-            if (modalProductPrice) modalProductPrice.textContent = "";
-            if (modalProductImg) modalProductImg.style.display = 'none';
-            if (modalShopLink) modalShopLink.href = `single-product.html?id=${productId}`;
-
-            // Make a rapid dynamic API fetch directly to the database in real-time
-            const env = window.KawachiEnv || {};
-            const apiBase = (env.VITE_WOO_API_URL || "http://62.72.31.43/wp-json/wc/v3").replace(/\/$/, "");
-            const consumerKey = env.VITE_WOO_CONSUMER_KEY || "ck_328b6ab3dece8f9fac4212856dfdfdb40041f184";
-            const consumerSecret = env.VITE_WOO_CONSUMER_SECRET || "cs_158917602b69a694092d377e5ef1605eb38b2399";
-            const requestUrl = `${apiBase}/products/${productId}?consumer_key=${consumerKey}&consumer_secret=${consumerSecret}`;
-
+            // Set product details immediately from card attributes
+            if (modalProductImg && productImage) {
+              modalProductImg.src = productImage;
+              modalProductImg.style.display = '';
+            } else if (modalProductImg) {
+              modalProductImg.style.display = 'none';
+            }
+            if (modalProductName) modalProductName.textContent = productName || "Loading...";
+            if (modalProductPrice) modalProductPrice.textContent = productPrice || "";
+            const productPageUrl = `single-product.html?id=${productId}`;
+            if (modalShopLink) modalShopLink.href = productPageUrl;
+            if (modalViewLink) modalViewLink.href = productPageUrl;
+ 
+            // Make a rapid dynamic API fetch using proxy
+            const requestUrl = `/api/wc-proxy?endpoint=products/${productId}`;
+ 
             fetch(requestUrl)
               .then(res => {
                 if (!res.ok) throw new Error("API Error");
@@ -2707,13 +2926,19 @@
               .then(product => {
                 if (modalProductName) modalProductName.textContent = product.name;
                 const currentPrice = parseFloat(product.price) || 0;
-                if (modalProductPrice) modalProductPrice.textContent = "₹" + currentPrice.toLocaleString('en-IN');
+                const formattedPrice = currentPrice > 0 ? "₹" + currentPrice.toLocaleString('en-IN') : "";
+                if (modalProductPrice) modalProductPrice.textContent = formattedPrice;
                 
                 const liveImg = product.images && product.images.length > 0 ? product.images[0].src : "";
                 if (liveImg && modalProductImg) {
                   modalProductImg.src = liveImg;
                   modalProductImg.style.display = '';
                 }
+                
+                // Cache attributes back
+                card.setAttribute("data-product-name", product.name);
+                card.setAttribute("data-product-price", formattedPrice);
+                card.setAttribute("data-product-image", liveImg);
               })
               .catch(err => {
                 console.warn("[WooCommerce Client] Real-time modal details fetch failed:", err);
@@ -2727,7 +2952,8 @@
               });
             
             modal.classList.add("open");
-            stopAutoScroll();
+            stopLoop();
+            startCountdown(`single-product.html?id=${productId}`);
           }
         }
       });
@@ -2740,7 +2966,9 @@
           if (container) {
             container.innerHTML = `<video id="modal-video-player" controls loop style="width: 100%; height: 100%; object-fit: contain;"></video>`;
           }
-          startAutoScroll();
+          stopCountdown();
+          if (modalShopLink) modalShopLink.textContent = 'Shop This Product →';
+          startLoop();
         }
       }
       

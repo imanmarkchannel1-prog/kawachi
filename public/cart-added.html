@@ -5,153 +5,189 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Added to Cart - Kawachi</title>
   <meta name="description" content="Item successfully added to your Kawachi cart. Review your order and proceed to checkout.">
-  <link rel="stylesheet" href="css/global-styles.css?v=7.17">
+  <link rel="stylesheet" href="css/global-styles.css?v=7.70">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <style>
     body, #main-content { background-color: #f8fafc; }
 
-    .cart-added-wrapper {
+    /* ── Confirmation Card ── */
+    .cart-added-card {
+      margin: 0 0 40px;
       background: #fff;
       border: 1px solid #e2e8f0;
-      border-radius: 12px;
-      padding: 28px 32px;
-      display: flex;
-      align-items: flex-start;
-      gap: 24px;
-      flex-wrap: wrap;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-      margin-bottom: 32px;
+      border-radius: 16px;
+      padding: 0;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+      overflow: hidden;
     }
 
-    .added-left { flex: 1; min-width: 260px; }
-
-    .added-check-row {
+    /* Subtle green confirmation bar */
+    .confirm-bar {
       display: flex;
       align-items: center;
       gap: 10px;
+      padding: 14px 28px;
+      background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+      border-bottom: 1px solid #d1fae5;
+    }
+
+    .confirm-bar svg {
+      flex-shrink: 0;
+      color: #16a34a;
+    }
+
+    .confirm-bar span {
+      font-size: 15px;
+      font-weight: 600;
+      color: #15803d;
+      letter-spacing: -0.01em;
+    }
+
+    /* Product details area */
+    .confirm-body {
+      padding: 24px 28px;
+    }
+
+    .confirm-product {
+      display: flex;
+      align-items: center;
+      gap: 20px;
       margin-bottom: 20px;
     }
 
-    .added-check-row svg { color: #1F7D44; }
-
-    .added-check-label {
-      font-size: 20px;
-      font-weight: 700;
-      color: #1F7D44;
+    .confirm-product-img {
+      width: 96px;
+      height: 96px;
+      object-fit: contain;
+      background: #f8fafc;
+      border: 1px solid #f1f5f9;
+      border-radius: 12px;
+      padding: 8px;
+      flex-shrink: 0;
     }
 
-    .added-product-row {
+    .confirm-product-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: #0f172a;
+      line-height: 1.45;
+      margin: 0 0 6px;
+    }
+
+    .confirm-product-meta {
       display: flex;
       align-items: center;
       gap: 16px;
     }
 
-    .added-product-img {
-      width: 88px;
-      height: 88px;
-      object-fit: contain;
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      padding: 6px;
-      flex-shrink: 0;
-    }
-
-    .added-product-name {
-      font-size: 14.5px;
-      font-weight: 600;
-      color: #0f172a;
-      line-height: 1.4;
-      margin: 0 0 6px;
-    }
-
-    .added-product-price {
-      font-size: 16px;
+    .confirm-product-price {
+      font-size: 18px;
       font-weight: 800;
-      color: #0f1111;
+      color: #0f172a;
+      margin: 0;
     }
 
-    .added-product-qty {
+    .confirm-product-qty {
       font-size: 12.5px;
       color: #64748b;
-      margin-top: 4px;
+      background: #f1f5f9;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-weight: 500;
     }
 
-    /* Subtotal Box */
-    .subtotal-box {
-      background: #fff;
-      border: 1px solid #e2e8f0;
-      border-radius: 12px;
-      padding: 22px 26px;
-      min-width: 250px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    /* Subtotal row */
+    .confirm-subtotal-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 0;
+      border-top: 1px solid #f1f5f9;
+      margin-bottom: 20px;
     }
 
-    .subtotal-line {
+    .confirm-subtotal-label {
       font-size: 14px;
-      color: #0f172a;
-      margin-bottom: 12px;
-      line-height: 1.5;
+      color: #475569;
+      font-weight: 500;
     }
 
-    .subtotal-line strong {
+    .confirm-subtotal-value {
       font-size: 20px;
-      font-weight: 700;
+      font-weight: 800;
       color: #e05e3f;
     }
 
-    .free-badge {
-      display: inline-block;
-      background: #EEF7F1;
-      color: #1F7D44;
-      font-size: 11.5px;
-      font-weight: 700;
-      padding: 4px 10px;
-      border-radius: 4px;
-      margin-bottom: 16px;
+    /* Action Buttons */
+    .confirm-actions {
+      display: flex;
+      gap: 12px;
     }
 
-    .cart-btn {
-      display: block;
-      width: 100%;
-      text-align: center;
-      padding: 11px 20px;
-      border-radius: 6px;
-      font-size: 13.5px;
-      font-weight: 600;
+    .ca-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 13px 20px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
       cursor: pointer;
       border: none;
       text-decoration: none;
       transition: all 0.2s ease;
-      margin-bottom: 10px;
+      text-align: center;
     }
 
-    .cart-btn.checkout {
-      background-color: #e05e3f;
+    .ca-btn.primary {
+      background: linear-gradient(135deg, #e05e3f 0%, #d4503a 100%);
       color: #fff;
+      box-shadow: 0 2px 8px rgba(224,94,63,0.25);
     }
 
-    .cart-btn.checkout:hover { background-color: #c94b2d; }
+    .ca-btn.primary:hover {
+      background: linear-gradient(135deg, #c94b2d 0%, #b8422a 100%);
+      box-shadow: 0 4px 16px rgba(224,94,63,0.35);
+      transform: translateY(-1px);
+    }
 
-    .cart-btn.continue {
-      background-color: #f1f5f9;
+    .ca-btn.secondary {
+      background: #f8fafc;
       color: #1e293b;
-      border: 1px solid #e2e8f0;
+      border: 1.5px solid #e2e8f0;
     }
 
-    .cart-btn.continue:hover { background-color: #e2e8f0; }
+    .ca-btn.secondary:hover {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+      transform: translateY(-1px);
+    }
 
-    /* Related grid */
+    .ca-btn svg {
+      flex-shrink: 0;
+    }
+
+    /* ── Related Products ── */
+    .rel-section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 18px;
+      display: none;
+    }
+
     .rel-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
       gap: 14px;
     }
 
     .rel-card {
       background: #fff;
       border: 1px solid #e2e8f0;
-      border-radius: 8px;
+      border-radius: 12px;
       overflow: hidden;
       text-decoration: none;
       color: inherit;
@@ -224,55 +260,50 @@
 
     .rel-atc:hover { background: #c94b2d; }
 
-    /* Video reel */
-    .vid-reel {
-      display: flex;
-      gap: 12px;
-      overflow-x: auto;
-      padding-bottom: 8px;
-      scrollbar-width: none;
-    }
-
-    .vid-reel::-webkit-scrollbar { display: none; }
-
+    /* ── Responsive ── */
     @media (max-width: 768px) {
-      .cart-added-wrapper {
-        flex-direction: column !important;
-        padding: 16px !important;
-        gap: 16px !important;
-        border-radius: 12px !important;
+      .cart-added-card {
+        margin-left: 8px;
+        margin-right: 8px;
+        border-radius: 12px;
       }
-      .added-left {
-        width: 100% !important;
-        min-width: unset !important;
+      .confirm-bar {
+        padding: 12px 16px;
       }
-      .added-product-row {
-        gap: 12px !important;
+      .confirm-body {
+        padding: 18px 16px;
       }
-      .added-product-img {
-        width: 72px !important;
-        height: 72px !important;
+      .confirm-product {
+        gap: 14px;
       }
-      .added-product-name {
-        font-size: 13.5px !important;
+      .confirm-product-img {
+        width: 76px;
+        height: 76px;
       }
-      .subtotal-box {
-        width: 100% !important;
-        min-width: 100% !important;
-        box-sizing: border-box !important;
-        padding: 18px !important;
-        margin: 0 !important;
+      .confirm-product-name {
+        font-size: 13.5px;
       }
-      .subtotal-line strong {
-        font-size: 22px !important;
+      .confirm-product-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
       }
-      .cart-btn {
-        padding: 12px !important;
-        font-size: 14px !important;
+      .confirm-actions {
+        flex-direction: column;
+      }
+      .ca-btn {
+        padding: 14px;
+        font-size: 14.5px;
       }
       .rel-grid {
         grid-template-columns: repeat(2, 1fr) !important;
-        gap: 10px !important;
+        gap: 10px;
+      }
+    }
+    @media (min-width: 1024px) {
+      .rel-grid {
+        grid-template-columns: repeat(6, 1fr) !important;
+        gap: 16px !important;
       }
     }
   </style>
@@ -305,6 +336,24 @@
         </form>
       </div>
       <div class="header-utilities">
+        <a href="wishlist.html" class="utility-link">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+          </svg>
+          <span>Wishlist</span>
+        </a>
+        <a href="account.html" class="utility-link">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+          </svg>
+          <span>Account</span>
+        </a>
+        <a href="orders.html" class="utility-link">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+          </svg>
+          <span>Orders</span>
+        </a>
         <button id="cart-drawer-trigger" class="utility-link" aria-label="Open Shopping Cart" aria-expanded="false">
           <div style="position:relative;display:flex;align-items:center;justify-content:center;">
             <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
@@ -331,48 +380,55 @@
   <main id="main-content" style="padding:32px 0 60px;">
     <div class="container" style="max-width:1200px;margin:0 auto;padding:0 20px;">
 
-      <nav aria-label="Breadcrumb" style="font-size:12px;color:#565959;margin-bottom:24px;">
-        <a href="index.html" style="color:#565959;text-decoration:none;">Home</a> &gt;
-        <a href="cart.html" style="color:#007185;text-decoration:none;">Cart</a> &gt;
-        <span>Added to Cart</span>
-      </nav>
-
-      <!-- Confirmation Banner -->
-      <div class="cart-added-wrapper">
-        <div class="added-left">
-          <div class="added-check-row">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-            <span class="added-check-label">Added to Cart</span>
-          </div>
-          <div class="added-product-row">
-            <img id="added-img" src="" alt="Product" class="added-product-img">
-            <div>
-              <p id="added-name" class="added-product-name">Loading...</p>
-              <p id="added-price" class="added-product-price">&#8377;0</p>
-              <p id="added-qty" class="added-product-qty">Qty: 1</p>
-            </div>
-          </div>
+      <!-- Confirmation Card -->
+      <div class="cart-added-card">
+        <!-- Subtle green confirmation header -->
+        <div class="confirm-bar">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <span>Added to Cart</span>
         </div>
 
-        <div class="subtotal-box">
-          <p class="subtotal-line">
-            Cart subtotal (<span id="sub-count">1</span> item):<br>
-            <strong id="sub-amount">&#8377;0</strong>
-          </p>
-          <span class="free-badge">&#10003; Eligible for FREE Delivery</span>
-          <a href="checkout.html" class="cart-btn checkout" id="checkout-btn">Proceed to Buy</a>
-          <a href="index.html" class="cart-btn continue">Continue Shopping</a>
-          <a href="cart.html" style="display:block;text-align:center;font-size:12.5px;color:#007185;text-decoration:none;margin-top:4px;">Go to Cart</a>
+        <div class="confirm-body">
+          <!-- Product Row -->
+          <div class="confirm-product" style="display: flex; align-items: center; gap: 16px;">
+            <div id="added-img-shimmer" class="skeleton-shimmer" style="width: 80px; height: 80px; border-radius: 8px; flex-shrink: 0;"></div>
+            <img id="added-img" src="" alt="Product" class="confirm-product-img" style="display: none; width: 80px; height: 80px; object-fit: contain;">
+            <div style="flex-grow: 1;">
+              <div id="added-name-shimmer" class="skeleton-shimmer" style="width: 200px; height: 18px; border-radius: 4px; margin-bottom: 8px;"></div>
+              <p id="added-name" class="confirm-product-name" style="display: none; font-weight: 700; margin: 0;"></p>
+              <div class="confirm-product-meta" style="display: flex; align-items: center; gap: 12px; margin-top: 4px;">
+                <div id="added-price-shimmer" class="skeleton-shimmer" style="width: 85px; height: 16px; border-radius: 4px;"></div>
+                <p id="added-price" class="confirm-product-price" style="display: none; font-weight: 700; color: var(--color-text-main); margin: 0;">&#8377;0</p>
+                <span id="added-qty" class="confirm-product-qty" style="display: none; font-size: var(--text-xs); color: var(--color-text-muted);">Qty: 1</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Subtotal -->
+          <div class="confirm-subtotal-row">
+            <span class="confirm-subtotal-label">Cart subtotal (<span id="sub-count">1</span> item<span id="sub-plural"></span>)</span>
+            <span class="confirm-subtotal-value" id="sub-amount">&#8377;0</span>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="confirm-actions">
+            <a href="checkout.html" class="ca-btn primary" id="checkout-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+              Proceed to Buy
+            </a>
+            <a href="cart.html" class="ca-btn secondary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+              Go to Cart
+            </a>
+          </div>
         </div>
       </div>
 
       <!-- Customers Also Bought -->
-      <h2 id="rel-heading" style="font-size:19px;font-weight:700;color:#0f172a;margin-bottom:18px;display:none;">Customers Also Bought</h2>
+      <h2 id="rel-heading" class="rel-section-title">Customers Also Bought</h2>
       <div class="rel-grid" id="rel-grid"></div>
-
-
 
     </div>
   </main>
@@ -392,7 +448,7 @@
     </div>
   </footer>
 
-  <script src="js/main-api.js?v=7.17"></script>
+  <script src="js/main-api.js?v=8.00"></script>
   <script>
     document.addEventListener('DOMContentLoaded', async function () {
       // Await WooCommerce live products loading before showing recommended panel
@@ -412,28 +468,50 @@
       var p = window.KawachiProducts.find(function(x){ return x.id === productId; });
       if (!p) return;
 
-      // Hydrate banner
-      document.getElementById('added-img').src = p.image;
-      document.getElementById('added-img').alt = p.name;
-      document.getElementById('added-name').textContent = p.name;
-      document.getElementById('added-price').textContent = '\u20b9' + Number(p.price).toLocaleString('en-IN');
-      document.getElementById('added-qty').textContent = 'Qty: ' + qty;
+      // Hydrate confirmation card
+      // Hide shimmers
+      document.getElementById('added-img-shimmer').style.display = 'none';
+      document.getElementById('added-name-shimmer').style.display = 'none';
+      document.getElementById('added-price-shimmer').style.display = 'none';
+
+      // Show and populate real contents
+      var img = document.getElementById('added-img');
+      img.src = p.image;
+      img.alt = p.name;
+      img.style.display = 'block';
+
+      var name = document.getElementById('added-name');
+      name.textContent = p.name;
+      name.style.display = 'block';
+
+      var price = document.getElementById('added-price');
+      price.textContent = '\u20b9' + Number(p.price).toLocaleString('en-IN');
+      price.style.display = 'block';
+
+      var qtyEl = document.getElementById('added-qty');
+      qtyEl.textContent = 'Qty: ' + qty;
+      qtyEl.style.display = 'inline';
+
+      // Update breadcrumb with product name
+      var breadcrumbEl = document.getElementById('breadcrumb-product');
+      if (breadcrumbEl) breadcrumbEl.textContent = p.name;
 
       var cartItems = window.KawachiCart ? window.KawachiCart.items : [];
       var cartCount = cartItems.reduce(function(sum, item) { return sum + item.quantity; }, 0) || qty;
       var subtotal = cartItems.reduce(function(sum, item) { return sum + (item.price * item.quantity); }, 0) || (p.price * qty);
 
       document.getElementById('sub-count').textContent = cartCount;
+      document.getElementById('sub-plural').textContent = cartCount > 1 ? 's' : '';
       document.getElementById('sub-amount').textContent = '\u20b9' + Number(subtotal).toLocaleString('en-IN');
-      document.getElementById('checkout-btn').textContent = 'Proceed to Buy (' + cartCount + ' item' + (cartCount > 1 ? 's' : '') + ')';
+      document.getElementById('checkout-btn').innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg> Proceed to Buy (' + cartCount + ' item' + (cartCount > 1 ? 's' : '') + ')';
 
       // Related products
       var heading = document.getElementById('rel-heading');
       var grid = document.getElementById('rel-grid');
       var related = window.KawachiProducts
         .filter(function(x){ return x.id !== productId; })
-        .sort(function(a, b){ return (b.weekly_sales||0) - (a.weekly_sales||0); })
-        .slice(0, 8);
+        .sort(function(a, b){ return b.id - a.id; })
+        .slice(0, 12);
 
       if (related.length && grid) {
         grid.innerHTML = related.map(function(rp) {

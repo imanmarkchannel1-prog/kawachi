@@ -5,8 +5,81 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Contact Us - Kawachi</title>
   <meta name="description" content="Get in touch with Kawachi. Submit a support ticket, wholesale bulk query, or general contact form.">
-  <link rel="stylesheet" href="css/global-styles.css?v=7.17">
+  <link rel="stylesheet" href="css/global-styles.css?v=7.69">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <style>
+    /* Contact Page Layout Grid */
+    .contact-layout-grid {
+      display: grid !important;
+      grid-template-columns: 1.3fr 1fr !important;
+      gap: 40px !important;
+      margin-top: 32px !important;
+      align-items: start !important;
+    }
+    
+    .contact-form-card {
+      background: #ffffff !important;
+      border: 1px solid #e2e8f0 !important;
+      padding: 32px !important;
+      border-radius: 20px !important;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.03) !important;
+    }
+    
+    .contact-info-panel {
+      background: #f8fafc !important;
+      border: 1px solid #e2e8f0 !important;
+      padding: 32px !important;
+      border-radius: 20px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 28px !important;
+    }
+    
+    .info-block {
+      display: flex !important;
+      gap: 16px !important;
+      align-items: start !important;
+      text-align: left !important;
+    }
+    
+    .info-icon-circle {
+      width: 44px !important;
+      height: 44px !important;
+      border-radius: 12px !important;
+      background: rgba(37, 99, 235, 0.08) !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      color: #2563eb !important;
+      flex-shrink: 0 !important;
+    }
+    
+    main.static-page-card .info-text h4 {
+      margin: 0 0 4px 0 !important;
+      font-size: 15px !important;
+      font-weight: 800 !important;
+      color: #0F1E36 !important;
+      font-family: var(--font-display), sans-serif !important;
+      line-height: 1.25 !important;
+    }
+    
+    main.static-page-card .info-text p {
+      margin: 0 !important;
+      font-size: 13.5px !important;
+      color: #64748b !important;
+      line-height: 1.55 !important;
+    }
+
+    @media (max-width: 768px) {
+      .contact-layout-grid {
+        grid-template-columns: 1fr !important;
+        gap: 30px !important;
+      }
+      .contact-form-card, .contact-info-panel {
+        padding: 24px !important;
+      }
+    }
+  </style>
 </head>
 <body>
   <!-- 2. Header -->
@@ -96,6 +169,7 @@
           <a href="#utility-products" class="sub-nav-link">Utility Products</a>
           <a href="search.html?q=new" class="sub-nav-link">New Arrivals</a>
           <a href="#deals-of-the-day" class="sub-nav-link highlighted-link">Deals</a>
+          <a href="https://optiedge.in" target="_blank" rel="noopener noreferrer" class="sub-nav-link">eCommerce Solution</a>
           <a href="contact.html?type=bulk" class="sub-nav-link">Bulk Orders</a>
         </div>
       </div>
@@ -107,7 +181,7 @@
 
   <main id="main-content" class="static-page-card contact-page-override">
     <div class="container">
-      <h1 class="kawachi-sec-title">Contact Kawachi Group</h1>
+      <h1>Contact Kawachi Group</h1>
       <p class="kawachi-sec-desc">
         Have a question about bulk wholesale orders, product details, or active order shipments? Fill out our form or contact us directly.
       </p>
@@ -133,9 +207,15 @@
             </div>
             
             <div class="form-group" style="margin-top: 8px;">
-              <label class="form-label" for="contact-subject">Subject</label>
-              <input type="text" id="contact-subject" class="form-input" placeholder="e.g. Bulk Wholesale Enquiry / Order Issue" required>
-            </div>
+               <label class="form-label" for="contact-subject" style="color: #0f172a; font-weight: 700;">Inquiry Type</label>
+               <select id="contact-subject" class="form-input" style="height: 46px; background-color: #fff; cursor: pointer; appearance: none; -webkit-appearance: none; -moz-appearance: none; background-image: url(&quot;data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e&quot;); background-repeat: no-repeat; background-position: right 16px center; background-size: 16px; padding-right: 44px; color: #1e293b; font-weight: 600; border-color: #cbd5e1;" required>
+                 <option value="" disabled selected>Select inquiry type...</option>
+                 <option value="Bulk order">Bulk order</option>
+                 <option value="eCommerce solution">eCommerce solution</option>
+                 <option value="Order Query / Manage Order">Order Query / Manage Order</option>
+                 <option value="Others">Others</option>
+               </select>
+             </div>
             
             <div class="form-group">
               <label class="form-label" for="contact-message">Your Message</label>
@@ -183,6 +263,99 @@
     </div>
   </main>
 
+  <section class="search-assistance-section">
+    <div class="search-assistance-card">
+      <h3 class="search-assistance-title">LOOKING FOR A SPECIFIC PRODUCT? 🤔</h3>
+      
+      <div class="search-assistance-categories-box" style="margin-top: 8px;">
+        <span class="search-assistance-tags-label" style="display: block; margin-bottom: 12px; text-align: center;">Browse Categories:</span>
+        <div class="categories-tag-lines" style="display: flex; flex-direction: column; gap: 10px; align-items: center;">
+          <div class="tag-line" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;">
+            <a href="search.html?q=Furniture" class="search-assistance-tag-link">Home Furniture</a>
+            <a href="search.html?q=Kitchen" class="search-assistance-tag-link">Kitchen Storage</a>
+            <a href="search.html?q=Decor" class="search-assistance-tag-link">Home Decor</a>
+            <a href="search.html?q=Beauty" class="search-assistance-tag-link">Health & Beauty</a>
+            <a href="search.html?q=Utility" class="search-assistance-tag-link">Utility Products</a>
+          </div>
+          <div class="tag-line" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;">
+            <a href="search.html?q=Sauna" class="search-assistance-tag-link">Wellness & Spa</a>
+            <a href="search.html?q=Office" class="search-assistance-tag-link">Office Essentials</a>
+            <a href="search.html?q=Shelves" class="search-assistance-tag-link">Organizers & Shelves</a>
+            <a href="search.html?q=Gadget" class="search-assistance-tag-link">Smart Gadgets</a>
+            <a href="search.html?q=Fitness" class="search-assistance-tag-link">Fitness & Yoga</a>
+          </div>
+          <div class="tag-line" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;">
+            <a href="search.html?q=Bedroom" class="search-assistance-tag-link">Bedroom Decor</a>
+            <a href="search.html?q=Kids" class="search-assistance-tag-link">Kids Furniture</a>
+            <a href="search.html?q=Garden" class="search-assistance-tag-link">Outdoor & Garden</a>
+            <a href="search.html?q=Cabinet" class="search-assistance-tag-link">Storage Cabinets</a>
+            <a href="search.html?q=Lifestyle" class="search-assistance-tag-link">Lifestyle & Comfort</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== MOST LOVED PRODUCTS SLIDER STRIP ===== -->
+  <section id="most-loved-static-strip" class="product-slider-section" style="margin-top: 40px; padding: 40px 0 !important; width: 100% !important; max-width: none !important; background-color: #FFFFFF; position: relative; overflow: hidden; border-top: 1px solid rgba(0,0,0,0.05);">
+    <div style="width: 100% !important; max-width: none !important; margin: 0; padding: 0; position: relative; box-sizing: border-box;">
+      <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 24px; padding: 0 40px; position: relative; width: 100%; box-sizing: border-box;">
+        <h2 class="kawachi-sec-title centered" style="font-size: 24px !important; margin: 0 auto; text-align: center; letter-spacing: 0.3px;">Most Loved Products 💫</h2>
+        <a href="search.html?orderby=popularity" style="font-size: 13.5px; color: #007185; text-decoration: none; font-weight: 700; position: absolute; right: 40px; top: 50%; transform: translateY(-50%);">See all &rsaquo;</a>
+      </div>
+      <div class="static-marquee-container" style="width: 100% !important; max-width: none !important; padding: 0 !important; margin: 0 !important; position: relative; overflow: hidden !important;">
+        <div class="static-marquee-track skeleton-loading" id="static-trending-grid" style="margin: 0 !important;">
+          <!-- Skeleton loaders (4 cards) -->
+          <div class="skeleton-card">
+            <div class="product-image-container">
+              <div class="skeleton-el skeleton-img" style="width: 100%; height: 100%;"></div>
+            </div>
+            <div class="product-info">
+              <div class="skeleton-el skeleton-text-category" style="margin-bottom: 6px;"></div>
+              <div class="skeleton-el skeleton-text-title" style="margin-bottom: 8px;"></div>
+              <div class="skeleton-el skeleton-text-rating" style="margin-bottom: 6px;"></div>
+              <div class="skeleton-el skeleton-price-row"></div>
+            </div>
+          </div>
+          <div class="skeleton-card">
+            <div class="product-image-container">
+              <div class="skeleton-el skeleton-img" style="width: 100%; height: 100%;"></div>
+            </div>
+            <div class="product-info">
+              <div class="skeleton-el skeleton-text-category" style="margin-bottom: 6px;"></div>
+              <div class="skeleton-el skeleton-text-title" style="margin-bottom: 8px;"></div>
+              <div class="skeleton-el skeleton-text-rating" style="margin-bottom: 6px;"></div>
+              <div class="skeleton-el skeleton-price-row"></div>
+            </div>
+          </div>
+          <div class="skeleton-card">
+            <div class="product-image-container">
+              <div class="skeleton-el skeleton-img" style="width: 100%; height: 100%;"></div>
+            </div>
+            <div class="product-info">
+              <div class="skeleton-el skeleton-text-category" style="margin-bottom: 6px;"></div>
+              <div class="skeleton-el skeleton-text-title" style="margin-bottom: 8px;"></div>
+              <div class="skeleton-el skeleton-text-rating" style="margin-bottom: 6px;"></div>
+              <div class="skeleton-el skeleton-price-row"></div>
+            </div>
+          </div>
+          <div class="skeleton-card">
+            <div class="product-image-container">
+              <div class="skeleton-el skeleton-img" style="width: 100%; height: 100%;"></div>
+            </div>
+            <div class="product-info">
+              <div class="skeleton-el skeleton-text-category" style="margin-bottom: 6px;"></div>
+              <div class="skeleton-el skeleton-text-title" style="margin-bottom: 8px;"></div>
+              <div class="skeleton-el skeleton-text-rating" style="margin-bottom: 6px;"></div>
+              <div class="skeleton-el skeleton-price-row"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- 9. Side Drawer Cart Overlay Component -->
   <div class="drawer-wrapper" id="cart-drawer-overlay">
     <div class="drawer-backdrop" id="cart-drawer-backdrop"></div>
@@ -229,7 +402,38 @@
     <div class="container">
       <p class="partner-cloud-title">Our Partner Brands</p>
       <div class="logo-scroll-track">
-        <!-- Populated dynamically by main-api.js -->
+        <div class="logo-scroll-inner">
+          <div class="logo-scroll-group">
+            <div class="partner-logo-item"><img src="images/partners/amazon.svg" alt="Amazon" onerror="this.style.display='none'"></div>
+            <div class="partner-logo-item"><img src="images/partners/flipkart.svg" alt="Flipkart" onerror="this.style.display='none'"></div>
+            <div class="partner-logo-item"><img src="images/partners/meesho.svg" alt="Meesho" onerror="this.style.display='none'"></div>
+            <div class="partner-logo-item"><img src="images/partners/jiomart.svg" alt="JioMart" onerror="this.style.display='none'"></div>
+            <div class="partner-logo-item"><img src="images/partners/indiamart.svg" alt="IndiaMart" onerror="this.style.display='none'"></div>
+            <div class="partner-logo-item"><img src="images/partners/razorpay.svg" alt="Razorpay" onerror="this.style.display='none'"></div>
+            <div class="partner-logo-item"><img src="images/partners/paytm.svg" alt="Paytm" onerror="this.style.display='none'"></div>
+            <div class="partner-logo-item"><img src="images/partners/phonepe.svg" alt="PhonePe" onerror="this.style.display='none'"></div>
+            <div class="partner-logo-item"><img src="images/partners/grabon.svg" alt="GrabOn" onerror="this.style.display='none'"></div>
+            <div class="partner-logo-item"><img src="images/partners/delhivery.svg" alt="Delhivery" onerror="this.style.display='none'"></div>
+            <div class="partner-logo-item"><img src="images/partners/bluedart.svg" alt="BlueDart" onerror="this.style.display='none'"></div>
+            <div class="partner-logo-item"><img src="images/partners/shiprocket.svg" alt="Shiprocket" onerror="this.style.display='none'"></div>
+            <div class="partner-logo-item"><img src="images/partners/xpressbees.svg" alt="Xpressbees" onerror="this.style.display='none'"></div>
+          </div>
+          <div class="logo-scroll-group">
+            <div class="partner-logo-item"><img src="images/partners/amazon.svg" alt="Amazon" onerror="this.style.display='none'"></div>
+            <div class="partner-logo-item"><img src="images/partners/flipkart.svg" alt="Flipkart" onerror="this.style.display='none'"></div>
+            <div class="partner-logo-item"><img src="images/partners/meesho.svg" alt="Meesho" onerror="this.style.display='none'"></div>
+            <div class="partner-logo-item"><img src="images/partners/jiomart.svg" alt="JioMart" onerror="this.style.display='none'"></div>
+            <div class="partner-logo-item"><img src="images/partners/indiamart.svg" alt="IndiaMart" onerror="this.style.display='none'"></div>
+            <div class="partner-logo-item"><img src="images/partners/razorpay.svg" alt="Razorpay" onerror="this.style.display='none'"></div>
+            <div class="partner-logo-item"><img src="images/partners/paytm.svg" alt="Paytm" onerror="this.style.display='none'"></div>
+            <div class="partner-logo-item"><img src="images/partners/phonepe.svg" alt="PhonePe" onerror="this.style.display='none'"></div>
+            <div class="partner-logo-item"><img src="images/partners/grabon.svg" alt="GrabOn" onerror="this.style.display='none'"></div>
+            <div class="partner-logo-item"><img src="images/partners/delhivery.svg" alt="Delhivery" onerror="this.style.display='none'"></div>
+            <div class="partner-logo-item"><img src="images/partners/bluedart.svg" alt="BlueDart" onerror="this.style.display='none'"></div>
+            <div class="partner-logo-item"><img src="images/partners/shiprocket.svg" alt="Shiprocket" onerror="this.style.display='none'"></div>
+            <div class="partner-logo-item"><img src="images/partners/xpressbees.svg" alt="Xpressbees" onerror="this.style.display='none'"></div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -259,7 +463,7 @@
           <div>
             <h4 class="footer-column-title">Quick Links</h4>
             <ul class="footer-link-items">
-              <li><a href="about.html">About Us</a></li>
+              <li><a href="about-us.html">About Us</a></li>
               <li><a href="shipping-info.html">Shipping Information</a></li>
               <li><a href="terms.html">Terms &amp; Conditions</a></li>
               <li><a href="privacy.html">Privacy Policy</a></li>
@@ -274,7 +478,6 @@
               <li><a href="contact.html">Contact Us</a></li>
               <li><a href="cancellation.html">Order Cancellation</a></li>
               <li><a href="refund.html">Refund Policy</a></li>
-              <li><a href="returns-warranties.html">Returns &amp; Warranties</a></li>
             </ul>
           </div>
 
@@ -282,8 +485,8 @@
           <div>
             <h4 class="footer-column-title">Get In Touch</h4>
             <div class="footer-contact-details" style="font-size: var(--text-xs); color: var(--color-text-muted); line-height: 1.6; display: grid; gap: 8px;">
-              <div><strong>Email:</strong> <a href="mailto:crm@kawachigroup.com" style="color: var(--color-primary); text-decoration: none;">crm@kawachigroup.com</a></div>
-              <div><strong>Phone:</strong> <a href="tel:+919326110110" style="color: var(--color-primary); text-decoration: none;">+91 9326-110-110</a></div>
+              <div><strong>Email:</strong> <a href="mailto:crm@kawachigroup.com" style="color: #ffffff; text-decoration: none;">crm@kawachigroup.com</a></div>
+              <div><strong>Phone:</strong> <a href="tel:+919326110110" style="color: #ffffff; text-decoration: none;">+91 9326-110-110</a></div>
             </div>
           </div>
         </div>
@@ -298,7 +501,7 @@
     </div>
   </footer>
 
-  <script src="js/main-api.js?v=7.17"></script>
+  <script src="js/main-api.js?v=8.00"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       // General drawer controls
@@ -337,11 +540,50 @@
     document.addEventListener("DOMContentLoaded", () => {
       const contactForm = document.getElementById("site-contact-form");
       const successAlert = document.getElementById("contact-success-alert-box");
+      const subjectDropdown = document.getElementById("contact-subject");
+
+      // Auto-select based on URL parameters
+      if (subjectDropdown) {
+        const params = new URLSearchParams(window.location.search);
+        const type = params.get("type");
+        if (type === "bulk") {
+          subjectDropdown.value = "Bulk order";
+        } else if (type === "ecom" || type === "ecom-solution") {
+          subjectDropdown.value = "eCommerce solution";
+        }
+      }
+
+      // Universal filled highlight mechanism: apply very slight aesthetic blue class when input is filled up
+      if (contactForm) {
+        const inputs = contactForm.querySelectorAll(".form-input");
+        inputs.forEach(input => {
+          const updateFilledState = () => {
+            if (input.value && input.value.trim() !== "") {
+              input.classList.add("pre-selected");
+            } else {
+              input.classList.remove("pre-selected");
+            }
+          };
+
+          // Run immediately with a short delay to capture browser autofills and pre-selections
+          setTimeout(updateFilledState, 100);
+
+          // Attach dynamic input listeners
+          input.addEventListener("input", updateFilledState);
+          input.addEventListener("change", updateFilledState);
+          input.addEventListener("blur", updateFilledState);
+        });
+      }
 
       if (contactForm && successAlert) {
         contactForm.addEventListener("submit", (e) => {
           e.preventDefault();
           contactForm.reset();
+          
+          // Clear all filled classes on successful submit reset
+          const inputs = contactForm.querySelectorAll(".form-input");
+          inputs.forEach(input => input.classList.remove("pre-selected"));
+          
           successAlert.style.display = "block";
           successAlert.scrollIntoView({ behavior: 'smooth' });
         });

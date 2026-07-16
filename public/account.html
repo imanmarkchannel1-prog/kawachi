@@ -5,75 +5,234 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Account - Kawachi</title>
   <meta name="description" content="Sign in to your Kawachi account to view orders, wishlist, and manage your profile.">
-  <link rel="stylesheet" href="css/global-styles.css?v=7.17">
+  <link rel="stylesheet" href="css/global-styles.css?v=7.69">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
     :root { font-family: 'Inter', sans-serif; }
-    .acct-page { min-height: 80vh; padding: 48px 0 80px; }
+    .acct-page {
+      min-height: 85vh;
+      padding: 40px 0 80px;
+      background: radial-gradient(circle at 10% 20%, rgba(26, 74, 122, 0.05) 0%, transparent 45%),
+                  radial-gradient(circle at 90% 80%, rgba(0, 229, 255, 0.04) 0%, transparent 45%);
+    }
+
+    @keyframes rotateDashed {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
     .auth-gate {
       max-width: 440px; margin: 0 auto;
-      background: #fff; border-radius: 20px;
-      box-shadow: 0 8px 40px rgba(0,0,0,0.10);
-      padding: 48px 44px 44px; text-align: center;
+      background: rgba(255, 255, 255, 0.85);
+      border-radius: 16px;
+      border: 1px solid rgba(226, 232, 240, 0.6);
+      box-shadow: 
+        0 24px 64px -16px rgba(15, 23, 42, 0.08), 
+        0 0 40px -5px rgba(26, 74, 122, 0.02),
+        inset 0 1px 1px rgba(255, 255, 255, 0.8);
+      padding: 48px 40px 36px; text-align: center;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
     }
+
+    /* Ambient glass gradients for 2026 standard look */
+    .auth-gate::before {
+      content: ''; position: absolute;
+      top: -150px; left: -150px; width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(0, 229, 255, 0.07) 0%, transparent 70%);
+      pointer-events: none; z-index: 0;
+    }
+    .auth-gate::after {
+      content: ''; position: absolute;
+      bottom: -150px; right: -150px; width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(26, 74, 122, 0.05) 0%, transparent 70%);
+      pointer-events: none; z-index: 0;
+    }
+
+    .auth-gate-avatar-wrapper {
+      position: relative;
+      width: 76px;
+      margin: 0 auto 20px;
+      z-index: 2;
+    }
+
     .auth-gate-icon {
-      width: 72px; height: 72px;
-      background: linear-gradient(135deg,#0f2942 0%,#1a4a7a 100%);
+      width: 76px; height: 76px;
+      background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+      border: 2px solid #1a4a7a;
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 20px;
+      position: relative;
+      box-shadow: 
+        0 0 0 6px rgba(26, 74, 122, 0.03), 
+        0 8px 20px rgba(15, 41, 66, 0.08);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .auth-gate h1 { font-size: 24px; font-weight: 800; color: #0f172a; margin: 0 0 6px; }
-    .auth-gate .subtitle { font-size: 14px; color: #64748b; margin-bottom: 32px; line-height: 1.6; }
+    
+    .auth-gate-avatar-wrapper:hover .auth-gate-icon {
+      transform: scale(1.06) rotate(6deg);
+      box-shadow: 
+        0 0 0 10px rgba(26, 74, 122, 0.05), 
+        0 12px 24px rgba(15, 41, 66, 0.12);
+    }
 
-    .tab-switcher {
-      display: flex; background: #f1f5f9; border-radius: 10px;
-      padding: 4px; margin-bottom: 28px; gap: 4px;
+    .welcome-speech-bubble {
+      position: absolute;
+      top: -8px;
+      right: -20px;
+      background: #00E5FF;
+      color: #0f2942;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 10px;
+      border-bottom-left-radius: 0;
+      box-shadow: 0 4px 10px rgba(0, 229, 255, 0.3);
+      animation: bubbleFloat 2s ease-in-out infinite alternate;
+      letter-spacing: 0.5px;
     }
-    .tab-btn {
-      flex: 1; padding: 9px; border: none; background: none;
-      border-radius: 8px; font-size: 13.5px; font-weight: 600;
-      color: #64748b; cursor: pointer; transition: all 0.2s; font-family: inherit;
+
+    @keyframes bubbleFloat {
+      0% { transform: translateY(0) scale(1); }
+      100% { transform: translateY(-4px) scale(1.05); }
     }
-    .tab-btn.active { background: #fff; color: #0f172a; box-shadow: 0 1px 6px rgba(0,0,0,0.10); }
-    .auth-form { display: none; text-align: left; }
-    .auth-form.visible { display: block; }
-    .form-group { margin-bottom: 16px; }
-    .form-group label { display: block; font-size: 12.5px; font-weight: 600; color: #374151; margin-bottom: 6px; }
-    .form-group input {
-      width: 100%; box-sizing: border-box; padding: 11px 14px;
-      border: 1.5px solid #e2e8f0; border-radius: 10px; font-size: 14px;
-      color: #0f172a; transition: border-color 0.2s; font-family: inherit;
+
+    .auth-gate h1 {
+      font-size: 24px; font-weight: 900; 
+      margin: 0 0 6px; letter-spacing: -0.03em;
+      position: relative; z-index: 1;
+      background: linear-gradient(135deg, #0F1E36 0%, #1a4a7a 100%);
+      -webkit-background-clip: text !important;
+      -webkit-text-fill-color: transparent !important;
     }
-    .form-group input:focus { outline: none; border-color: #1a4a7a; box-shadow: 0 0 0 3px rgba(26,74,122,0.10); }
-    .btn-auth {
-      width: 100%; padding: 13px;
-      background: linear-gradient(135deg, #0f2942, #1a4a7a);
-      color: #fff; border: none; border-radius: 10px;
+    
+    .auth-gate .subtitle {
+      font-size: 13px; color: #64748b; margin-bottom: 28px; line-height: 1.5;
+      position: relative; z-index: 1; font-weight: 500;
+    }
+
+    /* Auth buttons — 3 clean login methods */
+    .auth-btn-stack {
+      display: flex; flex-direction: column; gap: 12px;
+      margin-top: 4px; position: relative; z-index: 1;
+      max-width: 310px; margin-left: auto; margin-right: auto; width: 100%;
+    }
+    
+    .auth-btn {
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+      width: 100%; padding: 15px 24px; border-radius: 12px;
       font-size: 14.5px; font-weight: 700; cursor: pointer;
-      margin-top: 8px; transition: opacity 0.2s, transform 0.15s; font-family: inherit;
+      font-family: inherit; transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      border: none; letter-spacing: 0.01em;
     }
-    .btn-auth:hover { opacity: 0.92; transform: translateY(-1px); }
-    .auth-divider { text-align: center; font-size: 12px; color: #94a3b8; margin: 20px 0; position: relative; }
-    .auth-divider::before, .auth-divider::after {
-      content: ''; position: absolute; top: 50%; width: 40%; height: 1px; background: #e2e8f0;
+    .auth-btn svg { flex-shrink: 0; }
+    
+    /* Google highlighted in blue */
+    .auth-btn-google {
+      background: #1a4a7a !important;
+      color: #ffffff !important;
+      border: none !important;
+      box-shadow: 0 4px 12px rgba(26, 74, 122, 0.15) !important;
     }
-    .auth-divider::before { left: 0; } .auth-divider::after { right: 0; }
-    .social-login-row { display: flex; gap: 10px; }
-    .btn-social {
-      flex: 1; padding: 10px 8px; border: 1.5px solid #e2e8f0;
-      border-radius: 10px; background: #fff; font-size: 12.5px; font-weight: 600;
-      color: #374151; cursor: pointer;
-      display: flex; align-items: center; justify-content: center; gap: 8px;
-      transition: border-color 0.2s, background 0.2s; font-family: inherit;
+    .auth-btn-google:hover { 
+      background: #0f2942 !important;
+      transform: translateY(-1.5px); 
+      box-shadow: 0 6px 18px rgba(15, 41, 66, 0.22) !important; 
     }
-    .btn-social:hover { border-color: #cbd5e1; background: #f8fafc; }
-    .auth-note { font-size: 11.5px; color: #94a3b8; text-align: center; margin-top: 20px; line-height: 1.6; }
+    .auth-btn-google:active { transform: translateY(0); }
+    
+    /* Phone in white */
+    .auth-btn-phone {
+      background: #ffffff !important;
+      color: #1f2937 !important;
+      border: 1.5px solid #e2e8f0 !important;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02) !important;
+    }
+    .auth-btn-phone:hover { 
+      border-color: #cbd5e1 !important;
+      background: #f8fafc !important;
+      transform: translateY(-1.5px); 
+      box-shadow: 0 6px 18px rgba(0,0,0,0.05) !important; 
+    }
+    .auth-btn-phone:active { transform: translateY(0); }
+    
+    /* Email is subtle: no box, link styled */
+    .auth-btn-email {
+      background: transparent !important;
+      border: none !important;
+      color: #64748b !important;
+      font-size: 14px !important;
+      font-weight: 750 !important;
+      text-transform: uppercase !important;
+      letter-spacing: 0.08em !important;
+      padding: 6px 0 !important;
+      width: auto !important;
+      margin: 0 auto !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 6px !important;
+      cursor: pointer !important;
+      transition: all 0.2s ease !important;
+      font-variant: all-small-caps !important;
+      text-decoration: underline !important;
+      text-underline-offset: 3px !important;
+      box-shadow: none !important;
+    }
+    .auth-btn-email:hover {
+      color: #1a4a7a !important;
+      transform: none !important;
+      letter-spacing: 0.1em !important;
+    }
+    .auth-btn-email svg {
+      width: 15px !important;
+      height: 15px !important;
+      stroke: currentColor !important;
+      stroke-width: 2.2 !important;
+    }
+
+    .auth-divider-line {
+      border: 0;
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(226, 232, 240, 0.8) 20%, rgba(226, 232, 240, 0.8) 80%, transparent);
+      margin: 8px 0 6px;
+    }
+    .auth-note { 
+      font-size: 11px; color: #94a3b8; text-align: center; margin-top: 24px; line-height: 1.5;
+      position: relative; z-index: 1;
+    }
     .auth-note a { color: #1a4a7a; font-weight: 600; }
-    .error-msg { background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; border-radius: 8px; padding: 10px 14px; font-size: 12.5px; margin-bottom: 14px; display: none; }
-    .success-msg { background: #f0fdf4; border: 1px solid #bbf7d0; color: #15803d; border-radius: 8px; padding: 10px 14px; font-size: 12.5px; margin-bottom: 14px; display: none; }
+
+    @media (max-width: 640px) {
+      .acct-page {
+        padding: 24px 0 60px !important;
+      }
+      .auth-gate {
+        padding: 36px 24px 28px !important;
+        margin: 0 12px !important;
+      }
+      .auth-gate h1 {
+        font-size: 21px !important;
+      }
+      .auth-gate .subtitle {
+        margin-bottom: 22px !important;
+      }
+      .auth-note {
+        margin-top: 18px !important;
+      }
+    }
+
+
 
     .profile-wrap { max-width: 820px; margin: 0 auto; }
     .profile-hero {
@@ -81,46 +240,93 @@
       border-radius: 20px; padding: 36px 40px;
       display: flex; align-items: center; gap: 28px;
       margin-bottom: 24px; position: relative; overflow: hidden;
+      box-shadow: 0 10px 30px rgba(15, 41, 66, 0.15);
     }
     .profile-hero::before {
       content: ''; position: absolute; right: -60px; top: -60px;
       width: 240px; height: 240px; border-radius: 50%; background: rgba(255,255,255,0.04);
     }
     .avatar-ring {
-      width: 80px; height: 80px; border-radius: 50%;
-      background: rgba(255,255,255,0.15); border: 3px solid rgba(255,255,255,0.3);
+      width: 76px; height: 76px; border-radius: 50%;
+      background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%);
+      border: 2px solid rgba(255, 255, 255, 0.3);
       display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), inset 0 1px 1px rgba(255,255,255,0.2);
     }
-    .avatar-initials { font-size: 28px; font-weight: 800; color: #fff; letter-spacing: -1px; }
-    .profile-meta { flex: 1; }
+    .avatar-initials { font-size: 26px; font-weight: 800; color: #fff; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15); letter-spacing: -0.5px; }
+    .profile-meta { flex: 1; padding-right: 120px; }
     .profile-name { font-size: 24px; font-weight: 800; color: #fff; margin: 0 0 4px; }
     .profile-email { font-size: 13.5px; color: rgba(255,255,255,0.7); margin: 0 0 10px; }
     .profile-badge {
       display: inline-flex; align-items: center; gap: 6px;
-      background: rgba(255,255,255,0.15); border-radius: 20px;
-      padding: 4px 12px; font-size: 12px; font-weight: 600; color: #fff;
+      background: rgba(0, 229, 255, 0.12); border: 1px solid rgba(0, 229, 255, 0.3);
+      border-radius: 20px; padding: 4px 12px; font-size: 12px; font-weight: 600; color: #00E5FF;
+      box-shadow: 0 2px 8px rgba(0, 229, 255, 0.15);
     }
     .btn-logout {
-      background: rgba(255,255,255,0.12); border: 1.5px solid rgba(255,255,255,0.25);
-      color: #fff; padding: 9px 20px; border-radius: 10px;
-      font-size: 13px; font-weight: 600; cursor: pointer;
-      transition: background 0.2s; white-space: nowrap; font-family: inherit;
+      position: absolute; top: 24px; right: 24px;
+      background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2);
+      color: rgba(255, 255, 255, 0.95); padding: 8px 16px; border-radius: 8px;
+      font-size: 12px; font-weight: 700; cursor: pointer;
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      transition: all 0.2s ease; white-space: nowrap; font-family: inherit;
+      display: inline-flex; align-items: center; gap: 6px; z-index: 5;
     }
-    .btn-logout:hover { background: rgba(255,255,255,0.22); }
-    .profile-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .btn-logout:hover {
+      background: rgba(255, 255, 255, 0.18); border-color: rgba(255, 255, 255, 0.35);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .btn-logout:active { transform: scale(0.97); }
+    .profile-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
     .profile-card {
-      background: #fff; border-radius: 16px; border: 1px solid #e2e8f0;
-      padding: 24px 22px; text-decoration: none; color: inherit;
-      transition: all 0.22s; display: flex; flex-direction: column; gap: 14px;
+      background: #fff; border-radius: 16px; border: 1.5px solid #f1f5f9;
+      padding: 20px 22px; text-decoration: none; color: inherit;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1); display: flex;
+      flex-direction: row; align-items: center; gap: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
     }
-    .profile-card:hover { border-color: #1a4a7a; box-shadow: 0 6px 24px rgba(15,41,66,0.10); transform: translateY(-2px); }
-    .card-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
-    .card-icon.blue { background: #eff6ff; } .card-icon.pink { background: #fff0f3; }
-    .card-icon.green { background: #f0fdf4; } .card-icon.purple { background: #faf5ff; }
-    .card-icon.orange { background: #fff7ed; } .card-icon.teal { background: #f0fdfa; }
+    .profile-card:hover {
+      border-color: #1a4a7a; box-shadow: 0 12px 32px rgba(15, 41, 66, 0.08);
+      transform: translateY(-2px);
+    }
+    .profile-card.full-width { grid-column: span 2; }
+    .card-icon { 
+      width: 44px; height: 44px; border-radius: 12px; 
+      display: flex; align-items: center; justify-content: center; 
+      background: rgba(26, 74, 122, 0.06) !important; color: #1a4a7a;
+      flex-shrink: 0; transition: all 0.2s ease;
+    }
+    .profile-card:hover .card-icon {
+      background: #1a4a7a !important; color: #ffffff !important;
+      transform: scale(1.05);
+    }
+    .card-content { display: flex; flex-direction: column; gap: 4px; }
     .card-label { font-size: 14.5px; font-weight: 700; color: #0f172a; }
-    .card-desc { font-size: 12.5px; color: #64748b; line-height: 1.5; margin-top: -8px; }
-    @media (max-width: 640px) { .profile-grid { grid-template-columns: 1fr 1fr; } .profile-hero { flex-wrap: wrap; } .auth-gate { padding: 32px 20px; } }
+    .card-desc { font-size: 11px; color: #64748b; line-height: 1.4; margin-top: 0; }
+    @media (max-width: 640px) {
+      .profile-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 12px !important; }
+      .profile-card {
+        flex-direction: column !important; align-items: flex-start !important;
+        text-align: left !important; padding: 16px 14px !important; gap: 10px !important;
+        border-radius: 12px !important;
+      }
+      .profile-card.full-width {
+        grid-column: span 2 !important; flex-direction: row !important;
+        align-items: center !important; gap: 14px !important; padding: 16px 14px !important;
+      }
+      .card-icon { width: 36px !important; height: 36px !important; border-radius: 8px !important; }
+      .card-icon svg { width: 18px !important; height: 18px !important; }
+      .card-label { font-size: 13px !important; }
+      .card-desc { font-size: 10.5px !important; line-height: 1.3 !important; }
+      .profile-hero { padding: 24px 20px !important; flex-direction: row !important; align-items: center !important; gap: 16px !important; }
+      .avatar-ring { width: 60px !important; height: 60px !important; }
+      .avatar-initials { font-size: 22px !important; }
+      .profile-meta { padding-right: 85px !important; }
+      .profile-name { font-size: 19px !important; }
+      .profile-email { font-size: 12px !important; margin-bottom: 8px !important; }
+      .btn-logout { top: 20px !important; right: 20px !important; padding: 6px 12px !important; font-size: 11px !important; }
+      .auth-gate { padding: 32px 20px; }
+    }
   </style>
 </head>
 <body>
@@ -198,46 +404,157 @@
       <!-- LOGGED OUT VIEW -->
       <div id="auth-gate-view">
         <div class="auth-gate">
-          <div class="auth-gate-icon">
-            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle>
-            </svg>
+          <!-- Premium Modern Mannequin Icon -->
+          <div class="auth-gate-avatar-wrapper" style="margin-bottom: 24px; position: relative; width: 96px; height: 96px; margin-left: auto; margin-right: auto; display: flex; align-items: center; justify-content: center;">
+            <!-- Outer dotted circle ring -->
+            <div style="position: absolute; width: 92px; height: 92px; border-radius: 50%; border: 1.5px dashed rgba(26, 74, 122, 0.4); animation: rotateDashed 30s linear infinite;"></div>
+            <!-- Inner solid circle -->
+            <div class="auth-gate-icon" style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); width: 78px; height: 78px; border-radius: 50%; display: flex; align-items: center; justify-content: center; position: relative; border: 2.2px solid #1a4a7a; box-shadow: 0 8px 20px rgba(26, 74, 122, 0.12);">
+              <!-- Hi speech bubble -->
+              <span style="position: absolute; top: -5px; right: -12px; background: #00E5FF; color: #0f2942; font-size: 11px; font-weight: 900; padding: 2.5px 8px; border-radius: 10px; border-bottom-left-radius: 0; box-shadow: 0 4px 8px rgba(0,229,255,0.3); z-index: 10;">Hi!</span>
+              <span style="font-family: 'Inter', sans-serif; font-size: 38px; font-weight: 900; color: #1a4a7a; z-index: 2; line-height: 1; letter-spacing: -0.05em; transform: translateY(-1px);">K</span>
+            </div>
           </div>
-          <h1>Welcome to Kawachi</h1>
-          <p class="subtitle">Sign in to access your orders, wishlist,<br>and personalised deals — all in one place.</p>
-          <div class="tab-switcher">
-            <button class="tab-btn active" id="tab-login" onclick="switchTab('login')">Sign In</button>
-            <button class="tab-btn" id="tab-signup" onclick="switchTab('signup')">Create Account</button>
-          </div>
-          <!-- Login -->
-          <div class="auth-form visible" id="form-login">
-            <div class="error-msg" id="login-error"></div>
-            <div class="success-msg" id="login-success"></div>
-            <div class="form-group"><label for="login-email">Email Address</label><input type="email" id="login-email" placeholder="you@example.com" autocomplete="email"></div>
-            <div class="form-group"><label for="login-password">Password</label><input type="password" id="login-password" placeholder="Enter your password" autocomplete="current-password"></div>
-            <button class="btn-auth" onclick="handleLogin()">Sign In to Kawachi</button>
-            <div class="auth-divider">or continue with</div>
-            <div class="social-login-row">
-              <button class="btn-social" onclick="handleSocialLogin('Google')">
-                <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34.5 6.5 29.5 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.9z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 16.1 19 13 24 13c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34.5 6.5 29.5 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.1l-6.2-5.2C29.2 35.4 26.7 36 24 36c-5.2 0-9.7-3.3-11.3-7.9l-6.5 5C9.8 39.7 16.4 44 24 44z"/><path fill="#1976D2" d="M43.6 20.1H42V20H24v8h11.3c-.8 2.3-2.4 4.3-4.5 5.7l6.2 5.2C36.9 39.4 44 34 44 24c0-1.3-.1-2.7-.4-3.9z"/></svg>
-                Google
+          <p class="welcome-to-label" style="font-size: 13.5px; font-weight: 600; color: #64748b; margin: 0 0 2px; text-transform: uppercase; letter-spacing: 0.12em; font-family: var(--font-display);">WELCOME TO</p>
+          <h1 class="kawachi-family-title" style="font-size: 26px; font-weight: 850; color: #0f2942; margin: 0 0 24px; font-family: var(--font-display); letter-spacing: -0.01em;">"Kawachi Family"</h1>
+          <div id="standard-auth-buttons">
+            <div class="auth-btn-stack">
+              <!-- Custom Google Login Button -->
+              <button class="auth-btn" onclick="triggerGoogleLogin()" style="width: 100%; height: 48px; border-radius: 12px; background: #1a4a7a; color: #ffffff; border: none; font-size: 14.5px; font-weight: 750; display: flex; align-items: center; justify-content: center; gap: 12px; cursor: pointer; box-shadow: 0 4px 14px rgba(26, 74, 122, 0.2); transition: all 0.2s;">
+                <!-- Multicolor Google 'G' SVG Logo -->
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22c-.1-.28-.19-.58-.19-.63z" fill="#FBBC05" />
+                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+                </svg>
+                Sign in with Google
               </button>
-              <button class="btn-social" onclick="handleSocialLogin('PhoneOTP')">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#374151" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10.8 19.79 19.79 0 01.03 2.2 2 2 0 012 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92v2z"/></svg>
-                Mobile OTP
+
+              <!-- Custom Phone Login Button -->
+              <button class="auth-btn" onclick="togglePhoneAuth(true)" style="width: 100%; height: 48px; border-radius: 12px; background: #ffffff; color: #0f172a; border: 1.5px solid #e2e8f0; font-size: 14.5px; font-weight: 750; display: flex; align-items: center; justify-content: center; gap: 12px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: all 0.2s;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: #0f172a;"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+                Login with phone number
+              </button>
+
+              <!-- Custom Email Link -->
+              <button class="auth-btn-email" onclick="handleSocialLogin('Email')" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 12px; font-weight: 800; color: #1a4a7a; background: transparent; border: none; cursor: pointer; text-decoration: underline; margin-top: 15px; letter-spacing: 0.05em; text-transform: uppercase; width: 100%;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                Log in by email
               </button>
             </div>
           </div>
-          <!-- Signup -->
-          <div class="auth-form" id="form-signup">
-            <div class="error-msg" id="signup-error"></div>
-            <div class="success-msg" id="signup-success"></div>
-            <div class="form-group"><label for="signup-name">Full Name</label><input type="text" id="signup-name" placeholder="Your full name" autocomplete="name"></div>
-            <div class="form-group"><label for="signup-email">Email Address</label><input type="email" id="signup-email" placeholder="you@example.com" autocomplete="email"></div>
-            <div class="form-group"><label for="signup-password">Create Password</label><input type="password" id="signup-password" placeholder="Min 6 characters" autocomplete="new-password"></div>
-            <button class="btn-auth" onclick="handleSignup()">Create My Account</button>
+
+          <!-- Phone / OTP Verification Form (hidden by default) -->
+          <div id="phone-otp-form-container" style="display: none; text-align: left; margin-top: 15px; font-family: 'Inter', sans-serif;">
+            <h3 style="font-size: 15.5px; font-weight: 800; color: #0a2540; margin-bottom: 12px; text-align: center; font-family: var(--font-display);">Phone Verification</h3>
+            
+            <div id="otp-error-alert" style="display: none; margin-bottom: 14px; background: #fee2e2; border: 1px solid #fca5a5; color: #b91c1c; padding: 10px; border-radius: 8px; font-size: 12px; font-weight: 600; text-align: center;"></div>
+            
+            <!-- Stage 1: Phone input -->
+            <div id="phone-input-stage">
+              <label style="font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase; display: block; margin-bottom: 6px; letter-spacing: 0.05em;">Mobile Number</label>
+              <div style="display: flex; border: 1.5px solid #cbd5e1; border-radius: 10px; background: #ffffff; overflow: hidden; margin-bottom: 12px; box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);">
+                <span style="display: flex; align-items: center; padding: 0 12px; font-weight: 700; color: #475569; border-right: 1.5px solid #cbd5e1; background: #f8fafc;">+91</span>
+                <input type="tel" id="sms-phone-input" placeholder="Enter 10-digit number" style="width: 100%; border: none; outline: none; background: transparent; padding: 10px 14px; font-size: 14px; font-weight: 600; color: #0f172a;" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+              </div>
+              <button class="btn btn-primary" id="sms-send-btn" onclick="sendSMSOTP()" style="width: 100%; padding: 12px; border-radius: 10px; font-weight: 750; font-size: 13.5px; background: #0a2540; color: #fff; border: none; cursor: pointer; transition: all 0.2s;">Send Verification Code</button>
+            </div>
+
+            <!-- Stage 2: OTP inputs (hidden by default) -->
+            <div id="otp-verify-stage" style="display: none;">
+              <p style="font-size: 12.5px; color: #64748b; text-align: center; margin-bottom: 16px; font-weight: 500;">We have sent a code to <strong id="displayed-phone-number" style="color: #0f172a;">+91 0000000000</strong></p>
+              
+              <!-- Large OTP developer assistance box so they can test without waiting for message delivery -->
+              <div id="dev-otp-help-box" style="display: none; background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; padding: 8px 12px; border-radius: 8px; font-size: 12px; text-align: center; font-weight: 600; margin-bottom: 15px;"></div>
+
+              <div style="display: flex; justify-content: space-between; gap: 8px; max-width: 280px; margin: 0 auto 16px;">
+                <input type="text" maxLength="1" class="otp-box" oninput="moveOtpFocus(this, 1)" onkeydown="handleOtpBackspace(event, 0)" style="width: 40px; height: 46px; border-radius: 8px; border: 1.5px solid #cbd5e1; background: #ffffff; text-align: center; font-size: 20px; font-weight: 800; color: #0f172a; outline: none;" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                <input type="text" maxLength="1" class="otp-box" oninput="moveOtpFocus(this, 2)" onkeydown="handleOtpBackspace(event, 1)" style="width: 40px; height: 46px; border-radius: 8px; border: 1.5px solid #cbd5e1; background: #ffffff; text-align: center; font-size: 20px; font-weight: 800; color: #0f172a; outline: none;" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                <input type="text" maxLength="1" class="otp-box" oninput="moveOtpFocus(this, 3)" onkeydown="handleOtpBackspace(event, 2)" style="width: 40px; height: 46px; border-radius: 8px; border: 1.5px solid #cbd5e1; background: #ffffff; text-align: center; font-size: 20px; font-weight: 800; color: #0f172a; outline: none;" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                <input type="text" maxLength="1" class="otp-box" oninput="moveOtpFocus(this, 4)" onkeydown="handleOtpBackspace(event, 3)" style="width: 40px; height: 46px; border-radius: 8px; border: 1.5px solid #cbd5e1; background: #ffffff; text-align: center; font-size: 20px; font-weight: 800; color: #0f172a; outline: none;" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                <input type="text" maxLength="1" class="otp-box" oninput="moveOtpFocus(this, 5)" onkeydown="handleOtpBackspace(event, 4)" style="width: 40px; height: 46px; border-radius: 8px; border: 1.5px solid #cbd5e1; background: #ffffff; text-align: center; font-size: 20px; font-weight: 800; color: #0f172a; outline: none;" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                <input type="text" maxLength="1" class="otp-box" oninput="autoSubmitOTP(this)" onkeydown="handleOtpBackspace(event, 5)" style="width: 40px; height: 46px; border-radius: 8px; border: 1.5px solid #cbd5e1; background: #ffffff; text-align: center; font-size: 20px; font-weight: 800; color: #0f172a; outline: none;" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+              </div>
+              <div id="otp-timer-container" style="text-align: center; margin-bottom: 12px; font-size: 12px; color: #94a3b8; font-weight: 500;">
+                Resend code in <strong id="countdown-seconds" style="color: #475569;">30s</strong>
+              </div>
+              <button id="resend-otp-btn" onclick="resendSMSOTP()" style="display: none; width: 100%; text-align: center; font-size: 12px; font-weight: 800; color: #ff5e00; background: transparent; border: none; cursor: pointer; margin-bottom: 12px;">Resend Verification Code</button>
+            </div>
+
+            <button onclick="togglePhoneAuth(false)" style="display: block; width: 100%; text-align: center; font-size: 12px; font-weight: 800; color: #64748b; background: transparent; border: none; cursor: pointer; margin-top: 15px;">&larr; Back to all options</button>
           </div>
-          <p class="auth-note">By continuing, you agree to Kawachi's <a href="terms.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a>.</p>
+
+          <!-- Email Login/Signup Form (hidden by default) -->
+          <div id="email-auth-form-container" style="display: none; text-align: left; margin-top: 15px; font-family: 'Inter', sans-serif;">
+            <h3 id="email-form-title" style="font-size: 15.5px; font-weight: 800; color: #0a2540; margin-bottom: 12px; text-align: center; font-family: var(--font-display);">Email Sign In</h3>
+            
+            <div id="email-form-error" style="display: none; margin-bottom: 14px; background: #fee2e2; border: 1px solid #fca5a5; color: #b91c1c; padding: 10px; border-radius: 8px; font-size: 12px; font-weight: 600; text-align: center;"></div>
+            <div id="email-form-success" style="display: none; margin-bottom: 14px; background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; padding: 10px; border-radius: 8px; font-size: 12px; font-weight: 600; text-align: center;"></div>
+
+            <!-- Login Form Fields -->
+            <div id="email-fields-login">
+              <div style="margin-bottom: 12px;">
+                <label style="font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase; display: block; margin-bottom: 6px; letter-spacing: 0.05em;">Email Address</label>
+                <input type="email" id="inpage-email-input" placeholder="e.g. name@domain.com" style="width: 100%; border: 1.5px solid #cbd5e1; border-radius: 10px; background: #ffffff; padding: 10px 14px; font-size: 14px; font-weight: 600; color: #0f172a; outline: none; box-sizing: border-box;">
+              </div>
+              <div style="margin-bottom: 8px;">
+                <label style="font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase; display: block; margin-bottom: 6px; letter-spacing: 0.05em;">Password</label>
+                <input type="password" id="inpage-password-input" placeholder="Enter password" style="width: 100%; border: 1.5px solid #cbd5e1; border-radius: 10px; background: #ffffff; padding: 10px 14px; font-size: 14px; font-weight: 600; color: #0f172a; outline: none; box-sizing: border-box;" onkeydown="if(event.key === 'Enter') submitInpageEmailLogin()">
+              </div>
+
+              <!-- Forgot Password link -->
+              <div style="text-align: right; margin-bottom: 16px;">
+                <button onclick="toggleEmailFormMode('forgot')" style="background: transparent; border: none; color: #1a4a7a; font-size: 12px; font-weight: 700; cursor: pointer; text-decoration: underline; padding: 0;">Forgot Password?</button>
+              </div>
+
+              <button class="btn btn-primary" onclick="submitInpageEmailLogin()" style="width: 100%; padding: 12px; border-radius: 10px; font-weight: 750; font-size: 13.5px; background: #0a2540; color: #fff; border: none; cursor: pointer; transition: all 0.2s; margin-bottom: 14px;">Sign In</button>
+              
+              <div style="text-align: center; font-size: 13px; color: #475569; font-weight: 500;">
+                Don't have an account? <button onclick="toggleEmailFormMode('signup')" style="background: transparent; border: none; color: #ff5e00; font-weight: 800; cursor: pointer; text-decoration: underline; padding: 0; font-size: 13px;">Sign Up</button>
+              </div>
+            </div>
+
+            <!-- Sign Up Form Fields (hidden by default) -->
+            <div id="email-fields-signup" style="display: none;">
+              <div style="margin-bottom: 12px;">
+                <label style="font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase; display: block; margin-bottom: 6px; letter-spacing: 0.05em;">Your Name</label>
+                <input type="text" id="inpage-signup-name" placeholder="e.g. John Doe" style="width: 100%; border: 1.5px solid #cbd5e1; border-radius: 10px; background: #ffffff; padding: 10px 14px; font-size: 14px; font-weight: 600; color: #0f172a; outline: none; box-sizing: border-box;">
+              </div>
+              <div style="margin-bottom: 12px;">
+                <label style="font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase; display: block; margin-bottom: 6px; letter-spacing: 0.05em;">Email Address</label>
+                <input type="email" id="inpage-signup-email" placeholder="e.g. name@domain.com" style="width: 100%; border: 1.5px solid #cbd5e1; border-radius: 10px; background: #ffffff; padding: 10px 14px; font-size: 14px; font-weight: 600; color: #0f172a; outline: none; box-sizing: border-box;">
+              </div>
+              <div style="margin-bottom: 16px;">
+                <label style="font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase; display: block; margin-bottom: 6px; letter-spacing: 0.05em;">Choose Password</label>
+                <input type="password" id="inpage-signup-password" placeholder="Min 6 characters" style="width: 100%; border: 1.5px solid #cbd5e1; border-radius: 10px; background: #ffffff; padding: 10px 14px; font-size: 14px; font-weight: 600; color: #0f172a; outline: none; box-sizing: border-box;" onkeydown="if(event.key === 'Enter') submitInpageEmailSignup()">
+              </div>
+
+              <button class="btn btn-primary" onclick="submitInpageEmailSignup()" style="width: 100%; padding: 12px; border-radius: 10px; font-weight: 750; font-size: 13.5px; background: #0a2540; color: #fff; border: none; cursor: pointer; transition: all 0.2s; margin-bottom: 14px;">Create Account</button>
+              
+              <div style="text-align: center; font-size: 13px; color: #475569; font-weight: 500;">
+                Already have an account? <button onclick="toggleEmailFormMode('login')" style="background: transparent; border: none; color: #1a4a7a; font-weight: 800; cursor: pointer; text-decoration: underline; padding: 0; font-size: 13px;">Sign In</button>
+              </div>
+            </div>
+
+            <!-- Forgot Password Form Fields (hidden by default) -->
+            <div id="email-fields-forgot" style="display: none;">
+              <div style="margin-bottom: 16px;">
+                <label style="font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase; display: block; margin-bottom: 6px; letter-spacing: 0.05em;">Email Address</label>
+                <input type="email" id="inpage-forgot-email" placeholder="e.g. name@domain.com" style="width: 100%; border: 1.5px solid #cbd5e1; border-radius: 10px; background: #ffffff; padding: 10px 14px; font-size: 14px; font-weight: 600; color: #0f172a; outline: none; box-sizing: border-box;" onkeydown="if(event.key === 'Enter') submitInpageEmailForgot()">
+              </div>
+
+              <button class="btn btn-primary" onclick="submitInpageEmailForgot()" style="width: 100%; padding: 12px; border-radius: 10px; font-weight: 750; font-size: 13.5px; background: #0a2540; color: #fff; border: none; cursor: pointer; transition: all 0.2s; margin-bottom: 14px;">Reset Password</button>
+              
+              <div style="text-align: center; font-size: 13px; color: #475569; font-weight: 500;">
+                Remember password? <button onclick="toggleEmailFormMode('login')" style="background: transparent; border: none; color: #1a4a7a; font-weight: 800; cursor: pointer; text-decoration: underline; padding: 0; font-size: 13px;">Sign In</button>
+              </div>
+            </div>
+
+            <button onclick="toggleEmailAuth(false)" style="display: block; width: 100%; text-align: center; font-size: 12px; font-weight: 800; color: #64748b; background: transparent; border: none; cursor: pointer; margin-top: 18px;">&larr; Back to all options</button>
+          </div>
+
+          <p class="auth-note" style="margin-top: 18px;">By continuing, you agree to Kawachi's <a href="terms.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a>.</p>
         </div>
       </div>
 
@@ -254,32 +571,23 @@
                 Verified Member
               </span>
             </div>
-            <button class="btn-logout" onclick="handleLogout()">Sign Out</button>
+            <button class="btn-logout" onclick="handleLogout()">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+              Sign Out
+            </button>
           </div>
           <div class="profile-grid">
             <a href="orders.html" class="profile-card">
-              <div class="card-icon blue"><svg width="24" height="24" fill="none" stroke="#1a4a7a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg></div>
-              <div><div class="card-label">My Orders</div><div class="card-desc">Track, return, or buy again from past orders</div></div>
-            </a>
-            <a href="wishlist.html" class="profile-card">
-              <div class="card-icon pink"><svg width="24" height="24" fill="none" stroke="#e11d48" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
-              <div><div class="card-label">My Wishlist</div><div class="card-desc">Your saved products, ready to shop anytime</div></div>
-            </a>
-            <a href="cart.html" class="profile-card">
-              <div class="card-icon green"><svg width="24" height="24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/></svg></div>
-              <div><div class="card-label">My Cart</div><div class="card-desc">View items and proceed to checkout</div></div>
-            </a>
-            <a href="checkout.html" class="profile-card">
-              <div class="card-icon orange"><svg width="24" height="24" fill="none" stroke="#ea580c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
-              <div><div class="card-label">Quick Checkout</div><div class="card-desc">Proceed directly to payment</div></div>
+              <div class="card-icon"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg></div>
+              <div class="card-content"><div class="card-label">My Orders</div><div class="card-desc">Track, return, or buy again from past orders</div></div>
             </a>
             <a href="support-center.html" class="profile-card">
-              <div class="card-icon teal"><svg width="24" height="24" fill="none" stroke="#0d9488" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
-              <div><div class="card-label">Help &amp; Support</div><div class="card-desc">FAQs, return policy and warranty info</div></div>
+              <div class="card-icon"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+              <div class="card-content"><div class="card-label">Help &amp; Support</div><div class="card-desc">FAQs, return policy and warranty info</div></div>
             </a>
-            <a href="contact.html" class="profile-card">
-              <div class="card-icon purple"><svg width="24" height="24" fill="none" stroke="#9333ea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
-              <div><div class="card-label">Contact Us</div><div class="card-desc">Reach our team for queries or feedback</div></div>
+            <a href="contact.html" class="profile-card full-width">
+              <div class="card-icon"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+              <div class="card-content"><div class="card-label">Contact Us / Customer Care</div><div class="card-desc">Reach our team for queries, support, or feedback</div></div>
             </a>
           </div>
         </div>
@@ -287,7 +595,7 @@
     </div>
   </div>
 
-  <script src="js/main-api.js?v=7.17"></script>
+  <script src="js/main-api.js?v=8.00"></script>
   <script>
     const AUTH_KEY = 'kawachi_user';
     function getUser() { try { return JSON.parse(localStorage.getItem(AUTH_KEY)); } catch(e) { return null; } }
@@ -300,8 +608,8 @@
       if (user) {
         document.getElementById('auth-gate-view').style.display = 'none';
         document.getElementById('profile-view').style.display = 'block';
-        document.getElementById('avatar-initials').textContent = getInitials(user.name || user.email);
-        document.getElementById('profile-name').textContent = user.name || 'Kawachi Member';
+        document.getElementById('avatar-initials').textContent = getInitials(user.name || user.email || user.first_name);
+        document.getElementById('profile-name').textContent = user.name || (user.first_name ? (user.first_name + ' ' + (user.last_name || '')) : 'Kawachi Member');
         document.getElementById('profile-email').textContent = user.email || '';
       } else {
         document.getElementById('auth-gate-view').style.display = 'block';
@@ -309,52 +617,429 @@
       }
     }
 
-    function switchTab(tab) {
-      document.getElementById('form-login').classList.toggle('visible', tab === 'login');
-      document.getElementById('form-signup').classList.toggle('visible', tab === 'signup');
-      document.getElementById('tab-login').classList.toggle('active', tab === 'login');
-      document.getElementById('tab-signup').classList.toggle('active', tab === 'signup');
-    }
-
-    function showError(id, msg) { const el=document.getElementById(id); el.textContent=msg; el.style.display='block'; }
-    function hideMessages(p) { document.getElementById(p+'-error').style.display='none'; document.getElementById(p+'-success').style.display='none'; }
-
-    function handleLogin() {
-      hideMessages('login');
-      const email = document.getElementById('login-email').value.trim();
-      const pass  = document.getElementById('login-password').value;
-      if (!email || !pass) { showError('login-error','Please fill in all fields.'); return; }
-      const accounts = JSON.parse(localStorage.getItem('kawachi_accounts') || '[]');
-      const found = accounts.find(a => a.email === email && a.password === pass);
-      if (!found) { showError('login-error','Incorrect email or password. Please try again.'); return; }
-      setUser({ name: found.name, email: found.email, joinedAt: found.joinedAt });
-      renderPage();
-    }
-
-    function handleSignup() {
-      hideMessages('signup');
-      const name  = document.getElementById('signup-name').value.trim();
-      const email = document.getElementById('signup-email').value.trim();
-      const pass  = document.getElementById('signup-password').value;
-      if (!name || !email || !pass) { showError('signup-error','Please fill in all fields.'); return; }
-      if (pass.length < 6) { showError('signup-error','Password must be at least 6 characters.'); return; }
-      const accounts = JSON.parse(localStorage.getItem('kawachi_accounts') || '[]');
-      if (accounts.find(a => a.email === email)) { showError('signup-error','An account with this email already exists.'); return; }
-      const newUser = { name, email, password: pass, joinedAt: new Date().toISOString() };
-      accounts.push(newUser);
-      localStorage.setItem('kawachi_accounts', JSON.stringify(accounts));
-      setUser({ name, email, joinedAt: newUser.joinedAt });
-      renderPage();
-    }
-
     function handleSocialLogin(provider) {
-      const guestUser = { name: provider === 'Google' ? 'Google User' : 'Mobile User', email: 'guest@kawachi.in', joinedAt: new Date().toISOString() };
+      if (provider === 'Email') {
+        toggleEmailAuth(true);
+        return;
+      }
+      const names = {};
+      const guestUser = { name: names[provider] || provider + ' User', email: 'guest@kawachi.in', joinedAt: new Date().toISOString() };
       setUser(guestUser);
       renderPage();
     }
 
-    function handleLogout() { clearUser(); renderPage(); }
-    document.addEventListener('DOMContentLoaded', renderPage);
+    function toggleEmailAuth(show) {
+      const btnStack = document.getElementById('standard-auth-buttons');
+      const emailForm = document.getElementById('email-auth-form-container');
+      const phoneForm = document.getElementById('phone-otp-form-container');
+      
+      if (show) {
+        btnStack.style.display = 'none';
+        phoneForm.style.display = 'none';
+        emailForm.style.display = 'block';
+        toggleEmailFormMode('login');
+      } else {
+        emailForm.style.display = 'none';
+        phoneForm.style.display = 'none';
+        btnStack.style.display = 'block';
+      }
+    }
+
+    function toggleEmailFormMode(mode) {
+      const title = document.getElementById('email-form-title');
+      const err = document.getElementById('email-form-error');
+      const succ = document.getElementById('email-form-success');
+      err.style.display = 'none';
+      succ.style.display = 'none';
+
+      const loginFields = document.getElementById('email-fields-login');
+      const signupFields = document.getElementById('email-fields-signup');
+      const forgotFields = document.getElementById('email-fields-forgot');
+
+      if (mode === 'login') {
+        title.textContent = "Email Sign In";
+        loginFields.style.display = 'block';
+        signupFields.style.display = 'none';
+        forgotFields.style.display = 'none';
+      } else if (mode === 'signup') {
+        title.textContent = "Create Account";
+        loginFields.style.display = 'none';
+        signupFields.style.display = 'block';
+        forgotFields.style.display = 'none';
+      } else if (mode === 'forgot') {
+        title.textContent = "Reset Password";
+        loginFields.style.display = 'none';
+        signupFields.style.display = 'none';
+        forgotFields.style.display = 'block';
+      }
+    }
+
+    async function submitInpageEmailLogin() {
+      const email = document.getElementById('inpage-email-input').value.trim();
+      const password = document.getElementById('inpage-password-input').value;
+      const errorDiv = document.getElementById('email-form-error');
+      errorDiv.style.display = 'none';
+
+      if (!email || !password) {
+        errorDiv.textContent = "Email and password are required.";
+        errorDiv.style.display = 'block';
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/auth/email-signin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          setUser(data.user);
+          location.reload();
+        } else {
+          errorDiv.textContent = data.error || 'Login failed.';
+          errorDiv.style.display = 'block';
+        }
+      } catch (err) {
+        console.error(err);
+        errorDiv.textContent = 'Connection error. Please try again.';
+        errorDiv.style.display = 'block';
+      }
+    }
+
+    async function submitInpageEmailSignup() {
+      const name = document.getElementById('inpage-signup-name').value.trim();
+      const email = document.getElementById('inpage-signup-email').value.trim();
+      const password = document.getElementById('inpage-signup-password').value;
+      const errorDiv = document.getElementById('email-form-error');
+      errorDiv.style.display = 'none';
+
+      if (!name || !email || !password) {
+        errorDiv.textContent = "All fields are required.";
+        errorDiv.style.display = 'block';
+        return;
+      }
+      if (password.length < 6) {
+        errorDiv.textContent = "Password must be at least 6 characters.";
+        errorDiv.style.display = 'block';
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/auth/email-signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, password })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          setUser(data.user);
+          location.reload();
+        } else {
+          errorDiv.textContent = data.error || 'Signup failed.';
+          errorDiv.style.display = 'block';
+        }
+      } catch (err) {
+        console.error(err);
+        errorDiv.textContent = 'Connection error. Please try again.';
+        errorDiv.style.display = 'block';
+      }
+    }
+
+    async function submitInpageEmailForgot() {
+      const email = document.getElementById('inpage-forgot-email').value.trim();
+      const errorDiv = document.getElementById('email-form-error');
+      const successDiv = document.getElementById('email-form-success');
+      errorDiv.style.display = 'none';
+      successDiv.style.display = 'none';
+
+      if (!email) {
+        errorDiv.textContent = "Email address is required.";
+        errorDiv.style.display = 'block';
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/auth/email-forgot', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          successDiv.textContent = data.message;
+          successDiv.style.display = 'block';
+          document.getElementById('inpage-forgot-email').value = '';
+        } else {
+          errorDiv.textContent = data.error || 'Request failed.';
+          errorDiv.style.display = 'block';
+        }
+      } catch (err) {
+        console.error(err);
+        errorDiv.textContent = 'Connection error. Please try again.';
+        errorDiv.style.display = 'block';
+      }
+    }
+
+    function handleLogout() { clearUser(); location.reload(); }
+
+    // Real Authentication handlers:
+
+    // 0. Trigger Google OAuth2 Implicit Flow Popup via Custom Button
+    function triggerGoogleLogin() {
+      const client = google.accounts.oauth2.initTokenClient({
+        client_id: '32422367334-3m00effl6o75cunc0qo4rb33c8u6l5ks.apps.googleusercontent.com',
+        scope: 'email profile openid',
+        callback: async (tokenResponse) => {
+          if (tokenResponse && tokenResponse.access_token) {
+            try {
+              const res = await fetch('/api/auth/google', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ accessToken: tokenResponse.access_token })
+              });
+              const data = await res.json();
+              if (res.ok && data.success) {
+                setUser(data.user);
+                const params = new URLSearchParams(window.location.search);
+                const redirectUrl = params.get('redirect');
+                if (redirectUrl) {
+                  window.location.href = redirectUrl;
+                } else {
+                  location.reload();
+                }
+              } else {
+                alert(data.error || 'Google Authentication failed');
+              }
+            } catch (err) {
+              console.error(err);
+              alert('Network connection error during Google login');
+            }
+          }
+        }
+      });
+      client.requestAccessToken();
+    }
+
+    // 1. Google OAuth ID Token callback handler
+    async function handleGoogleCredentialResponse(response) {
+      const errorAlert = document.getElementById('otp-error-alert');
+      if (errorAlert) errorAlert.style.display = 'none';
+      try {
+        const idToken = response.credential;
+        const res = await fetch('/api/auth/google', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ idToken })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          setUser(data.user);
+          const params = new URLSearchParams(window.location.search);
+          const redirectUrl = params.get('redirect');
+          if (redirectUrl) {
+            window.location.href = redirectUrl;
+          } else {
+            renderPage();
+          }
+        } else {
+          alert(data.error || 'Google Authentication failed');
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Network connection error during Google login');
+      }
+    }
+
+    // 2. Phone / OTP toggle stage UI
+    function togglePhoneAuth(show) {
+      const errorAlert = document.getElementById('otp-error-alert');
+      if (errorAlert) errorAlert.style.display = 'none';
+      const emailForm = document.getElementById('email-auth-form-container');
+      if (emailForm) emailForm.style.display = 'none';
+      document.getElementById('standard-auth-buttons').style.display = show ? 'none' : 'block';
+      document.getElementById('phone-otp-form-container').style.display = show ? 'block' : 'none';
+      if (show) {
+        document.getElementById('phone-input-stage').style.display = 'block';
+        document.getElementById('otp-verify-stage').style.display = 'none';
+        document.getElementById('sms-phone-input').value = "";
+        document.getElementById('sms-phone-input').focus();
+      }
+    }
+
+    let countdownTimer = null;
+    let secondsLeft = 30;
+
+    function startOtpCountdown() {
+      clearInterval(countdownTimer);
+      secondsLeft = 30;
+      document.getElementById('countdown-seconds').textContent = secondsLeft + 's';
+      document.getElementById('otp-timer-container').style.display = 'block';
+      document.getElementById('resend-otp-btn').style.display = 'none';
+
+      countdownTimer = setInterval(() => {
+        secondsLeft--;
+        document.getElementById('countdown-seconds').textContent = secondsLeft + 's';
+        if (secondsLeft <= 0) {
+          clearInterval(countdownTimer);
+          document.getElementById('otp-timer-container').style.display = 'none';
+          document.getElementById('resend-otp-btn').style.display = 'block';
+        }
+      }, 1000);
+    }
+
+    // 3. Send SMS Verification OTP
+    async function sendSMSOTP() {
+      const errorAlert = document.getElementById('otp-error-alert');
+      errorAlert.style.display = 'none';
+      const phoneInput = document.getElementById('sms-phone-input').value;
+      const cleanPhone = phoneInput.replace(/[^\d]/g, '');
+
+      if (cleanPhone.length !== 10) {
+        errorAlert.textContent = "Please enter a valid 10-digit mobile number.";
+        errorAlert.style.display = "block";
+        return;
+      }
+
+      const sendBtn = document.getElementById('sms-send-btn');
+      sendBtn.disabled = true;
+      sendBtn.textContent = "Sending Code...";
+
+      try {
+        const res = await fetch('/api/auth/send-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone: cleanPhone })
+        });
+        const data = await res.json();
+        
+        if (res.ok && data.success) {
+          document.getElementById('displayed-phone-number').textContent = '+91 ' + cleanPhone;
+          document.getElementById('phone-input-stage').style.display = 'none';
+          document.getElementById('otp-verify-stage').style.display = 'block';
+          
+          // Clear previous otp input values
+          const boxes = document.querySelectorAll('.otp-box');
+          boxes.forEach(b => { b.value = ''; });
+          boxes[0].focus();
+          
+          // Start Resend timer
+          startOtpCountdown();
+
+          // Show developer fallback/assistance code to make testing easy
+          const devHelpBox = document.getElementById('dev-otp-help-box');
+          if (devHelpBox) {
+            devHelpBox.textContent = `Testing Mode: Code printed to node terminal console. Please check terminal logs!`;
+            devHelpBox.style.display = 'block';
+          }
+        } else {
+          errorAlert.textContent = data.error || 'Failed to send OTP code.';
+          errorAlert.style.display = 'block';
+        }
+      } catch (err) {
+        console.error(err);
+        errorAlert.textContent = 'Network connection error. Try again.';
+        errorAlert.style.display = 'block';
+      } finally {
+        sendBtn.disabled = false;
+        sendBtn.textContent = "Send Verification Code";
+      }
+    }
+
+    // 4. Resend SMS Verification OTP
+    async function resendSMSOTP() {
+      const phoneInput = document.getElementById('sms-phone-input').value;
+      const cleanPhone = phoneInput.replace(/[^\d]/g, '');
+      if (cleanPhone.length === 10) {
+        await sendSMSOTP();
+      }
+    }
+
+    // 5. OTP Focus shifts
+    function moveOtpFocus(input, nextIndex) {
+      const cleanVal = input.value.replace(/[^\d]/g, '');
+      input.value = cleanVal;
+      if (cleanVal && nextIndex < 6) {
+        const boxes = document.querySelectorAll('.otp-box');
+        boxes[nextIndex]?.focus();
+      }
+    }
+
+    function handleOtpBackspace(event, currentIndex) {
+      if (event.key === 'Backspace' && currentIndex > 0) {
+        const boxes = document.querySelectorAll('.otp-box');
+        if (!boxes[currentIndex].value) {
+          boxes[currentIndex - 1].value = '';
+          boxes[currentIndex - 1].focus();
+        }
+      }
+    }
+
+    // 6. Verification API submission
+    async function verifyAndSubmitOTP(enteredCode) {
+      const errorAlert = document.getElementById('otp-error-alert');
+      errorAlert.style.display = 'none';
+      const phoneInput = document.getElementById('sms-phone-input').value;
+      const cleanPhone = phoneInput.replace(/[^\d]/g, '');
+
+      try {
+        const res = await fetch('/api/auth/verify-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone: cleanPhone, otp: enteredCode })
+        });
+        const data = await res.json();
+        
+        if (res.ok && data.success) {
+          setUser(data.user);
+          togglePhoneAuth(false);
+          const params = new URLSearchParams(window.location.search);
+          const redirectUrl = params.get('redirect');
+          if (redirectUrl) {
+            window.location.href = redirectUrl;
+          } else {
+            renderPage();
+          }
+        } else {
+          errorAlert.textContent = data.error || 'Verification failed. Please check the code.';
+          errorAlert.style.display = 'block';
+          
+          // Clear code boxes
+          const boxes = document.querySelectorAll('.otp-box');
+          boxes.forEach(b => { b.value = ''; });
+          boxes[0].focus();
+        }
+      } catch (err) {
+        console.error(err);
+        errorAlert.textContent = 'Verification error. Check connection.';
+        errorAlert.style.display = 'block';
+      }
+    }
+
+    function autoSubmitOTP(input) {
+      const cleanVal = input.value.replace(/[^\d]/g, '');
+      input.value = cleanVal;
+      if (!cleanVal) return;
+
+      const boxes = document.querySelectorAll('.otp-box');
+      const otpCode = Array.from(boxes).map(b => b.value).join('');
+      if (otpCode.length === 6) {
+        verifyAndSubmitOTP(otpCode);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderPage();
+      
+      // Bind signout buttons programmatically
+      document.querySelectorAll('.btn-logout, button[onclick="handleLogout()"]').forEach(btn => {
+        btn.removeAttribute('onclick');
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          handleLogout();
+        });
+      });
+    });
   </script>
 </body>
 </html>

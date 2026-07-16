@@ -5,15 +5,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Product Details - Kawachi</title>
   <meta name="description" content="Explore detailed features, warranty structures, and purchase options for Kawachi utility products.">
-  <link rel="stylesheet" href="css/global-styles.css?v=7.17">
+  <link rel="stylesheet" href="css/global-styles.css?v=7.69">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <style>
+    /* Sora font overrides for the PDP — distinct from Amazon's Ember */
+    .product-layout-grid-3col,
+    .product-layout-grid-3col * {
+      font-family: 'Sora', 'Plus Jakarta Sans', system-ui, sans-serif !important;
+    }
+    .product-name-heading {
+      font-family: 'Sora', 'Plus Jakarta Sans', system-ui, sans-serif !important;
+      font-weight: 700 !important;
+      letter-spacing: -0.4px !important;
+    }
+    .purchase-widget-card,
+    .purchase-widget-card * {
+      font-family: 'Sora', 'Plus Jakarta Sans', system-ui, sans-serif !important;
+    }
+    /* Rating stars row */
+    .star-rating-row,
+    .star-rating-row * {
+      font-family: 'Sora', system-ui, sans-serif !important;
+    }
     body {
       background-color: #ffffff !important;
     }
     #main-content {
       background-color: #ffffff !important;
-      padding: 20px 0 !important;
+      padding: 10px 0 20px 0 !important;
     }
     
     /* Layout grid tweak to match Amazon columns */
@@ -22,7 +44,7 @@
       grid-template-columns: 1.15fr 1.15fr 0.7fr !important;
       gap: 32px !important;
       align-items: start !important;
-      margin-top: 16px !important;
+      margin-top: 6px !important;
     }
 
     /* Thumbnail style refinements */
@@ -113,11 +135,10 @@
     }
     
     .purchase-btn-pill {
-      border-radius: 6px !important;
-      font-family: inherit !important;
-      font-size: 13.5px !important;
-      font-weight: 600 !important;
-      padding: 12px 18px !important;
+      font-family: var(--font-display) !important;
+      font-weight: 750 !important;
+      border-radius: 12px !important; /* Slightly rounded corners */
+      padding: 10px 16px !important; /* Sleeker vertical height padding */
       box-shadow: none !important;
       border: none !important;
       cursor: pointer;
@@ -126,6 +147,10 @@
       align-items: center !important;
       justify-content: center !important;
       width: 100% !important;
+      max-width: 310px !important; /* Restricted max-width so they are not too long */
+      margin: 0 auto 10px auto !important; /* Centered layout with spacing */
+      height: 44px !important;
+      box-sizing: border-box !important;
     }
     
     .purchase-btn-pill.btn-atc {
@@ -239,13 +264,15 @@
       .thumbnail-vertical-strip {
         display: flex !important;
         flex-direction: row !important;
+        flex-wrap: nowrap !important;
         gap: 8px !important;
         overflow-x: auto !important;
         overflow-y: hidden !important;
         width: 100% !important;
         max-height: none !important;
-        padding-bottom: 4px !important;
-        justify-content: center !important;
+        padding-bottom: 6px !important;
+        justify-content: flex-start !important;
+        -webkit-overflow-scrolling: touch !important;
       }
       .thumbnail-vertical-strip .thumb-item {
         flex-shrink: 0 !important;
@@ -280,28 +307,15 @@
       box-shadow: 0 4px 12px rgba(224, 94, 63, 0.2) !important;
     }
 
-    /* Mobile Permanent Bottom Action Bar Styles */
+    /* Mobile Permanent Bottom Action Bar — HIDDEN (replaced by inline buttons) */
     .mobile-sticky-action-bar {
       display: none !important;
     }
 
     @media (max-width: 767px) {
-      .mobile-sticky-action-bar {
+      /* Show inline purchase buttons on mobile */
+      #mobile-inline-purchase-btns {
         display: flex !important;
-        position: fixed !important;
-        bottom: 0 !important;
-        left: 0 !important;
-        right: 0 !important;
-        height: 62px !important;
-        background-color: #FFFFFF !important;
-        border: none !important;
-        border-top: 1.5px solid #E2E8F0 !important;
-        box-shadow: 0 -4px 14px rgba(0, 0, 0, 0.08) !important;
-        z-index: 9999 !important;
-        padding: 8px 16px !important;
-        gap: 12px !important;
-        align-items: center !important;
-        border-radius: 0 !important;
       }
       .mobile-action-btn {
         flex: 1 !important;
@@ -396,9 +410,15 @@
         border-radius: 20px !important;
       }
       
-      /* Prevent footer overlap */
+      /* No extra padding needed — sticky bar removed */
       body {
-        padding-bottom: 68px !important;
+        padding-bottom: 0 !important;
+      }
+
+      /* Fix: push promo ticker below the nav bar on mobile */
+      .pdp-promo-ticker-strip {
+        order: 4 !important;
+        width: 100% !important;
       }
     }
 
@@ -434,14 +454,154 @@
       cursor: pointer;
       font-family: inherit;
     }
-    .desc-read-more-btn:hover {
-      text-decoration: underline;
+    .tab-trigger.active {
+      color: #1e3e7a !important;
+    }
+    .tab-trigger.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background-color: #1e3e7a;
+      border-radius: 3px;
+    }
+
+    /* Premium Fullscreen Gallery Modal Styles */
+    .gallery-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.5);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Sora', sans-serif;
+      color: #0f172a;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .gallery-modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .gallery-modal-container {
+      width: 90%;
+      max-width: 960px;
+      height: 90%;
+      max-height: 700px;
+      background: #ffffff;
+      border: 3px solid #ff5e00;
+      border-radius: 20px;
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+      box-sizing: border-box;
+      position: relative;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      transform: scale(0.95);
+      transition: transform 0.3s ease;
+    }
+    .gallery-modal-overlay.active .gallery-modal-container {
+      transform: scale(1);
+    }
+    .gallery-modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(0, 0, 0, 0.05);
+      border: none;
+      color: #334155;
+      font-size: 20px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .gallery-modal-close:hover {
+      background: rgba(0, 0, 0, 0.1);
+      transform: scale(1.05);
+    }
+    .gallery-modal-header {
+      margin-bottom: 20px;
+      padding-right: 40px;
+    }
+    .gallery-modal-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin: 0;
+      color: #0f172a;
+    }
+    .gallery-modal-viewer {
+      flex: 1;
+      min-height: 0;
+      background: #f8fafc;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+      border: 1px solid #e2e8f0;
+      margin-bottom: 20px;
+    }
+    .gallery-modal-viewer img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+    .gallery-modal-strip {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+      justify-content: center;
+    }
+    .gallery-modal-strip::-webkit-scrollbar {
+      height: 6px;
+    }
+    .gallery-modal-strip::-webkit-scrollbar-thumb {
+      background-color: rgba(0, 0, 0, 0.2);
+      border-radius: 3px;
+    }
+    .gallery-modal-thumb {
+      width: 60px;
+      height: 60px;
+      border: 2px solid transparent;
+      border-radius: 8px;
+      cursor: pointer;
+      overflow: hidden;
+      background: #f1f5f9;
+      flex-shrink: 0;
+      opacity: 0.6;
+      transition: all 0.2s;
+      position: relative;
+    }
+    .gallery-modal-thumb.active {
+      border-color: #ff5e00;
+      opacity: 1;
+      box-shadow: 0 0 10px rgba(255, 94, 0, 0.3);
+    }
+    .gallery-modal-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
   </style>
 </head>
 <body>
   <!-- 2. Header -->
-  <header class="main-header marketplace-header" id="site-header">
+  <header class="main-header marketplace-header" id="site-header" style="padding-bottom: 0 !important; border-bottom: none !important;">
     <div class="container header-container">
       
       <!-- Logo Group -->
@@ -527,8 +687,18 @@
           <a href="#utility-products" class="sub-nav-link">Utility Products</a>
           <a href="search.html?q=new" class="sub-nav-link">New Arrivals</a>
           <a href="#deals-of-the-day" class="sub-nav-link highlighted-link">Deals</a>
+          <a href="https://optiedge.in" target="_blank" rel="noopener noreferrer" class="sub-nav-link">eCommerce Solution</a>
           <a href="contact.html?type=bulk" class="sub-nav-link">Bulk Orders</a>
         </div>
+      </div>
+    </div>
+
+    <!-- Scrolling Promo Ticker Strip immediately below sub-navigation bar -->
+    <div id="pdp-lto-strip" class="pdp-promo-ticker-strip" style="background: linear-gradient(90deg, #be123c, #FF5E00, #ff8c00); color: #ffffff; padding: 6px 0; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 10.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.15em; overflow: hidden; white-space: nowrap; box-shadow: 0 2px 8px rgba(255,94,0,0.12); border-bottom: 1.5px solid rgba(255,94,0,0.2); width: 100%; border-radius: 0;">
+      <div data-lto-inner style="display: inline-block; animation: promoTicker 20s linear infinite;">
+        <span style="display: inline-block; padding-right: 50px;">⚡️ Limited Time Offer: Get EXTRA 5% OFF while checking out! Use Coupon Code <strong style="background: rgba(255,255,255,0.25); padding: 2px 6px; border-radius: 4px; color: #fff; font-weight: 900; border: 1px solid rgba(255,255,255,0.4);">KAWACHI05</strong> at Checkout! ⚡️</span>
+        <span style="display: inline-block; padding-right: 50px;">⚡️ Limited Time Offer: Get EXTRA 5% OFF while checking out! Use Coupon Code <strong style="background: rgba(255,255,255,0.25); padding: 2px 6px; border-radius: 4px; color: #fff; font-weight: 900; border: 1px solid rgba(255,255,255,0.4);">KAWACHI05</strong> at Checkout! ⚡️</span>
+        <span style="display: inline-block; padding-right: 50px;">⚡️ Limited Time Offer: Get EXTRA 5% OFF while checking out! Use Coupon Code <strong style="background: rgba(255,255,255,0.25); padding: 2px 6px; border-radius: 4px; color: #fff; font-weight: 900; border: 1px solid rgba(255,255,255,0.4);">KAWACHI05</strong> at Checkout! ⚡️</span>
       </div>
     </div>
 
@@ -536,7 +706,8 @@
     <div class="search-backdrop" id="search-backdrop"></div>
   </header>
 
-  <main id="main-content" style="padding: 5px 0 20px 0;">
+  <main id="main-content" style="padding: 24px 0 20px 0;">
+    
     <div class="container" style="max-width: 1400px; margin: 0 auto; padding: 0 20px;">
       
       <!-- 3-Column Grid Container -->
@@ -550,7 +721,7 @@
           </div>
           
           <!-- Main Image Container with hover lens zoom -->
-          <div class="main-image-wrap main-image-container skeleton-card" id="zoom-lens-container" style="position: relative; border: 1px solid #D5D9D9; border-radius: 8px; background: #FFF; display: flex; align-items: center; justify-content: center; aspect-ratio: 1; max-height: 480px; overflow: hidden; padding: 16px; cursor: crosshair;">
+          <div class="main-image-wrap main-image-container skeleton-card" id="zoom-lens-container" style="position: relative; border: 1px solid #D5D9D9; border-radius: 4px; background: #FFF; display: flex; align-items: center; justify-content: center; aspect-ratio: 1; max-height: 480px; overflow: hidden; padding: 16px; cursor: crosshair;">
             <!-- Stage 2 Shimmer placeholder -->
             <div class="skeleton-el skeleton-img" id="gallery-skeleton-shimmer" style="position:absolute; top:0; left:0; width:100%; height:100%; z-index:4;"></div>
 
@@ -563,11 +734,6 @@
         <!-- COLUMN 2: Center Info (Product Meta & Details) -->
         <div class="product-meta-details-mid" style="position: relative;">
           
-          <!-- Brand/Store Link -->
-          <div style="font-size: 13px; color: #007185; margin-bottom: 4px; font-weight: 500;">
-            <a href="index.html" style="color: #007185; text-decoration: none;">Visit the Kawachi Store</a>
-          </div>
-
           <!-- Product Title -->
           <h1 class="product-title-detail" style="font-size: 24px; font-weight: 600; color: #0F1111; line-height: 1.3; margin: 0 0 6px 0; font-family: inherit;">Loading Product Details...</h1>
           
@@ -584,7 +750,11 @@
 
           <!-- Price Block -->
           <div style="margin-bottom: 16px; position: relative; min-height: 38px;">
-            <div class="skeleton-el" id="price-skeleton-shimmer" style="position: absolute; top: 0; left: 0; width: 140px; height: 32px; border-radius: 6px; z-index: 4;"></div>
+            <div id="price-skeleton-shimmer" style="position: absolute; top: 0; left: 0; display: flex; align-items: center; gap: 4px; padding: 12px 0; z-index: 4;">
+              <span class="bouncing-dot"></span>
+              <span class="bouncing-dot"></span>
+              <span class="bouncing-dot"></span>
+            </div>
             <div id="price-real-content" style="display: flex; align-items: flex-start; gap: 4px; margin-bottom: 4px; opacity: 0; transition: opacity 0.2s ease;">
               <span id="product-discount-percentage" style="color: #CC0C39; font-size: 28px; font-weight: 300; line-height: 1; display: none;"></span>
               <span style="font-size: 14px; font-weight: 500; margin-top: 2px; color: #0F1111;">₹</span>
@@ -593,44 +763,20 @@
             <div style="font-size: 13px; color: #565959; margin-bottom: 4px;">
               M.R.P.: <span class="price-old" style="text-decoration: line-through;">₹8,999</span>
             </div>
-            <div style="font-size: 12px; color: #0F1111; font-weight: 500; margin-bottom: 4px;">
+            <div id="product-savings-row" style="font-size: 13px; color: #CC0C39; margin-bottom: 4px; display: none; font-weight: 500;">
+              You Save: <span id="product-savings-value"></span>
+            </div>
+            <div style="font-size: 12px; color: #0F1111; font-weight: 500; margin-bottom: 8px;">
               Inclusive of all taxes
             </div>
-          </div>
-
-
-
-          <!-- Quantity Selector (inline) -->
-          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;">
-            <span style="font-size: 13px; font-weight: 600; color: #0F1111;">Qty:</span>
-            <div style="display: flex; align-items: center; border: 1px solid #D5D9D9; border-radius: 8px; background: #F7F8F8; overflow: hidden;">
-              <button onclick="const i=document.getElementById('qty-inline');const newVal=Math.max(1,parseInt(i.value)-1);i.value=newVal;const p=document.getElementById('qty-value');if(p)p.value=newVal;" style="border:none;background:transparent;padding:5px 12px;cursor:pointer;font-size:15px;font-weight:600;color:#0F1111;">−</button>
-              <input type="text" id="qty-inline" value="1" readonly style="width:28px;border:none;background:transparent;text-align:center;font-weight:700;font-size:13px;color:#0F1111;">
-              <button onclick="const i=document.getElementById('qty-inline');const newVal=parseInt(i.value)+1;i.value=newVal;const p=document.getElementById('qty-value');if(p)p.value=newVal;" style="border:none;background:transparent;padding:5px 12px;cursor:pointer;font-size:15px;font-weight:600;color:#0F1111;">+</button>
+            <div style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: #1E3E7A; font-weight: 600; margin-bottom: 12px;">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="flex-shrink: 0;"><rect x="2" y="5" width="20" height="14" rx="2" ry="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+              <span>EMI options available at checkout</span>
             </div>
           </div>
 
-          <!-- Product Benefits — Modern Inline Pills -->
-          <div class="pdp-trust-badges-card">
-            <div class="pdp-trust-badge">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="2"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5" fill="#FFFFFF"/><circle cx="18.5" cy="18.5" r="2.5" fill="#FFFFFF"/></svg>
-              <span class="badge-title">Free Shipping</span>
-              <span class="badge-desc">Zero delivery fees</span>
-            </div>
-            <div class="pdp-trust-badge">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 11 2 2 4-4"/></svg>
-              <span class="badge-title">Assured Quality</span>
-              <span class="badge-desc">100% certified</span>
-            </div>
-            <div class="pdp-trust-badge">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#EA580C" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-              <span class="badge-title">Secure Checkout</span>
-              <span class="badge-desc">SSL Encrypted</span>
-            </div>
-          </div>
 
-          <!-- Marketplace Referral Buttons (horizontal layout under benefits) -->
-          <div id="marketplace-links-container" style="margin-bottom: 20px;"></div>
+
 
 
 
@@ -643,6 +789,41 @@
             </div>
           </div>
 
+          <!-- Marketplace Referral Buttons (horizontal layout under benefits) -->
+          <div id="marketplace-links-container" style="margin-bottom: 20px;"></div>
+
+          <!-- Mobile Inline Purchase Buttons (visible only on mobile, placed after marketplace links) -->
+          <div id="mobile-inline-purchase-btns" style="display: none; flex-direction: row; gap: 12px; margin-bottom: 20px; width: 100%; justify-content: center; align-items: center;">
+            <button id="inline-add-to-cart-btn" class="purchase-btn-pill btn-atc" style="margin: 0 !important; flex: 1 !important; max-width: 220px !important;">
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="margin-right: 6px;"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
+              Add to Cart
+            </button>
+            <button id="inline-buy-now-btn" class="purchase-btn-pill btn-buy" style="margin: 0 !important; flex: 1 !important; max-width: 220px !important;">
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="margin-right: 6px;"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+              Buy Now
+            </button>
+          </div>
+
+          <!-- Product Benefits — Consistent Kawachi Navy Theme -->
+          <div class="pdp-trust-badges-card" style="margin-top: 24px;">
+            <div class="pdp-trust-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#1a4a7a" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="2"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5" fill="#FFFFFF"/><circle cx="18.5" cy="18.5" r="2.5" fill="#FFFFFF"/></svg>
+              <span class="badge-title">Free Shipping</span>
+            </div>
+            <div class="pdp-trust-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#1a4a7a" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 11 2 2 4-4"/></svg>
+              <span class="badge-title">Quality</span>
+            </div>
+            <div class="pdp-trust-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#1a4a7a" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              <span class="badge-title">Secure Checkout</span>
+            </div>
+            <div class="pdp-trust-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#1a4a7a" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><circle cx="12" cy="11" r="3"/><path d="m9 11 2 2 4-4"/></svg>
+              <span class="badge-title">6-12 Months Warranty</span>
+            </div>
+          </div>
+
           <!-- Amazon Side Zoom Preview Box (floats absolutely over Column 2) -->
           <div id="zoom-result" style="position: absolute; top: 0; left: 0; width: 100%; height: 500px; z-index: 100; border: 1px solid #D5D9D9; background-color: #FFF; display: none; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.15); border-radius: 8px;">
             <img id="zoom-result-img" src="" style="position: absolute; pointer-events: none;" alt="Zoom Preview">
@@ -652,51 +833,188 @@
 
         <!-- COLUMN 3: Purchase Sidebar Card -->
         <div class="product-purchase-sidebar">
-          <div class="purchase-widget-card" style="border: 1px solid #D5D9D9; border-radius: 8px; padding: 20px; background-color: #FFF;">
-            <div class="purchase-price-row" style="margin-bottom: 8px;">
-              <span id="p-price-display" class="purchase-price-value" style="font-size: 24px; font-weight: 500; color: #0F1111;">₹0.00</span>
-            </div>
+          
+          <style>
+            @keyframes pulseShadow {
+              0% { 
+                transform: scale(0.8);
+                box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); 
+              }
+              50% { 
+                transform: scale(1.15);
+                box-shadow: 0 0 0 6px rgba(34, 197, 94, 0.2); 
+              }
+              100% { 
+                transform: scale(0.8);
+                box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); 
+              }
+            }
+            .pulsating-status-dot {
+              display: inline-block;
+              width: 8px;
+              height: 8px;
+              background-color: #22c55e;
+              border-radius: 50%;
+              animation: pulseShadow 1.8s infinite ease-in-out;
+            }
+            .qty-btn-premium {
+              transition: background-color 0.2s, color 0.2s;
+            }
+            .qty-btn-premium:hover {
+              background-color: #eef4fc !important;
+              color: #1E3E7A !important;
+            }
+            .purchase-btn-pill {
+              transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            }
+            .purchase-btn-pill:hover {
+              transform: translateY(-2px);
+              box-shadow: 0 8px 20px -4px rgba(30, 62, 122, 0.2) !important;
+            }
+            .purchase-btn-pill:active {
+              transform: translateY(-0.5px);
+            }
             
-            <div class="purchase-availability" style="font-size: 12px; font-weight: 700; color: #1F7D44; background-color: #EEF7F1; padding: 4px 8px; border-radius: 4px; display: inline-block; margin-bottom: 12px;">
-              In Stock
-            </div>
+            /* Premium benefit card rules */
+            .premium-benefits-card {
+              border: 1px solid #e8edf5;
+              border-radius: 12px;
+              background: #ffffff;
+              overflow: hidden;
+              box-shadow: 0 2px 8px rgba(30, 62, 122, 0.01);
+            }
+            .premium-benefit-row {
+              display: flex;
+              align-items: flex-start;
+              gap: 12px;
+              padding: 14px 16px;
+              transition: all 0.22s ease-in-out;
+              cursor: default;
+              position: relative;
+            }
+            .premium-benefit-row:not(:last-child) {
+              border-bottom: 1px solid #f1f5f9;
+            }
+            .premium-benefit-row::before {
+              content: '';
+              position: absolute;
+              left: 0;
+              top: 0;
+              bottom: 0;
+              width: 3px;
+              background-color: transparent;
+              transition: background-color 0.22s ease-in-out;
+            }
+            .premium-benefit-row.delivery-row:hover::before {
+              background-color: #15803d; /* brand green highlight */
+            }
+            .premium-benefit-row.emi-row:hover::before {
+              background-color: #FF5E00; /* brand secondary orange */
+            }
+            .premium-benefit-row:hover {
+              background-color: #f8fafc;
+            }
+            .premium-benefit-icon-box {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              width: 32px;
+              height: 32px;
+              border-radius: 8px;
+              flex-shrink: 0;
+              transition: transform 0.22s ease;
+            }
+            .premium-benefit-row:hover .premium-benefit-icon-box {
+              transform: scale(1.08);
+            }
+          </style>
 
-            <div class="purchase-delivery-text" style="font-size: 13px; color: #0F1111; line-height: 1.5; margin-bottom: 12px;">
-              FREE delivery <span id="delivery-date-estimate" style="font-weight: 700;">Thursday, 2 July</span>.
-            </div>
+          <div class="purchase-widget-card" style="border: 1px solid #e2e8f0; border-radius: 16px; padding: 0; background: #fff; box-shadow: 0 16px 40px -10px rgba(15, 34, 67, 0.06), 0 4px 12px -4px rgba(15, 34, 67, 0.03); box-sizing: border-box; overflow: hidden; width: 100%;">
 
-            <div class="purchase-delivery-location" style="font-size: 12px; color: #007185; display: flex; align-items: center; gap: 4px; margin-bottom: 16px;">
-              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-              <span style="font-weight: 500;">Deliver to India</span>
-            </div>
+            <!-- Brand Gradient Top Border -->
+            <div style="height: 4px; background: linear-gradient(90deg, #1E3E7A 0%, #FF5E00 100%);"></div>
 
-            <!-- Quantity Selector -->
-            <div style="margin-bottom: 20px;">
-              <label for="qty-value" style="font-size: 13px; color: #0F1111; display: block; margin-bottom: 6px; font-weight: 500;">Quantity:</label>
-              <div class="quantity-selector" style="width: fit-content; border: 1px solid #D5D9D9; border-radius: 8px; background: #F0F2F2; display: flex; align-items: center; overflow: hidden;">
-                <button class="qty-btn" style="border: none; background: transparent; padding: 6px 12px; cursor: pointer; font-size: 16px;" onclick="const input = document.getElementById('qty-value'); input.value = Math.max(1, parseInt(input.value) - 1);">-</button>
-                <input type="text" id="qty-value" class="qty-input" value="1" readonly style="width: 32px; border: none; background: transparent; text-align: center; font-weight: 600; font-size: 13px;">
-                <button class="qty-btn" style="border: none; background: transparent; padding: 6px 12px; cursor: pointer; font-size: 16px;" onclick="const input = document.getElementById('qty-value'); input.value = parseInt(input.value) + 1;">+</button>
+            <!-- ── ZONE 1: Premium Price Display ── -->
+            <div style="padding: 22px 20px 16px 20px; border-bottom: 1px solid #f1f5f9; background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);">
+              <p style="margin: 0 0 5px 0; font-size: 9.5px; font-weight: 800; color: #1E3E7A; text-transform: uppercase; letter-spacing: 1.5px;">Exclusive Web Price</p>
+              <p style="margin: 0 0 10px 0;">
+                <span id="p-price-display" class="purchase-price-value" style="font-size: 34px; font-weight: 800; color: #1E3E7A; line-height: 1; letter-spacing: -1.2px;">₹0</span>
+              </p>
+
+              <!-- Inline status dot with green 'In Stock' and gray details -->
+              <div style="display: flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; color: #475569;">
+                <span class="pulsating-status-dot"></span>
+                <span style="color: #15803d; font-weight: 750;">In Stock</span> &amp; ready to ship
               </div>
             </div>
 
-            <!-- Action Buttons -->
-            <div class="desktop-purchase-buttons" style="display: flex; flex-direction: column; gap: 8px;">
-              <button id="main-add-to-cart-btn" class="purchase-btn-pill btn-atc">
-                Add to Cart
-              </button>
-              <button id="main-buy-now-btn" class="purchase-btn-pill btn-buy">
-                Buy Now
-              </button>
+            <!-- ── ZONE 2: Premium Purchase Benefits ── -->
+            <div style="padding: 18px 20px; border-bottom: 1px solid #f1f5f9;">
+              <div class="premium-benefits-card">
+                
+                <!-- Benefit 1: Free Delivery using premium green color -->
+                <div class="premium-benefit-row delivery-row">
+                  <div class="premium-benefit-icon-box" style="background: rgba(22, 163, 74, 0.06); color: #15803d;">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="2"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                  </div>
+                  <div>
+                    <span style="display: block; font-size: 11px; font-weight: 800; color: #15803d; text-transform: uppercase; letter-spacing: 0.8px; line-height: 1.2;">Free Delivery</span>
+                    <span style="display: block; font-size: 10.5px; color: #64748b; margin-top: 3px; line-height: 1.3;">
+                      Complimentary shipping. Arrives by <span id="delivery-date-estimate" style="font-weight: 700; color: #15803d;">Friday, 17 July</span>
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Benefit 2: Easy EMI using brand accent color -->
+                <div class="premium-benefit-row emi-row">
+                  <div class="premium-benefit-icon-box" style="background: rgba(255, 94, 0, 0.06); color: #FF5E00;">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2" ry="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                  </div>
+                  <div>
+                    <span style="display: block; font-size: 11px; font-weight: 800; color: #FF5E00; text-transform: uppercase; letter-spacing: 0.8px; line-height: 1.2;">Easy EMI Options</span>
+                    <span style="display: block; font-size: 10.5px; color: #64748b; margin-top: 3px; line-height: 1.3;">
+                      Plans starting from ₹145/month at checkout
+                    </span>
+                  </div>
+                </div>
+
+              </div>
             </div>
 
-            <div style="border-top: 1px solid #E7E7E7; padding-top: 16px; margin-top: 16px; font-size: 12px; color: #565959; display: grid; gap: 6px;">
-              <div style="display: flex; justify-content: space-between;"><span style="color: #565959;">Ships from</span><span style="font-weight: 500; color: #0F1111;">Kawachi Store</span></div>
-              <div style="display: flex; justify-content: space-between;"><span style="color: #565959;">Sold by</span><span style="font-weight: 500; color: #0F1111;">Kawachi Store</span></div>
-              <div style="display: flex; justify-content: space-between;"><span style="color: #565959;">SKU:</span><span id="meta-sku" style="font-weight: 500; color: #0F1111;">KW-WELLNESS-104</span></div>
-              <div style="display: flex; justify-content: space-between;"><span style="color: #565959;">Category:</span><span class="product-category-detail" style="font-weight: 500; color: #0F1111;">Wellness</span></div>
+            <!-- ── ZONE 3: Qty + CTA + Meta ── -->
+            <div style="padding: 18px 20px 20px 20px;">
+
+              <!-- Qty: centered stepper with label above -->
+              <div style="margin-bottom: 14px;">
+                <p style="margin: 0 0 8px 0; font-size: 9.5px; font-weight: 800; color: #1E3E7A; text-transform: uppercase; letter-spacing: 1.5px;">Quantity</p>
+                <div style="display: flex; align-items: center; gap: 0; border: 1.5px solid #dde6f5; border-radius: 10px; overflow: hidden; width: 100%; background: #f8fafc; box-sizing: border-box;">
+                  <button class="qty-btn qty-btn-premium" onclick="const i=document.getElementById('qty-value'); i.value=Math.max(1,parseInt(i.value)-1);" style="flex: 1; border: none; background: transparent; padding: 9px 0; cursor: pointer; font-size: 18px; font-weight: 600; color: #1E3E7A; line-height: 1; border-right: 1.5px solid #dde6f5;">−</button>
+                  <input type="text" id="qty-value" class="qty-input" value="1" readonly style="flex: 1; border: none; background: transparent; text-align: center; font-weight: 800; font-size: 14px; color: #0f172a; padding: 9px 0;">
+                  <button class="qty-btn qty-btn-premium" onclick="const i=document.getElementById('qty-value'); i.value=parseInt(i.value)+1;" style="flex: 1; border: none; background: transparent; padding: 9px 0; cursor: pointer; font-size: 18px; font-weight: 600; color: #1E3E7A; line-height: 1; border-left: 1.5px solid #dde6f5;">+</button>
+                </div>
+              </div>
+
+              <!-- CTA Buttons -->
+              <div class="desktop-purchase-buttons" style="display: flex; flex-direction: column; gap: 9px; margin-bottom: 16px;">
+                <button id="main-add-to-cart-btn" class="purchase-btn-pill btn-atc" style="margin: 0 !important; cursor: pointer; border-radius: 10px !important; font-size: 14px !important; width: 100%; padding: 12px 0 !important;">
+                  Add to Cart
+                </button>
+                <button id="main-buy-now-btn" class="purchase-btn-pill btn-buy" style="margin: 0 !important; cursor: pointer; border-radius: 10px !important; font-size: 14px !important; width: 100%; padding: 12px 0 !important;">
+                  Buy Now
+                </button>
+              </div>
+
+              <!-- Meta grid -->
+              <div style="border-top: 1px solid #f1f5f9; padding-top: 12px; display: grid; gap: 6px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 10.5px;"><span style="color: #94a3b8;">Ships from</span><span style="font-weight: 600; color: #475569;">Kawachi Store</span></div>
+                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 10.5px;"><span style="color: #94a3b8;">Sold by</span><span style="font-weight: 600; color: #475569;">Kawachi Store</span></div>
+                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 10.5px;"><span style="color: #94a3b8;">SKU</span><span id="meta-sku" style="font-weight: 600; color: #475569; font-size: 9.5px; max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">KW-WELLNESS-104</span></div>
+                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 10.5px;"><span style="color: #94a3b8;">Category</span><span class="product-category-detail" style="font-weight: 600; color: #475569;">Wellness</span></div>
+              </div>
             </div>
+
           </div>
+
 
 
 
@@ -705,28 +1023,56 @@
       </div>
 
       <!-- Influencer Video Section: 9:16 portrait video inline, no heading -->
-      <div class="product-video-section" id="detail-video-section" style="margin-top: 24px; display: none;">
-        <div style="display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap;">
-          <!-- 9:16 Portrait Video -->
-          <div id="product-video-player-container" style="flex-shrink: 0; width: 180px; aspect-ratio: 9/16; background: #000; border-radius: 10px; overflow: hidden; position: relative; box-shadow: 0 4px 16px rgba(0,0,0,0.18); border: 1px solid #334155;">
-            <video id="product-video-element" loop muted playsinline style="width: 100%; height: 100%; object-fit: cover; display: block;"></video>
-            <!-- Unmute toggle -->
-            <button id="video-unmute-btn" onclick="(function(btn){var v=document.getElementById('product-video-element');v.muted=!v.muted;btn.textContent=v.muted?'🔇':'🔊';})(this)" style="position:absolute;bottom:10px;right:10px;background:rgba(0,0,0,0.55);border:none;color:#fff;border-radius:50%;width:32px;height:32px;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;">🔇</button>
+      <div class="product-video-section" id="detail-video-section" style="margin-top: 32px; display: none; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 1px solid #e2e8f0; border-radius: 16px; padding: 20px; box-shadow: 0 4px 20px -2px rgba(0,0,0,0.03); box-sizing: border-box; width: 100%;">
+        <div style="display: flex; gap: 24px; align-items: center; flex-wrap: wrap; box-sizing: border-box; width: 100%;">
+          <!-- 9:16 Portrait Video (iPhone Mockup Style) -->
+          <div id="product-video-player-container" style="flex-shrink: 0; width: 270px; height: 480px; background: #000; border: 10px solid #0f172a; border-radius: 36px; overflow: hidden; position: relative; box-shadow: 0 20px 40px -10px rgba(0,0,0,0.35); box-sizing: border-box; margin: 0 auto;">
+            <!-- Dynamic Island Notch -->
+            <div style="position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 60px; height: 12px; background: #0f172a; border-radius: 10px; z-index: 100; pointer-events: none;"></div>
+            
+            <!-- Video Screen Frame -->
+            <div id="phone-screen-inner" style="width: 100%; height: 100%; position: relative; overflow: hidden; border-radius: 26px; background: #000;">
+              <video id="product-video-element" loop muted playsinline style="width: 100%; height: 100%; object-fit: cover; display: block;"></video>
+              <!-- Unmute toggle -->
+              <button id="video-unmute-btn" onclick="(function(btn){var v=document.getElementById('product-video-element');v.muted=!v.muted;btn.textContent=v.muted?'🔇':'🔊';})(this)" style="position:absolute;bottom:15px;right:15px;background:rgba(0,0,0,0.55);border:none;color:#fff;border-radius:50%;width:32px;height:32px;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index: 10;">🔇</button>
+            </div>
+
+            <!-- Home Indicator Bar -->
+            <div style="position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%); width: 70px; height: 3px; background: rgba(255,255,255,0.35); border-radius: 2px; z-index: 100; pointer-events: none;"></div>
           </div>
           <!-- Minimal product context -->
-          <div style="flex: 1; min-width: 200px; display: flex; flex-direction: column; justify-content: center; padding-top: 8px;">
-            <span id="product-video-title" style="font-size: 13.5px; font-weight: 700; color: #0f1111; line-height: 1.4; margin-bottom: 8px;"></span>
-            <p id="product-video-desc" style="font-size: 12.5px; color: #565959; line-height: 1.55; margin-bottom: 0;"></p>
+          <div style="flex: 1; min-width: 250px; display: flex; flex-direction: column; justify-content: center; box-sizing: border-box; padding-right: 12px;">
+            <div style="display: inline-flex; align-items: center; gap: 6px; background-color: #3b82f6; color: #ffffff; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; padding: 4px 8px; border-radius: 4px; width: fit-content; margin-bottom: 8px;">
+              <span>🎬 Live Demo</span>
+            </div>
+            <span id="product-video-title" style="font-size: 16px; font-weight: 700; color: #0f172a; line-height: 1.3; margin-bottom: 6px;">Product Demonstration Video</span>
+            <p id="product-video-desc" style="font-size: 13px; color: #475569; line-height: 1.5; margin-bottom: 12px;"></p>
+            
+            <!-- Video engagement statistics -->
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; margin: 0; box-sizing: border-box;">
+              <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 6px 12px; font-size: 12px; font-weight: 700; color: #334155; display: flex; align-items: center; gap: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.02);">
+                <span style="font-size: 13px;">🔥</span>
+                <span id="product-video-views">0 Views</span>
+              </div>
+              <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 6px 12px; font-size: 12px; font-weight: 700; color: #334155; display: flex; align-items: center; gap: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.02);">
+                <span style="font-size: 13px;">❤️</span>
+                <span id="product-video-likes">0 Likes</span>
+              </div>
+              <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 6px 12px; font-size: 12px; font-weight: 700; color: #334155; display: flex; align-items: center; gap: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.02);">
+                <span style="font-size: 13px;">💬</span>
+                <span id="product-video-comments">0 Comments</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
       <!-- Tabs Component -->
-      <div class="tabs-container" style="margin-top: 56px; border-top: 1px solid #E7E7E7; padding-top: 40px;">
-        <div class="tabs-list" style="display: flex; gap: 24px; border-bottom: 1px solid #E7E7E7; padding-bottom: 12px; margin-bottom: 24px;">
-          <button class="tab-trigger active" id="trigger-description" onclick="openTab('description')" style="border: none; background: transparent; padding: 6px 12px; font-weight: 600; font-size: 15px; color: #565959; cursor: pointer;">Description</button>
-          <button class="tab-trigger" id="trigger-specs" onclick="openTab('specs')" style="border: none; background: transparent; padding: 6px 12px; font-weight: 600; font-size: 15px; color: #565959; cursor: pointer;">Specifications</button>
-          <button class="tab-trigger" id="trigger-reviews" onclick="openTab('reviews')" style="border: none; background: transparent; padding: 6px 12px; font-weight: 600; font-size: 15px; color: #565959; cursor: pointer;">Customer Reviews</button>
+      <div class="tabs-container" style="margin-top: 56px; background: linear-gradient(135deg, #f0f7ff 0%, #ffffff 100%) !important; border: 1px solid #c2dbff; padding: 32px; border-radius: 16px; box-shadow: 0 4px 20px rgba(26,74,122,0.05);">
+        <div class="tabs-list" style="display: flex; gap: 24px; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 24px;">
+          <button class="tab-trigger active" id="trigger-description" onclick="openTab('description')" style="border: none; background: transparent; padding: 8px 16px; font-weight: 700; font-size: 15px; color: #64748b; cursor: pointer; position: relative; transition: color 0.2s;">Description</button>
+          <button class="tab-trigger" id="trigger-specs" onclick="openTab('specs')" style="border: none; background: transparent; padding: 8px 16px; font-weight: 700; font-size: 15px; color: #64748b; cursor: pointer; position: relative; transition: color 0.2s;">Specifications</button>
+          <button class="tab-trigger" id="trigger-reviews" onclick="openTab('reviews')" style="border: none; background: transparent; padding: 8px 16px; font-weight: 700; font-size: 15px; color: #64748b; cursor: pointer; position: relative; transition: color 0.2s;">Customer Reviews</button>
         </div>
         
         <div class="tab-content active" id="tab-description">
@@ -758,32 +1104,100 @@
     </div>
   </main>
 
-  <!-- ===== TRENDING PRODUCTS STRIP ===== -->
-  <section id="detail-trending-strip" style="margin-top: 48px; border-top: 1px solid #E7E7E7; padding-top: 32px; display: none; width: 100%; background-color: #FFFFFF;">
-    <div style="max-width: 1400px; margin: 0 auto; padding: 0 24px; position: relative; box-sizing: border-box;">
-      <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 24px; position: relative; width: 100%;">
-        <h2 style="font-size: 18px; font-weight: 800; color: #0f1111; margin: 0 auto; text-align: center; letter-spacing: 0.3px;">Most Loved Products 💫</h2>
-        <a href="search.html?orderby=popularity" style="font-size: 12.5px; color: #007185; text-decoration: none; font-weight: 500; position: absolute; right: 8px; top: 50%; transform: translateY(-50%);">See all &rsaquo;</a>
+  <section class="search-assistance-section">
+    <div class="search-assistance-card">
+      <h3 class="search-assistance-title">LOOKING FOR A SPECIFIC PRODUCT? 🤔</h3>
+      
+      <div class="search-assistance-categories-box" style="margin-top: 8px;">
+        <span class="search-assistance-tags-label" style="display: block; margin-bottom: 12px; text-align: center;">Browse Categories:</span>
+        <div class="categories-tag-lines" style="display: flex; flex-direction: column; gap: 10px; align-items: center;">
+          <div class="tag-line" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;">
+            <a href="search.html?q=Furniture" class="search-assistance-tag-link">Home Furniture</a>
+            <a href="search.html?q=Kitchen" class="search-assistance-tag-link">Kitchen Storage</a>
+            <a href="search.html?q=Decor" class="search-assistance-tag-link">Home Decor</a>
+            <a href="search.html?q=Beauty" class="search-assistance-tag-link">Health & Beauty</a>
+            <a href="search.html?q=Utility" class="search-assistance-tag-link">Utility Products</a>
+          </div>
+          <div class="tag-line" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;">
+            <a href="search.html?q=Sauna" class="search-assistance-tag-link">Wellness & Spa</a>
+            <a href="search.html?q=Office" class="search-assistance-tag-link">Office Essentials</a>
+            <a href="search.html?q=Shelves" class="search-assistance-tag-link">Organizers & Shelves</a>
+            <a href="search.html?q=Gadget" class="search-assistance-tag-link">Smart Gadgets</a>
+            <a href="search.html?q=Fitness" class="search-assistance-tag-link">Fitness & Yoga</a>
+          </div>
+          <div class="tag-line" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;">
+            <a href="search.html?q=Bedroom" class="search-assistance-tag-link">Bedroom Decor</a>
+            <a href="search.html?q=Kids" class="search-assistance-tag-link">Kids Furniture</a>
+            <a href="search.html?q=Garden" class="search-assistance-tag-link">Outdoor & Garden</a>
+            <a href="search.html?q=Cabinet" class="search-assistance-tag-link">Storage Cabinets</a>
+            <a href="search.html?q=Lifestyle" class="search-assistance-tag-link">Lifestyle & Comfort</a>
+          </div>
+        </div>
       </div>
-      <div class="static-marquee-container" style="max-width: 100% !important; padding: 12px 0 !important;">
-        <div class="static-marquee-track" id="detail-trending-products"></div>
+
+    </div>
+  </section>
+
+  <!-- ===== TRENDING PRODUCTS STRIP (Most Loved Products) ===== -->
+  <section id="detail-trending-strip" class="product-slider-section" style="margin-top: 48px; border-top: 1px solid #E7E7E7; padding: 40px 0 !important; display: block; width: 100% !important; max-width: none !important; background-color: #FFFFFF; position: relative; overflow: hidden;">
+    <div style="width: 100% !important; max-width: none !important; margin: 0; padding: 0; position: relative; box-sizing: border-box;">
+      <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 24px; padding: 0 40px; position: relative; width: 100%; box-sizing: border-box;">
+        <h2 class="kawachi-sec-title centered" style="font-size: 24px !important; margin: 0 auto; text-align: center; letter-spacing: 0.3px;">Most Loved Products 💫</h2>
+        <a href="search.html?orderby=popularity" style="font-size: 13.5px; color: #007185; text-decoration: none; font-weight: 700; position: absolute; right: 40px; top: 50%; transform: translateY(-50%);">See all &rsaquo;</a>
+      </div>
+      <div class="static-marquee-container" style="width: 100% !important; max-width: none !important; padding: 0 !important; margin: 0 !important; position: relative; overflow: hidden !important;">
+        <div class="static-marquee-track skeleton-loading" id="detail-trending-products" style="margin: 0 !important;">
+          <!-- Skeleton loaders (4 cards) -->
+          <div class="skeleton-card">
+            <div class="product-image-container">
+              <div class="skeleton-el skeleton-img" style="width: 100%; height: 100%;"></div>
+            </div>
+            <div class="product-info">
+              <div class="skeleton-el skeleton-text-category" style="margin-bottom: 6px;"></div>
+              <div class="skeleton-el skeleton-text-title" style="margin-bottom: 8px;"></div>
+              <div class="skeleton-el skeleton-text-rating" style="margin-bottom: 6px;"></div>
+              <div class="skeleton-el skeleton-price-row"></div>
+            </div>
+          </div>
+          <div class="skeleton-card">
+            <div class="product-image-container">
+              <div class="skeleton-el skeleton-img" style="width: 100%; height: 100%;"></div>
+            </div>
+            <div class="product-info">
+              <div class="skeleton-el skeleton-text-category" style="margin-bottom: 6px;"></div>
+              <div class="skeleton-el skeleton-text-title" style="margin-bottom: 8px;"></div>
+              <div class="skeleton-el skeleton-text-rating" style="margin-bottom: 6px;"></div>
+              <div class="skeleton-el skeleton-price-row"></div>
+            </div>
+          </div>
+          <div class="skeleton-card">
+            <div class="product-image-container">
+              <div class="skeleton-el skeleton-img" style="width: 100%; height: 100%;"></div>
+            </div>
+            <div class="product-info">
+              <div class="skeleton-el skeleton-text-category" style="margin-bottom: 6px;"></div>
+              <div class="skeleton-el skeleton-text-title" style="margin-bottom: 8px;"></div>
+              <div class="skeleton-el skeleton-text-rating" style="margin-bottom: 6px;"></div>
+              <div class="skeleton-el skeleton-price-row"></div>
+            </div>
+          </div>
+          <div class="skeleton-card">
+            <div class="product-image-container">
+              <div class="skeleton-el skeleton-img" style="width: 100%; height: 100%;"></div>
+            </div>
+            <div class="product-info">
+              <div class="skeleton-el skeleton-text-category" style="margin-bottom: 6px;"></div>
+              <div class="skeleton-el skeleton-text-title" style="margin-bottom: 8px;"></div>
+              <div class="skeleton-el skeleton-text-rating" style="margin-bottom: 6px;"></div>
+              <div class="skeleton-el skeleton-price-row"></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- Sticky ATC Bar -->
-  <div class="sticky-atc-bar" id="sticky-add-to-cart-bar">
-    <div class="container" style="display: flex; align-items: center; justify-content: space-between; height: 100%;">
-      <div class="sticky-atc-left" style="display: flex; align-items: center; gap: 12px;">
-        <img src="" alt="Product Thumbnail" style="width: 48px; height: 48px; object-fit: cover; border-radius: var(--radius-sm); border: 1px solid var(--color-border);">
-        <div>
-          <span class="sticky-atc-bar-title" style="font-weight: 700; font-size: var(--text-sm); display: block;">Product Title</span>
-          <span id="sticky-price-display" class="sticky-atc-bar-price" style="font-weight: 800; font-size: var(--text-sm); color: var(--color-accent);">₹0.00</span>
-        </div>
-      </div>
-      <button id="sticky-atc-trigger-btn" class="btn btn-primary" style="padding: 10px 24px; font-size: var(--text-xs); font-weight: 700;">Add to Cart</button>
-    </div>
-  </div>
+  <!-- Sticky ATC Bar Removed -->
 
   <!-- Mobile Sticky Action Bar (Flipkart/Amazon style bottom action bar) -->
   <div class="mobile-sticky-action-bar">
@@ -843,7 +1257,38 @@
     <div class="container">
       <p class="partner-cloud-title">Our Partner Brands</p>
       <div class="logo-scroll-track">
-        <!-- Populated dynamically by main-api.js -->
+        <div class="logo-scroll-inner">
+          <div class="logo-scroll-group">
+            <div class="partner-logo-item"><img src="images/partners/amazon.svg" alt="Amazon" onerror="this.style.display='none'"></div>
+            <div class="partner-logo-item"><img src="images/partners/flipkart.svg" alt="Flipkart" onerror="this.style.display='none'"></div>
+            <div class="partner-logo-item"><img src="images/partners/meesho.svg" alt="Meesho" onerror="this.style.display='none'"></div>
+            <div class="partner-logo-item"><img src="images/partners/jiomart.svg" alt="JioMart" onerror="this.style.display='none'"></div>
+            <div class="partner-logo-item"><img src="images/partners/indiamart.svg" alt="IndiaMart" onerror="this.style.display='none'"></div>
+            <div class="partner-logo-item"><img src="images/partners/razorpay.svg" alt="Razorpay" onerror="this.style.display='none'"></div>
+            <div class="partner-logo-item"><img src="images/partners/paytm.svg" alt="Paytm" onerror="this.style.display='none'"></div>
+            <div class="partner-logo-item"><img src="images/partners/phonepe.svg" alt="PhonePe" onerror="this.style.display='none'"></div>
+            <div class="partner-logo-item"><img src="images/partners/grabon.svg" alt="GrabOn" onerror="this.style.display='none'"></div>
+            <div class="partner-logo-item"><img src="images/partners/delhivery.svg" alt="Delhivery" onerror="this.style.display='none'"></div>
+            <div class="partner-logo-item"><img src="images/partners/bluedart.svg" alt="BlueDart" onerror="this.style.display='none'"></div>
+            <div class="partner-logo-item"><img src="images/partners/shiprocket.svg" alt="Shiprocket" onerror="this.style.display='none'"></div>
+            <div class="partner-logo-item"><img src="images/partners/xpressbees.svg" alt="Xpressbees" onerror="this.style.display='none'"></div>
+          </div>
+          <div class="logo-scroll-group">
+            <div class="partner-logo-item"><img src="images/partners/amazon.svg" alt="Amazon" onerror="this.style.display='none'"></div>
+            <div class="partner-logo-item"><img src="images/partners/flipkart.svg" alt="Flipkart" onerror="this.style.display='none'"></div>
+            <div class="partner-logo-item"><img src="images/partners/meesho.svg" alt="Meesho" onerror="this.style.display='none'"></div>
+            <div class="partner-logo-item"><img src="images/partners/jiomart.svg" alt="JioMart" onerror="this.style.display='none'"></div>
+            <div class="partner-logo-item"><img src="images/partners/indiamart.svg" alt="IndiaMart" onerror="this.style.display='none'"></div>
+            <div class="partner-logo-item"><img src="images/partners/razorpay.svg" alt="Razorpay" onerror="this.style.display='none'"></div>
+            <div class="partner-logo-item"><img src="images/partners/paytm.svg" alt="Paytm" onerror="this.style.display='none'"></div>
+            <div class="partner-logo-item"><img src="images/partners/phonepe.svg" alt="PhonePe" onerror="this.style.display='none'"></div>
+            <div class="partner-logo-item"><img src="images/partners/grabon.svg" alt="GrabOn" onerror="this.style.display='none'"></div>
+            <div class="partner-logo-item"><img src="images/partners/delhivery.svg" alt="Delhivery" onerror="this.style.display='none'"></div>
+            <div class="partner-logo-item"><img src="images/partners/bluedart.svg" alt="BlueDart" onerror="this.style.display='none'"></div>
+            <div class="partner-logo-item"><img src="images/partners/shiprocket.svg" alt="Shiprocket" onerror="this.style.display='none'"></div>
+            <div class="partner-logo-item"><img src="images/partners/xpressbees.svg" alt="Xpressbees" onerror="this.style.display='none'"></div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -873,7 +1318,8 @@
           <div>
             <h4 class="footer-column-title">Quick Links</h4>
             <ul class="footer-link-items">
-              <li><a href="about.html">About Us</a></li>
+              <li><a href="about-us.html">About Us</a></li>
+              <li><a href="faq.html">FAQ</a></li>
               <li><a href="shipping-info.html">Shipping Information</a></li>
               <li><a href="terms.html">Terms &amp; Conditions</a></li>
               <li><a href="privacy.html">Privacy Policy</a></li>
@@ -886,9 +1332,9 @@
             <ul class="footer-link-items">
               <li><a href="support-center.html">Support Center</a></li>
               <li><a href="contact.html">Contact Us</a></li>
+              <li><a href="faq.html">Frequently Asked Questions</a></li>
               <li><a href="cancellation.html">Order Cancellation</a></li>
               <li><a href="refund.html">Refund Policy</a></li>
-              <li><a href="returns-warranties.html">Returns &amp; Warranties</a></li>
             </ul>
           </div>
 
@@ -896,8 +1342,8 @@
           <div>
             <h4 class="footer-column-title">Get In Touch</h4>
             <div class="footer-contact-details" style="font-size: var(--text-xs); color: var(--color-text-muted); line-height: 1.6; display: grid; gap: 8px;">
-              <div><strong>Email:</strong> <a href="mailto:crm@kawachigroup.com" style="color: var(--color-primary); text-decoration: none;">crm@kawachigroup.com</a></div>
-              <div><strong>Phone:</strong> <a href="tel:+919326110110" style="color: var(--color-primary); text-decoration: none;">+91 9326-110-110</a></div>
+              <div><strong>Email:</strong> <a href="mailto:crm@kawachigroup.com" style="color: #ffffff; text-decoration: none;">crm@kawachigroup.com</a></div>
+              <div><strong>Phone:</strong> <a href="tel:+919326110110" style="color: #ffffff; text-decoration: none;">+91 9326-110-110</a></div>
             </div>
           </div>
         </div>
@@ -912,7 +1358,7 @@
     </div>
   </footer>
 
-  <script src="js/main-api.js?v=7.17"></script>
+  <script src="js/main-api.js?v=8.00"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       // General drawer controls
@@ -977,22 +1423,24 @@
       }
     }
 
-    document.addEventListener("DOMContentLoaded", () => {
-      // Toggle sticky ATC bar visibility on scroll
-      const stickyBar = document.getElementById("sticky-add-to-cart-bar");
-      const mainAtc = document.getElementById("main-add-to-cart-btn");
-      if (stickyBar && mainAtc) {
-        window.addEventListener("scroll", () => {
-          const mainAtcBottom = mainAtc.getBoundingClientRect().bottom + window.scrollY;
-          if (window.scrollY > mainAtcBottom) {
-            stickyBar.classList.add("visible");
-          } else {
-            stickyBar.classList.remove("visible");
-          }
-        }, { passive: true });
-      }
-    });
+      // Sticky ATC bar scroll listener removed
   </script>
+
+  <!-- Fullscreen Media Gallery Modal -->
+  <div id="pdp-gallery-modal" class="gallery-modal-overlay">
+    <div class="gallery-modal-container">
+      <button class="gallery-modal-close" id="gallery-modal-close-btn">&times;</button>
+      <div class="gallery-modal-header">
+        <h3 class="gallery-modal-title" id="gallery-modal-title-text">Product Gallery</h3>
+      </div>
+      <div class="gallery-modal-viewer" id="gallery-modal-viewer-container">
+        <!-- Active image or video player -->
+      </div>
+      <div class="gallery-modal-strip" id="gallery-modal-thumbnails-strip">
+        <!-- Scrollable horizontal thumbnails -->
+      </div>
+    </div>
+  </div>
 
   <!-- Product Details Hydration is handled automatically by main-api.js -->
 </body>
