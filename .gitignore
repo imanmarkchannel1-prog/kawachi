@@ -3,3 +3,4 @@ node_modules/
 _old_static_backup/
 .DS_Store
 .env.local
+.DS_Store
