@@ -828,14 +828,12 @@ class CartSystem {
               /62\.72\.31\.43|wordpress-3ht1\.srv1774889\.hstgr.cloud/g,
               "kawachigroup.com",
             );
-            const fallbackImg =
-              "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'><rect width='80' height='80' fill='%23f1f5f9'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='12' font-weight='bold' fill='%23cbd5e1'>No Image</text></svg>";
             return `
             <div class="cart-item-card" data-cart-row-id="${item.id}" style="display: flex; gap: 20px; padding: 20px 0; border-bottom: 1.5px solid #cbd5e1; align-items: flex-start; justify-content: space-between;">
               
               <!-- Left Side: Product Image -->
               <div class="cart-item-image-box" style="width: 100px; height: 100px; background-color: #f8fafc; border-radius: 10px; border: 1.5px solid #cbd5e1; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0;">
-                <img src="${cleanedImg}" alt="${item.name}" onerror="this.onerror=null; this.src=\`${fallbackImg}\`;" style="max-width: 100%; max-height: 100%; object-fit: contain; padding: 4px;">
+                <img src="${cleanedImg}" data-pid="${item.id}" alt="${item.name}" onerror="if(window.cartImgFallback)window.cartImgFallback(this,${item.id})" style="max-width: 100%; max-height: 100%; object-fit: contain; padding: 4px;">
               </div>
 
               <!-- Right Side: Content Block -->

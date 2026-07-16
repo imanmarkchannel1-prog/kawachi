@@ -1646,6 +1646,49 @@
       </div>
     </footer>
 
+    <!-- Cart image fallback: fix images that failed to load by fetching from WooCommerce proxy -->
+    <script>
+      window.cartImgFallback = async function (img, productId) {
+        img.onerror = null; // prevent infinite loop
+        try {
+          var r = await fetch("/api/wc-proxy?endpoint=products/" + productId);
+          if (r.ok) {
+            var d = await r.json();
+            if (d && d.images && d.images.length > 0) {
+              var url = d.images[0].src;
+              img.src = url;
+              // Persist the healed image URL into localStorage so next load is instant
+              try {
+                var items = JSON.parse(localStorage.getItem("kawachi_cart") || "[]");
+                var found = items.find(function (x) { return x.id == productId; });
+                if (found) {
+                  found.image = url;
+                  localStorage.setItem("kawachi_cart", JSON.stringify(items));
+                  // Also update in-memory cart if available
+                  if (window.KawachiCart) {
+                    var it = window.KawachiCart.items.find(function (x) { return x.id == productId; });
+                    if (it) it.image = url;
+                  }
+                }
+              } catch (e) {}
+              return;
+            }
+          }
+        } catch (e) {
+          console.warn("[cartImgFallback] Failed for product", productId, e);
+        }
+        // Last resort: show a plain "No Image" placeholder via CSS
+        img.style.opacity = "0";
+        var box = img.parentElement;
+        if (box && !box.querySelector(".no-img-label")) {
+          var lbl = document.createElement("span");
+          lbl.className = "no-img-label";
+          lbl.style.cssText = "font-size:11px;font-weight:700;color:#94a3b8;text-align:center;";
+          lbl.textContent = "No Image";
+          box.appendChild(lbl);
+        }
+      };
+    </script>
     <script src="js/main-api.js?v=8.00"></script>
     <script>
       document.addEventListener("DOMContentLoaded", async () => {
