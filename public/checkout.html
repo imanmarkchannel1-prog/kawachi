@@ -437,6 +437,31 @@
         z-index: 9999;
         box-shadow: 0 -3px 10px rgba(0,0,0,0.06);
       }
+      
+      .checkout-address-type-continue-container {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 16px !important;
+        width: 100% !important;
+      }
+      .addr-type-wrapper {
+        width: 100% !important;
+      }
+      .addr-type-btn-row {
+        width: 100% !important;
+      }
+      .addr-type-btn-row .addr-type-btn {
+        flex: 1 !important;
+        width: auto !important;
+        height: 48px !important;
+      }
+      .continue-btn-wrapper {
+        width: 100% !important;
+      }
+      .continue-btn-wrapper #step-1-continue-btn {
+        width: 100% !important;
+        height: 48px !important;
+      }
     }
     
     /* Shorten delivery fields and center them */
@@ -713,7 +738,7 @@
 
                     <!-- Alternative ph no. (Opt) -->
                     <div class="form-group">
-                      <label class="form-label" for="shipping-phone-alt">Alternative ph no. (Opt)</label>
+                      <label class="form-label" for="shipping-phone-alt">Alt Phno (Optional)</label>
                       <input type="tel" id="shipping-phone-alt" class="form-input" placeholder="Optional ph number">
                     </div>
 
@@ -735,10 +760,10 @@
                     </div>
 
                     <!-- Type of address and Continue button horizontally aligned flex row -->
-                    <div class="grid-full-width" style="grid-column: span 2; display: flex; justify-content: space-between; align-items: flex-end; margin-top: 2px; flex-wrap: wrap; gap: 16px;">
-                      <div>
+                    <div class="checkout-address-type-continue-container grid-full-width" style="grid-column: span 2; display: flex; justify-content: space-between; align-items: flex-end; margin-top: 2px; flex-wrap: wrap; gap: 16px;">
+                      <div class="addr-type-wrapper">
                         <label class="form-label" style="margin-bottom: 8px;">Type of address</label>
-                        <div style="display: flex; gap: 10px;">
+                        <div class="addr-type-btn-row" style="display: flex; gap: 10px;">
                           <button type="button" id="addr-type-home" class="addr-type-btn active" style="width: 100px;">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
                             Home
@@ -751,7 +776,7 @@
                         </div>
                       </div>
                       
-                      <div>
+                      <div class="continue-btn-wrapper">
                         <button type="button" id="step-1-continue-btn" class="btn-orange" style="width: auto !important; padding: 12px 42px !important; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; height: 44px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(251,100,27,0.2);">
                           Continue
                         </button>

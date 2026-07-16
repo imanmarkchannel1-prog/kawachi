@@ -1153,6 +1153,17 @@
               </div>
             </div>
           </div>
+          <div
+            id="search-pagination-container"
+            style="
+              margin-top: 32px;
+              display: flex;
+              justify-content: center;
+              gap: 8px;
+              align-items: center;
+              width: 100%;
+            "
+          ></div>
         </div>
       </div>
     </main>
@@ -1660,6 +1671,8 @@
 
         // Default Sort State: None
         let currentSort = "none";
+        let currentPage = 1;
+        const PRODUCTS_PER_PAGE = 8;
 
         // Update Search Title — use promo collection name if coming from a promo card
         const searchTitle = document.getElementById("search-title");
@@ -2014,6 +2027,21 @@
                 .toLowerCase()
                 .split(/\s+/)
                 .filter(Boolean);
+
+              // Dynamic keyword expansions for Category bubble redirections
+              if (queryWords.includes("sofa")) {
+                queryWords.push("chair", "recliner", "meditation");
+              }
+              if (queryWords.includes("table")) {
+                queryWords.push("desk");
+              }
+              if (queryWords.includes("rack")) {
+                queryWords.push("organizer", "holder");
+              }
+              if (queryWords.includes("shelf")) {
+                queryWords.push("ledges");
+              }
+
               items = items.filter((p) =>
                 queryWords.some(
                   (word) =>
@@ -2060,18 +2088,76 @@
           if (topbar) topbar.style.display = "flex";
 
           // Render to grid
+          const pagContainer = document.getElementById(
+            "search-pagination-container",
+          );
           if (items.length === 0) {
             if (summaryText) summaryText.style.display = "none";
             resultsGrid.style.display = "block"; // Toggle display to block for centering alignment breakout
             resultsGrid.innerHTML = renderNoResultsCard(query);
+            if (pagContainer) pagContainer.innerHTML = "";
             attachNoResultsCardListeners();
             initNoResultsSlider();
           } else {
             if (summaryText) summaryText.style.display = "block";
             resultsGrid.style.display = "grid"; // Restore default grid layout
-            resultsGrid.innerHTML = renderProductsList(items);
+
+            // Apply Pagination slicing
+            const totalPages = Math.ceil(items.length / PRODUCTS_PER_PAGE);
+            if (currentPage > totalPages) currentPage = totalPages || 1;
+
+            const paginatedItems = items.slice(
+              (currentPage - 1) * PRODUCTS_PER_PAGE,
+              currentPage * PRODUCTS_PER_PAGE,
+            );
+            resultsGrid.innerHTML = renderProductsList(paginatedItems);
+
+            // Render pagination controls
+            if (pagContainer) {
+              if (totalPages > 1) {
+                let paginationHtml = `<div class="pagination-controls" style="display: flex; gap: 8px; justify-content: center; width: 100%; margin-top: 24px; margin-bottom: 24px;">`;
+
+                // Prev button
+                if (currentPage > 1) {
+                  paginationHtml += `<button onclick="changePage(${currentPage - 1})" class="page-nav-btn prev-btn" style="padding: 8px 14px; border: 1.5px solid #E2E8F0; background: #FFFFFF; color: #1E3E7A; font-weight: 700; border-radius: 8px; cursor: pointer; transition: all 0.2s ease;">Prev</button>`;
+                } else {
+                  paginationHtml += `<button class="page-nav-btn prev-btn disabled" style="padding: 8px 14px; border: 1.5px solid #F1F5F9; background: #F8FAFC; color: #cbd5e1; font-weight: 700; border-radius: 8px; cursor: not-allowed;" disabled>Prev</button>`;
+                }
+
+                // Page numbers
+                for (let i = 1; i <= totalPages; i++) {
+                  if (i === currentPage) {
+                    paginationHtml += `<button class="page-num-btn active" style="width: 38px; height: 38px; border: none; background: #1E3E7A; color: #FFFFFF; font-weight: 700; border-radius: 8px; cursor: default;">${i}</button>`;
+                  } else {
+                    paginationHtml += `<button onclick="changePage(${i})" class="page-num-btn" style="width: 38px; height: 38px; border: 1.5px solid #E2E8F0; background: #FFFFFF; color: #334155; font-weight: 700; border-radius: 8px; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.borderColor='#1E3E7A';this.style.color='#1E3E7A'" onmouseout="this.style.borderColor='#E2E8F0';this.style.color='#334155'">${i}</button>`;
+                  }
+                }
+
+                // Next button
+                if (currentPage < totalPages) {
+                  paginationHtml += `<button onclick="changePage(${currentPage + 1})" class="page-nav-btn next-btn" style="padding: 8px 14px; border: 1.5px solid #E2E8F0; background: #FFFFFF; color: #1E3E7A; font-weight: 700; border-radius: 8px; cursor: pointer; transition: all 0.2s ease;">Next</button>`;
+                } else {
+                  paginationHtml += `<button class="page-nav-btn next-btn disabled" style="padding: 8px 14px; border: 1.5px solid #F1F5F9; background: #F8FAFC; color: #cbd5e1; font-weight: 700; border-radius: 8px; cursor: not-allowed;" disabled>Next</button>`;
+                }
+
+                paginationHtml += `</div>`;
+                pagContainer.innerHTML = paginationHtml;
+              } else {
+                pagContainer.innerHTML = "";
+              }
+            }
           }
         }
+
+        // Global page change trigger helper
+        window.changePage = function (page) {
+          currentPage = page;
+          filterAndSortEngine();
+          const target = document.getElementById("search-title");
+          if (target) {
+            target.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        };
 
         // Slider initialization for search empty recommendations — delegates to the shared setupStaticSlider() from main-api.js
         function initNoResultsSlider() {
@@ -2103,6 +2189,7 @@
           if (sortSelect) {
             sortSelect.addEventListener("change", async (e) => {
               currentSort = e.target.value;
+              currentPage = 1;
               await filterAndSortEngine();
             });
           }

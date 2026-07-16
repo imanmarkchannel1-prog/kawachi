@@ -454,7 +454,7 @@ async function loadLiveWooCommerceProducts() {
     );
 
     // 2. Fetch rows in parallel using standard WooCommerce API query params
-    const [bestSellersRaw, trendingRaw, furnitureRaw, kitchenRaw] =
+    const [bestSellersRaw, trendingRaw, furnitureRaw, kitchenRaw, catalogRaw] =
       await Promise.all([
         client.fetchProducts({
           status: "publish",
@@ -482,12 +482,19 @@ async function loadLiveWooCommerceProducts() {
               per_page: 8,
             })
           : Promise.resolve([]),
+        client
+          .fetchProducts({
+            status: "publish",
+            per_page: 100,
+          })
+          .catch(() => []),
       ]);
 
     const bestSellers = bestSellersRaw.map(mapWooProduct);
     const trendingNow = trendingRaw.map(mapWooProduct);
     const furniture = furnitureRaw.map(mapWooProduct);
     const kitchen = kitchenRaw.map(mapWooProduct);
+    const catalog = catalogRaw.map(mapWooProduct);
 
     if (!bestSellers.length && !trendingNow.length) {
       console.warn(
@@ -502,6 +509,7 @@ async function loadLiveWooCommerceProducts() {
       ...trendingNow,
       ...furniture,
       ...kitchen,
+      ...catalog,
     ];
 
     const uniqueProducts = allProducts.filter(
@@ -3499,7 +3507,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   const mainAtcBtn = document.getElementById("main-add-to-cart-btn");
   const stickyAtcBtn = document.getElementById("sticky-atc-trigger-btn");
   const mobileAtcBtn = document.getElementById("mobile-add-to-cart-btn");
-  if (mainAtcBtn || stickyAtcBtn || mobileAtcBtn) {
+  const inlineAtcBtn = document.getElementById("inline-add-to-cart-btn");
+  if (mainAtcBtn || stickyAtcBtn || mobileAtcBtn || inlineAtcBtn) {
     const handleDetailATC = (e) => {
       e.preventDefault();
       const name = document.querySelector(".product-title-detail").textContent;
@@ -3531,12 +3540,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (mainAtcBtn) mainAtcBtn.addEventListener("click", handleDetailATC);
     if (stickyAtcBtn) stickyAtcBtn.addEventListener("click", handleDetailATC);
     if (mobileAtcBtn) mobileAtcBtn.addEventListener("click", handleDetailATC);
+    if (inlineAtcBtn) inlineAtcBtn.addEventListener("click", handleDetailATC);
   }
 
   // Buy Now button trigger
   const buyNowBtn = document.getElementById("main-buy-now-btn");
   const mobileBuyNowBtn = document.getElementById("mobile-buy-now-btn");
-  if (buyNowBtn || mobileBuyNowBtn) {
+  const inlineBuyNowBtn = document.getElementById("inline-buy-now-btn");
+  if (buyNowBtn || mobileBuyNowBtn || inlineBuyNowBtn) {
     const handleBuyNow = (e) => {
       e.preventDefault();
       const name = document.querySelector(".product-title-detail").textContent;
@@ -3566,6 +3577,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (buyNowBtn) buyNowBtn.addEventListener("click", handleBuyNow);
     if (mobileBuyNowBtn)
       mobileBuyNowBtn.addEventListener("click", handleBuyNow);
+    if (inlineBuyNowBtn)
+      inlineBuyNowBtn.addEventListener("click", handleBuyNow);
   }
 
   // Fallbacks for missing search tag utility functions
@@ -4435,13 +4448,17 @@ function hideSearchAssistanceSection() {
    * Generic WP REST GET helper with consumer key auth in URL.
    */
   async function wpFetch(path, params = {}) {
-    const url = new URL(`${WP_BASE}${path}`);
+    const cleanPath = path.replace(/^\/wp-json\//, "");
+    const url = new URL(window.location.origin + "/api/wp-proxy");
+    url.searchParams.set("endpoint", cleanPath);
     url.searchParams.set("consumer_key", CK);
     url.searchParams.set("consumer_secret", CS);
-    url.searchParams.set("_", Date.now()); // cache-buster parameter
+    url.searchParams.set("_", Date.now());
     Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
+
     const res = await fetch(url.toString());
-    if (!res.ok) throw new Error(`HTTP ${res.status} for ${path}`);
+    if (!res.ok)
+      throw new Error(`HTTP ${res.status} proxy call for ${cleanPath}`);
     return res.json();
   }
 
