@@ -29,13 +29,40 @@
     }
 
     .page-hero {
-      background: linear-gradient(135deg, #0f2942 0%, #1a4a7a 70%);
+      background: linear-gradient(135deg, #0f2942 0%, #1a4a7a 60%, #0f4c8a 100%);
       border-radius: 20px; padding: 36px 40px; margin-bottom: 32px;
-      display: flex; align-items: center; justify-content: space-between; gap: 20px;
+      display: flex; align-items: center; gap: 28px; position: relative; overflow: hidden;
+      box-shadow: 0 10px 30px rgba(15, 41, 66, 0.15);
     }
-    .page-hero h1 { font-size: 26px; font-weight: 800; color: #fff; margin: 0 0 6px; }
-    .page-hero p { font-size: 14px; color: rgba(255,255,255,0.7); margin: 0; }
-    .hero-icon { width: 64px; height: 64px; background: rgba(255,255,255,0.12); border-radius: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .page-hero::before {
+      content: ''; position: absolute; right: -60px; top: -60px;
+      width: 240px; height: 240px; border-radius: 50%; background: rgba(255,255,255,0.04);
+    }
+    .page-hero h1 { font-size: 24px; font-weight: 800; color: #fff; margin: 0 0 4px; }
+    .page-hero p { font-size: 13.5px; color: rgba(255,255,255,0.7); margin: 0; }
+    .hero-icon {
+      width: 76px; height: 76px; border-radius: 50%;
+      background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), inset 0 1px 1px rgba(255,255,255,0.2);
+    }
+    .hero-meta { flex: 1; padding-right: 120px; }
+    .btn-logout {
+      position: absolute; top: 24px; right: 24px;
+      background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2);
+      color: rgba(255, 255, 255, 0.95); padding: 8px 16px; border-radius: 8px;
+      font-size: 12px; font-weight: 700; cursor: pointer;
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      transition: all 0.2s ease; white-space: nowrap; font-family: inherit;
+      display: inline-flex; align-items: center; gap: 6px; z-index: 5;
+      outline: none;
+    }
+    .btn-logout:hover {
+      background: rgba(255, 255, 255, 0.18); border-color: rgba(255, 255, 255, 0.35);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .btn-logout:active { transform: scale(0.97); }
 
     .orders-gate {
       max-width: 440px; margin: 0 auto; text-align: center;
@@ -234,6 +261,36 @@
       }
       .auth-note {
         margin-top: 18px !important;
+      }
+      .page-hero {
+        padding: 24px 20px !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 16px !important;
+      }
+      .hero-icon {
+        width: 60px !important;
+        height: 60px !important;
+      }
+      .hero-icon svg {
+        width: 26px !important;
+        height: 26px !important;
+      }
+      .hero-meta {
+        padding-right: 85px !important;
+      }
+      .page-hero h1 {
+        font-size: 19px !important;
+        margin-bottom: 4px !important;
+      }
+      .page-hero p {
+        font-size: 12px !important;
+      }
+      .btn-logout {
+        top: 20px !important;
+        right: 20px !important;
+        padding: 6px 12px !important;
+        font-size: 11px !important;
       }
     }
 
@@ -525,17 +582,18 @@
 
       <!-- LOGGED IN -->
       <div id="orders-content" style="display:none;">
-        <div class="page-hero" style="position: relative;">
-          <div>
+        <div class="page-hero">
+          <div class="hero-icon">
+            <svg width="32" height="32" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+          </div>
+          <div class="hero-meta">
             <h1>My Orders</h1>
             <p id="orders-summary-text">Loading your order history...</p>
           </div>
-          <div style="display: flex; align-items: center; gap: 15px;">
-            <button onclick="handleLogout()" style="background: rgba(255,255,255,0.12); border: 1.5px solid rgba(255,255,255,0.25); color: #fff; padding: 7px 16px; border-radius: 8px; font-size: 12.5px; font-weight: 600; cursor: pointer; transition: background 0.2s; font-family: inherit; outline: none;">Sign Out</button>
-            <div class="hero-icon">
-              <svg width="32" height="32" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-            </div>
-          </div>
+          <button class="btn-logout" onclick="handleLogout()">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+            Sign Out
+          </button>
         </div>
 
         <div class="orders-toolbar" id="orders-toolbar" style="display:none;">

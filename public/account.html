@@ -608,8 +608,9 @@
       if (user) {
         document.getElementById('auth-gate-view').style.display = 'none';
         document.getElementById('profile-view').style.display = 'block';
-        document.getElementById('avatar-initials').textContent = getInitials(user.name || user.email || user.first_name);
-        document.getElementById('profile-name').textContent = user.name || (user.first_name ? (user.first_name + ' ' + (user.last_name || '')) : 'Kawachi Member');
+        const displayName = user.name || (user.first_name ? (user.first_name + ' ' + (user.last_name || '')) : '') || user.email || 'Kawachi Member';
+        document.getElementById('avatar-initials').textContent = getInitials(displayName);
+        document.getElementById('profile-name').textContent = displayName;
         document.getElementById('profile-email').textContent = user.email || '';
       } else {
         document.getElementById('auth-gate-view').style.display = 'block';
