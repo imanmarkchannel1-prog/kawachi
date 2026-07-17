@@ -752,11 +752,22 @@
                     <div class="form-group grid-full-width" style="grid-column: span 2;">
                       <label class="form-label" style="margin-bottom: 6px;">Area / Sector / Locality *</label>
                       <textarea id="locality-display" class="form-input" style="height: 64px; resize: vertical; font-size: 13.5px; line-height: 1.4; font-weight: 500;" required placeholder="Locating on the map..."></textarea>
-                      
-                      <!-- Hidden fields populated by geocoding -->
-                      <input type="hidden" id="shipping-city" required>
-                      <input type="hidden" id="shipping-state" required>
-                      <input type="hidden" id="shipping-pincode" required>
+                    </div>
+
+                    <!-- City & State -->
+                    <div class="form-group">
+                      <label class="form-label" for="shipping-city">City *</label>
+                      <input type="text" id="shipping-city" class="form-input" placeholder="e.g. Mumbai" required>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label" for="shipping-state">State *</label>
+                      <input type="text" id="shipping-state" class="form-input" placeholder="e.g. Maharashtra" required>
+                    </div>
+
+                    <!-- PIN Code -->
+                    <div class="form-group grid-full-width" style="grid-column: span 2;">
+                      <label class="form-label" for="shipping-pincode">PIN Code *</label>
+                      <input type="text" id="shipping-pincode" class="form-input" placeholder="e.g. 400001" required>
                     </div>
 
                     <!-- Type of address and Continue button horizontally aligned flex row -->
@@ -1595,139 +1606,229 @@
       // Sync calculations initially
       setTimeout(updatePriceSummaries, 500);
 
-      // Handle checkout submission
-      const checkoutForm = document.getElementById("checkout-multistep-form");
-      if (checkoutForm) {
-        checkoutForm.addEventListener("submit", async (e) => {
-          e.preventDefault();
-
-          const selectedMethod = document.querySelector('input[name="payment_method"]:checked')?.value || 'razorpay';
-          
-          if (selectedMethod === 'cod') {
-            alert("Thank you! Your Cash on Delivery order has been placed successfully. A support representative will coordinate delivery schedules within 12 hours.");
-            window.KawachiCart.clear();
-            window.location.href = "index.html";
-            return;
-          }
-
-          // Razorpay flow
-          const submitBtn = checkoutForm.querySelector('button[type="submit"]');
-          const originalText = submitBtn ? submitBtn.textContent : "Place Order Securely";
-          if (submitBtn) {
-            submitBtn.disabled = true;
-            submitBtn.textContent = "Initializing Secure Payment Gateway...";
-          }
-
-          try {
-            // 1. Dynamically load script
-            const loaded = await loadRazorpayScript();
-            if (!loaded) {
-              throw new Error("Failed to load Razorpay payment gateway script. Please check your internet connection.");
-            }
-
-            // 2. Compute final order amount
-            const items = window.KawachiCart ? window.KawachiCart.items : [];
-            const subtotal = items.reduce((s, i) => s + (i.price * i.quantity), 0);
-            let discount = 0;
-            const appliedCoupon = localStorage.getItem("applied_coupon") || "";
-            const dynamicCodeVal = (localStorage.getItem("dynamic_coupon_code") || "KAWACHI10").toUpperCase();
-            if (appliedCoupon === dynamicCodeVal || appliedCoupon === "KAWACHI05" || appliedCoupon === "KAWACHI10") {
-              discount = Math.round(subtotal * 0.05);
-            }
-            const tax = Math.round((subtotal - discount) * 0.08);
-            const totalAmount = subtotal - discount + tax;
-
-            if (totalAmount <= 0) {
-              throw new Error("Invalid cart checkout amount.");
-            }
-
-            // 3. Request order ID from backend
-            const orderRes = await fetch("/api/razorpay/create-order", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ amount: totalAmount }),
-            });
-
-            if (!orderRes.ok) {
-              const errData = await orderRes.json();
-              throw new Error(errData.error || "Failed to create payment order on backend.");
-            }
-
-            const orderData = await orderRes.json();
-            const orderId = orderData.order_id;
-            const keyId = orderData.key_id;
-
-            // 4. Gather user contact information
-            const firstName = document.getElementById("shipping-first-name").value.trim();
-            const lastName = document.getElementById("shipping-last-name").value.trim();
-            const email = document.getElementById("shipping-email").value.trim();
-            const phone = document.getElementById("shipping-phone").value.trim();
-
-            const options = {
-              key: keyId,
-              amount: orderData.amount,
-              currency: "INR",
-              name: "Kawachi Group",
-              description: "Headless WooCommerce Checkout Storefront",
-              image: "img/logo.png",
-              order_id: orderId,
-              handler: function (response) {
-                console.log("Payment Successful", response);
-                window.KawachiCart.clear();
-                const successOverlay = document.getElementById("order-success-overlay");
-                if (successOverlay) {
-                  successOverlay.style.display = "flex";
-                  let secondsLeft = 5;
-                  const countdownSpan = document.getElementById("success-countdown");
-                  if (countdownSpan) countdownSpan.textContent = secondsLeft;
-                  const interval = setInterval(() => {
-                    secondsLeft--;
-                    if (countdownSpan) countdownSpan.textContent = secondsLeft;
-                    if (secondsLeft <= 0) {
-                      clearInterval(interval);
-                      window.location.href = "index.html";
-                    }
-                  }, 1000);
-                } else {
-                  alert("Payment Successful! Thank you for your order. A support representative will coordinate delivery schedules within 12 hours.");
-                  window.location.href = "index.html";
-                }
-              },
-              prefill: {
-                name: `${firstName} ${lastName}`.trim(),
-                email: email,
-                contact: phone,
-              },
-              notes: {
-                address: document.getElementById("shipping-address-1").value.trim(),
-                locality: document.getElementById("locality-display").value.trim(),
-              },
-              theme: {
-                color: "#0a2540",
-              },
-              modal: {
-                ondismiss: function () {
-                  if (submitBtn) {
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = originalText;
-                  }
-                }
-              }
-            };
-
-            const rzp = new window.Razorpay(options);
-            rzp.open();
-
-          } catch (err) {
-            console.error("[Razorpay Checkout Flow Error]:", err);
-            alert(err.message || "An error occurred initializing the payment gateway. Please try again.");
-            if (submitBtn) {
-              submitBtn.disabled = false;
-              submitBtn.textContent = originalText;
-            }
-          }
-        });
-      }
+       // Handle checkout submission
+       const checkoutForm = document.getElementById("checkout-multistep-form");
+       if (checkoutForm) {
+         checkoutForm.addEventListener("submit", async (e) => {
+           e.preventDefault();
+ 
+           const selectedMethod = document.querySelector('input[name="payment_method"]:checked')?.value || 'razorpay';
+           
+           const submitBtn = checkoutForm.querySelector('button[type="submit"]');
+           const originalText = submitBtn ? submitBtn.textContent : "Place Order Securely";
+           if (submitBtn) {
+             submitBtn.disabled = true;
+             submitBtn.textContent = "Processing Order...";
+           }
+ 
+           try {
+             // 1. Compute final order amount
+             const items = window.KawachiCart ? window.KawachiCart.items : [];
+             const subtotal = items.reduce((s, i) => s + (i.price * i.quantity), 0);
+             let discount = 0;
+             const appliedCoupon = localStorage.getItem("applied_coupon") || "";
+             const dynamicCodeVal = (localStorage.getItem("dynamic_coupon_code") || "KAWACHI10").toUpperCase();
+             if (appliedCoupon === dynamicCodeVal || appliedCoupon === "KAWACHI05" || appliedCoupon === "KAWACHI10") {
+               discount = Math.round(subtotal * 0.05);
+             }
+             const tax = Math.round((subtotal - discount) * 0.08);
+             const totalAmount = subtotal - discount + tax;
+ 
+             if (totalAmount <= 0) {
+               throw new Error("Invalid cart checkout amount.");
+             }
+ 
+             // 2. Gather user shipping details
+             const firstName = document.getElementById("shipping-first-name").value.trim();
+             const lastName = document.getElementById("shipping-last-name").value.trim();
+             const email = document.getElementById("shipping-email").value.trim();
+             const phone = document.getElementById("shipping-phone").value.trim();
+             const addressLine1 = document.getElementById("shipping-address-1").value.trim();
+             const city = document.getElementById("shipping-city").value.trim();
+             const state = document.getElementById("shipping-state").value.trim();
+             const pincode = document.getElementById("shipping-pincode").value.trim();
+ 
+             // 3. Create order on WooCommerce REST API first via Proxy
+             if (submitBtn) submitBtn.textContent = "Creating WooCommerce Order...";
+             const orderPayload = {
+               payment_method: selectedMethod,
+               payment_method_title: selectedMethod === "razorpay" ? "Razorpay Secure" : "Cash on Delivery (COD)",
+               set_paid: false,
+               billing: {
+                 first_name: firstName,
+                 last_name: lastName,
+                 address_1: addressLine1,
+                 city: city,
+                 state: state,
+                 postcode: pincode,
+                 country: "IN",
+                 email: email || "customer@kawachi.in",
+                 phone: phone
+               },
+               shipping: {
+                 first_name: firstName,
+                 last_name: lastName,
+                 address_1: addressLine1,
+                 city: city,
+                 state: state,
+                 postcode: pincode,
+                 country: "IN",
+                 phone: phone
+               },
+               line_items: items.map(item => ({
+                 product_id: item.id,
+                 placeholder_img: item.image,
+                 quantity: item.quantity
+               }))
+             };
+ 
+             const wooOrderRes = await fetch("/api/wc-proxy?endpoint=orders", {
+               method: "POST",
+               headers: { "Content-Type": "application/json" },
+               body: JSON.stringify(orderPayload)
+             });
+ 
+             if (!wooOrderRes.ok) {
+               const errData = await wooOrderRes.json();
+               throw new Error(errData.message || "Failed to create WooCommerce order.");
+             }
+ 
+             const wooOrderData = await wooOrderRes.json();
+             const wooOrderId = wooOrderData.id;
+ 
+             if (selectedMethod === 'cod') {
+               // Cash on Delivery success handler
+               window.KawachiCart.clear();
+               const successOverlay = document.getElementById("order-success-overlay");
+               if (successOverlay) {
+                 const pEl = successOverlay.querySelector("p");
+                 if (pEl) pEl.textContent = `Thank you for your purchase. Your Cash on Delivery order (Order ID: ${wooOrderId}) has been placed successfully.`;
+                 successOverlay.style.display = "flex";
+                 let secondsLeft = 5;
+                 const countdownSpan = document.getElementById("success-countdown");
+                 if (countdownSpan) countdownSpan.textContent = secondsLeft;
+                 const interval = setInterval(() => {
+                   secondsLeft--;
+                   if (countdownSpan) countdownSpan.textContent = secondsLeft;
+                   if (secondsLeft <= 0) {
+                     clearInterval(interval);
+                     window.location.href = "index.html";
+                   }
+                 }, 1000);
+               } else {
+                 alert(`Thank you! Your Cash on Delivery order (Order ID: ${wooOrderId}) has been placed successfully.`);
+                 window.location.href = "index.html";
+               }
+               return;
+             }
+ 
+             // Razorpay Payment Flow
+             if (submitBtn) submitBtn.textContent = "Loading Payment Gateway...";
+             const loaded = await loadRazorpayScript();
+             if (!loaded) {
+               throw new Error("Failed to load Razorpay payment gateway script. Please check your internet connection.");
+             }
+ 
+             if (submitBtn) submitBtn.textContent = "Generating Gateway Token...";
+             const orderRes = await fetch("/api/razorpay/create-order", {
+               method: "POST",
+               headers: { "Content-Type": "application/json" },
+               body: JSON.stringify({ amount: totalAmount }),
+             });
+ 
+             if (!orderRes.ok) {
+               const errData = await orderRes.json();
+               throw new Error(errData.error || "Failed to create payment order on backend.");
+             }
+ 
+             const orderData = await orderRes.json();
+             const orderId = orderData.order_id;
+             const keyId = orderData.key_id;
+ 
+             const options = {
+               key: keyId,
+               amount: orderData.amount,
+               currency: "INR",
+               name: "Kawachi Group",
+               description: `Checkout WooCommerce Order #${wooOrderId}`,
+               image: "img/logo.png",
+               order_id: orderId,
+               handler: async function (response) {
+                 console.log("Payment Successful", response);
+ 
+                 try {
+                   // Mark WooCommerce order as paid and processing
+                   await fetch(`/api/wc-proxy?endpoint=orders/${wooOrderId}`, {
+                     method: "PUT",
+                     headers: { "Content-Type": "application/json" },
+                     body: JSON.stringify({
+                       status: "processing",
+                       set_paid: true,
+                       transaction_id: response.razorpay_payment_id
+                     })
+                   });
+                 } catch (updateErr) {
+                   console.error("[WooCommerce Order Update Error]:", updateErr);
+                 }
+ 
+                 window.KawachiCart.clear();
+                 const successOverlay = document.getElementById("order-success-overlay");
+                 if (successOverlay) {
+                   const pEl = successOverlay.querySelector("p");
+                   if (pEl) pEl.textContent = `Thank you for your purchase. Your payment was confirmed securely via Razorpay (Order ID: ${wooOrderId}).`;
+                   successOverlay.style.display = "flex";
+                   let secondsLeft = 5;
+                   const countdownSpan = document.getElementById("success-countdown");
+                   if (countdownSpan) countdownSpan.textContent = secondsLeft;
+                   const interval = setInterval(() => {
+                     secondsLeft--;
+                     if (countdownSpan) countdownSpan.textContent = secondsLeft;
+                     if (secondsLeft <= 0) {
+                       clearInterval(interval);
+                       window.location.href = "index.html";
+                     }
+                   }, 1000);
+                 } else {
+                   alert(`Payment Successful! Thank you for your order (Order ID: ${wooOrderId}). A support representative will coordinate delivery schedules within 12 hours.`);
+                   window.location.href = "index.html";
+                 }
+               },
+               prefill: {
+                 name: `${firstName} ${lastName}`.trim(),
+                 email: email,
+                 contact: phone,
+               },
+               notes: {
+                 woocommerce_order_id: wooOrderId,
+                 address: addressLine1,
+                 locality: document.getElementById("locality-display").value.trim(),
+               },
+               theme: {
+                 color: "#0a2540",
+               },
+               modal: {
+                 ondismiss: function () {
+                   if (submitBtn) {
+                     submitBtn.disabled = false;
+                     submitBtn.textContent = originalText;
+                   }
+                 }
+               }
+             };
+ 
+             const rzp = new window.Razorpay(options);
+             rzp.open();
+ 
+           } catch (err) {
+             console.error("[Checkout Flow Error]:", err);
+             alert(err.message || "An error occurred during order submission. Please try again.");
+             if (submitBtn) {
+               submitBtn.disabled = false;
+               submitBtn.textContent = originalText;
+             }
+           }
+         });
+       }
 
       function loadRazorpayScript() {
         return new Promise((resolve) => {
