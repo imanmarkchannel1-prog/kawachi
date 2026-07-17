@@ -1598,11 +1598,132 @@
       // Handle checkout submission
       const checkoutForm = document.getElementById("checkout-multistep-form");
       if (checkoutForm) {
-        checkoutForm.addEventListener("submit", (e) => {
+        checkoutForm.addEventListener("submit", async (e) => {
           e.preventDefault();
-          alert("Thank you! Your mock order has been placed successfully. A support representative will coordinate delivery schedules within 12 hours.");
-          window.KawachiCart.clear();
-          window.location.href = "index.html";
+
+          const selectedMethod = document.querySelector('input[name="payment_method"]:checked')?.value || 'razorpay';
+          
+          if (selectedMethod === 'cod') {
+            alert("Thank you! Your Cash on Delivery order has been placed successfully. A support representative will coordinate delivery schedules within 12 hours.");
+            window.KawachiCart.clear();
+            window.location.href = "index.html";
+            return;
+          }
+
+          // Razorpay flow
+          const submitBtn = checkoutForm.querySelector('button[type="submit"]');
+          const originalText = submitBtn ? submitBtn.textContent : "Place Order Securely";
+          if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Initializing Secure Payment Gateway...";
+          }
+
+          try {
+            // 1. Dynamically load script
+            const loaded = await loadRazorpayScript();
+            if (!loaded) {
+              throw new Error("Failed to load Razorpay payment gateway script. Please check your internet connection.");
+            }
+
+            // 2. Compute final order amount
+            const items = window.KawachiCart ? window.KawachiCart.items : [];
+            const subtotal = items.reduce((s, i) => s + (i.price * i.quantity), 0);
+            let discount = 0;
+            const appliedCoupon = localStorage.getItem("applied_coupon") || "";
+            const dynamicCodeVal = (localStorage.getItem("dynamic_coupon_code") || "KAWACHI10").toUpperCase();
+            if (appliedCoupon === dynamicCodeVal || appliedCoupon === "KAWACHI05" || appliedCoupon === "KAWACHI10") {
+              discount = Math.round(subtotal * 0.05);
+            }
+            const tax = Math.round((subtotal - discount) * 0.08);
+            const totalAmount = subtotal - discount + tax;
+
+            if (totalAmount <= 0) {
+              throw new Error("Invalid cart checkout amount.");
+            }
+
+            // 3. Request order ID from backend
+            const orderRes = await fetch("/api/razorpay/create-order", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ amount: totalAmount }),
+            });
+
+            if (!orderRes.ok) {
+              const errData = await orderRes.json();
+              throw new Error(errData.error || "Failed to create payment order on backend.");
+            }
+
+            const orderData = await orderRes.json();
+            const orderId = orderData.order_id;
+            const keyId = orderData.key_id;
+
+            // 4. Gather user contact information
+            const firstName = document.getElementById("shipping-first-name").value.trim();
+            const lastName = document.getElementById("shipping-last-name").value.trim();
+            const email = document.getElementById("shipping-email").value.trim();
+            const phone = document.getElementById("shipping-phone").value.trim();
+
+            const options = {
+              key: keyId,
+              amount: orderData.amount,
+              currency: "INR",
+              name: "Kawachi Group",
+              description: "Headless WooCommerce Checkout Storefront",
+              image: "img/logo.png",
+              order_id: orderId,
+              handler: function (response) {
+                console.log("Payment Successful", response);
+                alert("Payment Successful! Thank you for your order. A support representative will coordinate delivery schedules within 12 hours.");
+                window.KawachiCart.clear();
+                window.location.href = "index.html";
+              },
+              prefill: {
+                name: `${firstName} ${lastName}`.trim(),
+                email: email,
+                contact: phone,
+              },
+              notes: {
+                address: document.getElementById("shipping-address-1").value.trim(),
+                locality: document.getElementById("locality-display").value.trim(),
+              },
+              theme: {
+                color: "#0a2540",
+              },
+              modal: {
+                ondismiss: function () {
+                  if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalText;
+                  }
+                }
+              }
+            };
+
+            const rzp = new window.Razorpay(options);
+            rzp.open();
+
+          } catch (err) {
+            console.error("[Razorpay Checkout Flow Error]:", err);
+            alert(err.message || "An error occurred initializing the payment gateway. Please try again.");
+            if (submitBtn) {
+              submitBtn.disabled = false;
+              submitBtn.textContent = originalText;
+            }
+          }
+        });
+      }
+
+      function loadRazorpayScript() {
+        return new Promise((resolve) => {
+          if (window.Razorpay) {
+            resolve(true);
+            return;
+          }
+          const script = document.createElement("script");
+          script.src = "https://checkout.razorpay.com/v1/checkout.js";
+          script.onload = () => resolve(true);
+          script.onerror = () => resolve(false);
+          document.body.appendChild(script);
         });
       }
     });

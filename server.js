@@ -404,6 +404,44 @@ app.post("/api/auth/email-forgot", async (req, res) => {
   }
 });
 
+// Razorpay secure checkout order integration
+const Razorpay = require("razorpay");
+const razorpay = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET,
+});
+
+app.get("/api/razorpay/key", (req, res) => {
+  res.json({ key_id: process.env.RAZORPAY_KEY_ID || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID });
+});
+
+app.post("/api/razorpay/create-order", async (req, res) => {
+  try {
+    const { amount } = req.body;
+    if (!amount || isNaN(amount)) {
+      return res.status(400).json({ error: "Invalid amount parameter" });
+    }
+
+    const amountInPaise = Math.round(Number(amount) * 100);
+    const options = {
+      amount: amountInPaise,
+      currency: "INR",
+      receipt: `receipt_order_${Date.now()}`,
+    };
+
+    const order = await razorpay.orders.create(options);
+    res.json({
+      success: true,
+      order_id: order.id,
+      amount: order.amount,
+      key_id: process.env.RAZORPAY_KEY_ID || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+    });
+  } catch (err) {
+    console.error("[Razorpay Create Order API Error]:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Serve frontend static assets from public/ folder
 app.use(express.static("public"));
 
