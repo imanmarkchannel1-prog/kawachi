@@ -4126,6 +4126,17 @@ function setupStaticSlider(track, products) {
   const container = track.closest(".static-marquee-container");
   if (!container) return;
 
+  // Adjust overflow dynamically to allow native swiping on mobile viewports
+  function adjustOverflow() {
+    if (window.innerWidth <= 767) {
+      container.style.setProperty("overflow-x", "auto", "important");
+      container.style.setProperty("overflow-y", "hidden", "important");
+    } else {
+      container.style.setProperty("overflow", "hidden", "important");
+    }
+  }
+  adjustOverflow();
+
   // Remove skeleton loading class if present
   track.classList.remove("skeleton-loading");
 
@@ -4271,6 +4282,7 @@ function setupStaticSlider(track, products) {
   }
 
   window.addEventListener("resize", () => {
+    adjustOverflow();
     currentIndex = Math.min(currentIndex, getMaxIndex());
     updateSlider();
   });
