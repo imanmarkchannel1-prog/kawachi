@@ -8,7 +8,7 @@
       name="description"
       content="Search products and categories on our headless WooCommerce catalog."
     />
-    <link rel="stylesheet" href="css/global-styles.css?v=7.70" />
+    <link rel="stylesheet" href="css/global-styles.css?v=8.00" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <style>
       body,
@@ -806,33 +806,28 @@
           </a>
         </div>
 
-        <!-- All Categories Dropdown -->
-        <div class="category-select-container">
-          <select
-            class="all-categories-select"
-            aria-label="All Categories"
-            onchange="
-              if (this.value && this.value !== '#')
-                window.location.href = this.value;
-            "
-          >
-            <option value="#">All Categories</option>
-            <option value="search.html?q=Furniture">Home Furniture</option>
-            <option value="search.html?q=Kitchen">Kitchen Storage</option>
-            <option value="search.html?q=Decor">Home Decor</option>
-            <option value="search.html?q=Beauty">Health &amp; Beauty</option>
-            <option value="search.html?q=Utility">Utility Products</option>
-          </select>
-        </div>
-
-        <!-- Search Bar -->
-        <div class="search-container">
+        <!-- Unified Category Select & Search Bar Wrapper -->
+        <div class="unified-search-wrapper">
           <form
             action="search.html"
             method="GET"
             id="header-search-form"
             style="display: flex; align-items: center; width: 100%"
           >
+            <div class="category-select-container">
+              <select
+                class="all-categories-select"
+                aria-label="All Categories"
+                name="cat"
+              >
+                <option value="all">All Categories</option>
+                <option value="Furniture">Home Furniture</option>
+                <option value="Kitchen">Kitchen Storage</option>
+                <option value="Decor">Home Decor</option>
+                <option value="Beauty">Health &amp; Beauty</option>
+                <option value="Utility">Utility Products</option>
+              </select>
+            </div>
             <div class="search-bar-inner">
               <input
                 type="text"

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Checkout Order - Kawachi</title>
   <meta name="description" content="Provide shipping information and complete transaction utilizing credit card forms or local UPI gateways.">
-  <link rel="stylesheet" href="css/global-styles.css?v=7.69">
+  <link rel="stylesheet" href="css/global-styles.css?v=8.00">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   
   <!-- Leaflet Map CSS & JS CDN -->
@@ -931,7 +931,7 @@
             </div>
 
             <div class="price-row">
-              <span>Estimated Tax (8%)</span>
+              <span>No Hidden Fees</span>
               <span class="calc-tax">₹0</span>
             </div>
             
@@ -1541,8 +1541,8 @@
           discount = Math.round(subtotal * 0.05);
         }
 
-        const tax = Math.round((subtotal - discount) * 0.08);
-        const total = subtotal - discount + tax;
+        const tax = 0;
+        const total = subtotal - discount;
 
         // Populate coupon display in checkout if active
         const checkoutCouponName = document.getElementById("checkout-coupon-name");
@@ -1631,8 +1631,8 @@
              if (appliedCoupon === dynamicCodeVal || appliedCoupon === "KAWACHI05" || appliedCoupon === "KAWACHI10") {
                discount = Math.round(subtotal * 0.05);
              }
-             const tax = Math.round((subtotal - discount) * 0.08);
-             const totalAmount = subtotal - discount + tax;
+             const tax = 0;
+             const totalAmount = subtotal - discount;
  
              if (totalAmount <= 0) {
                throw new Error("Invalid cart checkout amount.");

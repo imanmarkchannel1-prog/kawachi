@@ -2688,6 +2688,23 @@ function initUnifiedSearchBar() {
   const form = document.getElementById("header-search-form");
   const inner = document.querySelector(".search-bar-inner");
 
+  // 1. If statically pre-wrapped in unified-search-wrapper, bypass dynamic wrapping
+  const existingWrapper = document.querySelector(".unified-search-wrapper");
+  if (existingWrapper) {
+    const select = existingWrapper.querySelector(".all-categories-select");
+    if (select) {
+      select.name = "cat";
+      select.onchange = null;
+      select.removeAttribute("onchange");
+      const urlParams = new URLSearchParams(window.location.search);
+      const currentCat = urlParams.get("cat");
+      if (currentCat) {
+        select.value = currentCat;
+      }
+    }
+    return;
+  }
+
   if (selectContainer && searchContainer && form && inner) {
     // Clear inline onchange
     const select = selectContainer.querySelector(".all-categories-select");
