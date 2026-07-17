@@ -572,10 +572,14 @@
             <div class="profile-meta">
               <h1 class="profile-name" id="profile-name">Kawachi Member</h1>
               <p class="profile-email" id="profile-email">user@example.com</p>
-              <span class="profile-badge">
+              <span class="profile-badge" style="margin-bottom: 6px;">
                 <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0 1 12 2.944a11.955 11.955 0 0 1-8.618 3.04A12.02 12.02 0 0 0 3 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
                 Verified Member
               </span>
+              <button onclick="showDetailedProfileView()" style="background: rgba(255,255,255,0.12); border: 1.5px solid rgba(255,255,255,0.2); color: #ffffff; padding: 6px 14px; border-radius: 20px; font-size: 11.5px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; outline: none; margin-top: 4px;" onmouseover="this.style.background='rgba(255,255,255,0.22)';this.style.borderColor='rgba(255,255,255,0.35)'" onmouseout="this.style.background='rgba(255,255,255,0.12)';this.style.borderColor='rgba(255,255,255,0.2)'">
+                <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle></svg>
+                View Profile
+              </button>
             </div>
             <div class="logout-container">
               <button class="btn-logout-icon" aria-label="Sign Out" onclick="toggleLogoutModal(event)">
@@ -599,6 +603,66 @@
           </div>
         </div>
       </div>
+
+      <!-- DETAILED PROFILE PAGE VIEW -->
+      <div id="detailed-profile-view" style="display:none;">
+        <div class="profile-wrap">
+          <div class="profile-hero" style="background: linear-gradient(135deg, #0a2540 0%, #1a4a7a 100%) !important;">
+            <button onclick="hideDetailedProfileView()" style="background: transparent; border: none; color: #ffffff; font-size: 13.5px; font-weight: 750; cursor: pointer; display: flex; align-items: center; gap: 6px; padding: 0;">
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+              Back to Dashboard
+            </button>
+            <h1 style="color: #ffffff; font-size: 20px; font-weight: 800; margin: 12px 0 0 0; font-family: 'Plus Jakarta Sans', sans-serif;">My Personal Profile</h1>
+          </div>
+          
+          <div style="background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 16px; padding: 24px; margin-top: 16px; box-shadow: 0 4px 12px rgba(16, 24, 40, 0.02);">
+            <form id="detailed-profile-form" onsubmit="saveDetailedProfile(event)">
+              <div style="margin-bottom: 16px;">
+                <label style="display: block; font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.05em;">First Name</label>
+                <input type="text" id="profile-first-name" placeholder="Enter first name" style="width: 100%; border: 1.5px solid #cbd5e1; border-radius: 10px; background: #ffffff; padding: 10px 14px; font-size: 14px; font-weight: 600; color: #0f172a; outline: none; box-sizing: border-box;">
+              </div>
+              
+              <div style="margin-bottom: 16px;">
+                <label style="display: block; font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.05em;">Last Name / Surname</label>
+                <input type="text" id="profile-last-name" placeholder="Enter last name / surname" style="width: 100%; border: 1.5px solid #cbd5e1; border-radius: 10px; background: #ffffff; padding: 10px 14px; font-size: 14px; font-weight: 600; color: #0f172a; outline: none; box-sizing: border-box;">
+              </div>
+
+              <div style="margin-bottom: 16px;">
+                <label style="display: block; font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.05em;">Phone Number</label>
+                <input type="tel" id="profile-phone-number" placeholder="Enter phone number" style="width: 100%; border: 1.5px solid #cbd5e1; border-radius: 10px; padding: 10px 14px; font-size: 14px; font-weight: 600; outline: none; box-sizing: border-box;">
+                <span id="profile-phone-hint" style="font-size: 10px; color: #94a3b8; font-weight: 500; display: block; margin-top: 4px;">Phone number verified.</span>
+              </div>
+
+              <div style="margin-bottom: 16px;">
+                <label style="display: block; font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.05em;">Email Address</label>
+                <input type="email" id="profile-email-address" placeholder="e.g. name@domain.com" style="width: 100%; border: 1.5px solid #cbd5e1; border-radius: 10px; padding: 10px 14px; font-size: 14px; font-weight: 600; outline: none; box-sizing: border-box;">
+                <span id="profile-email-hint" style="font-size: 10px; color: #94a3b8; font-weight: 500; display: block; margin-top: 4px;">Email address verified.</span>
+              </div>
+
+              <div style="margin-bottom: 20px;">
+                <label style="display: block; font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.05em;">Gender</label>
+                <div style="display: flex; gap: 16px; margin-top: 6px;">
+                  <label style="display: flex; align-items: center; gap: 6px; font-size: 13.5px; font-weight: 600; color: #334155; cursor: pointer;">
+                    <input type="radio" name="profile-gender" value="Male" style="accent-color: #0a2540;"> Male
+                  </label>
+                  <label style="display: flex; align-items: center; gap: 6px; font-size: 13.5px; font-weight: 600; color: #334155; cursor: pointer;">
+                    <input type="radio" name="profile-gender" value="Female" style="accent-color: #0a2540;"> Female
+                  </label>
+                  <label style="display: flex; align-items: center; gap: 6px; font-size: 13.5px; font-weight: 600; color: #334155; cursor: pointer;">
+                    <input type="radio" name="profile-gender" value="Other" style="accent-color: #0a2540;"> Other
+                  </label>
+                </div>
+              </div>
+
+              <div id="profile-save-message" style="display: none; background: #ecfdf5; border: 1.5px solid #a7f3d0; color: #065f46; padding: 10px 14px; border-radius: 10px; font-size: 13px; font-weight: 700; text-align: center; margin-bottom: 16px;">
+                Profile updated successfully!
+              </div>
+
+              <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; border-radius: 10px; font-weight: 750; font-size: 13.5px; background: #0a2540; color: #fff; border: none; cursor: pointer; transition: all 0.2s;">Save Changes</button>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -609,6 +673,107 @@
     function setUser(u) { localStorage.setItem(AUTH_KEY, JSON.stringify(u)); }
     function clearUser() { localStorage.removeItem(AUTH_KEY); }
     function getInitials(name) { return (name||'K').trim().split(' ').slice(0,2).map(w=>w[0].toUpperCase()).join(''); }
+    
+    window.showDetailedProfileView = function() {
+      const user = getUser();
+      if (!user) return;
+
+      document.getElementById('profile-view').style.display = 'none';
+      document.getElementById('detailed-profile-view').style.display = 'block';
+
+      // Pre-fill fields
+      document.getElementById('profile-first-name').value = user.first_name || '';
+      document.getElementById('profile-last-name').value = user.last_name || '';
+      
+      // Gender radio buttons selection
+      const genderRadios = document.getElementsByName('profile-gender');
+      genderRadios.forEach(radio => {
+        if (radio.value === user.gender) {
+          radio.checked = true;
+        } else {
+          radio.checked = false;
+        }
+      });
+
+      // Clear save message
+      document.getElementById('profile-save-message').style.display = 'none';
+
+      // Lock/Unlock Email and Phone based on login type
+      if (user.phone) {
+        document.getElementById("profile-phone-number").value = user.phone;
+        document.getElementById("profile-phone-number").readOnly = true;
+        document.getElementById("profile-phone-number").style.backgroundColor = "#f8fafc";
+        document.getElementById("profile-phone-number").style.color = "#64748b";
+        document.getElementById("profile-phone-hint").style.display = "block";
+        
+        document.getElementById("profile-email-address").value = (user.email && !user.email.endsWith('@kawachigroup.com') && !user.email.endsWith('@theredkawachi.com')) ? user.email : "";
+        document.getElementById("profile-email-address").readOnly = false;
+        document.getElementById("profile-email-address").style.backgroundColor = "#ffffff";
+        document.getElementById("profile-email-address").style.color = "#0f172a";
+        document.getElementById("profile-email-hint").style.display = "none";
+      } else {
+        document.getElementById("profile-email-address").value = user.email || "";
+        document.getElementById("profile-email-address").readOnly = true;
+        document.getElementById("profile-email-address").style.backgroundColor = "#f8fafc";
+        document.getElementById("profile-email-address").style.color = "#64748b";
+        document.getElementById("profile-email-hint").style.display = "block";
+
+        document.getElementById("profile-phone-number").value = user.phone || "";
+        document.getElementById("profile-phone-number").readOnly = false;
+        document.getElementById("profile-phone-number").style.backgroundColor = "#ffffff";
+        document.getElementById("profile-phone-number").style.color = "#0f172a";
+        document.getElementById("profile-phone-hint").style.display = "none";
+      }
+    };
+
+    window.hideDetailedProfileView = function() {
+      document.getElementById('detailed-profile-view').style.display = 'none';
+      document.getElementById('profile-view').style.display = 'block';
+      renderPage();
+    };
+
+    window.saveDetailedProfile = function(event) {
+      if (event) event.preventDefault();
+      const user = getUser();
+      if (!user) return;
+
+      const firstName = document.getElementById('profile-first-name').value.trim();
+      const lastName = document.getElementById('profile-last-name').value.trim();
+      const emailVal = document.getElementById('profile-email-address').value.trim();
+      const phoneVal = document.getElementById('profile-phone-number').value.trim();
+
+      let selectedGender = "";
+      const genderRadios = document.getElementsByName('profile-gender');
+      genderRadios.forEach(radio => {
+        if (radio.checked) {
+          selectedGender = radio.value;
+        }
+      });
+
+      user.first_name = firstName;
+      user.last_name = lastName;
+      user.name = (firstName + ' ' + lastName).trim() || user.name;
+      user.gender = selectedGender;
+
+      if (user.phone) {
+        // Phone login: allow updating email
+        if (emailVal) user.email = emailVal;
+      } else {
+        // Email login: allow updating phone number
+        if (phoneVal) user.phone = phoneVal;
+      }
+
+      setUser(user);
+
+      // Show success message
+      const msg = document.getElementById('profile-save-message');
+      if (msg) {
+        msg.style.display = 'block';
+        setTimeout(() => {
+          msg.style.display = 'none';
+        }, 3000);
+      }
+    };
     
     window.toggleLogoutModal = function(event) {
       if (event) event.stopPropagation();
@@ -642,8 +807,27 @@
         toggleEmailAuth(true);
         return;
       }
-      const names = {};
-      const guestUser = { name: names[provider] || provider + ' User', email: 'guest@kawachi.in', joinedAt: new Date().toISOString() };
+      const names = {
+        Google: 'Karan Sharma',
+        Facebook: 'Amit Patel'
+      };
+      const emails = {
+        Google: 'karan.sharma@gmail.com',
+        Facebook: 'amit.patel@facebook.com'
+      };
+      const nameVal = names[provider] || (provider + ' User');
+      const emailVal = emails[provider] || 'guest@kawachi.in';
+      const parts = nameVal.split(' ');
+      const firstName = parts[0] || '';
+      const lastName = parts.slice(1).join(' ') || '';
+
+      const guestUser = {
+        name: nameVal,
+        first_name: firstName,
+        last_name: lastName,
+        email: emailVal,
+        joinedAt: new Date().toISOString()
+      };
       setUser(guestUser);
       renderPage();
     }

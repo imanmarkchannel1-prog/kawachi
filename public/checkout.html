@@ -963,54 +963,101 @@
       // Pre-fill form from localStorage on page load
       function restoreSavedAddress() {
         const savedAddrStr = localStorage.getItem("kawachi_saved_address");
+        let savedAddr = {};
         if (savedAddrStr) {
           try {
-            const savedAddr = JSON.parse(savedAddrStr);
-            if (savedAddr.firstName) document.getElementById("shipping-first-name").value = savedAddr.firstName;
-            if (savedAddr.lastName) document.getElementById("shipping-last-name").value = savedAddr.lastName;
-            if (savedAddr.email) document.getElementById("shipping-email").value = savedAddr.email;
-            if (savedAddr.phone) document.getElementById("shipping-phone").value = savedAddr.phone;
-            if (savedAddr.phoneAlt) document.getElementById("shipping-phone-alt").value = savedAddr.phoneAlt;
-            if (savedAddr.address1) document.getElementById("shipping-address-1").value = savedAddr.address1;
-            if (savedAddr.locality) document.getElementById("locality-display").value = savedAddr.locality;
-            if (savedAddr.addressType) {
-              document.getElementById("address-type").value = savedAddr.addressType;
-              const btnHome = document.getElementById("addr-type-home");
-              const btnWork = document.getElementById("addr-type-work");
-              if (savedAddr.addressType === "Work") {
-                if (btnWork) btnWork.classList.add("active");
-                if (btnHome) btnHome.classList.remove("active");
-              } else {
-                if (btnHome) btnHome.classList.add("active");
-                if (btnWork) btnWork.classList.remove("active");
-              }
-            }
-
-            // Hydrate the summaries with saved values immediately
-            const fullName = `${savedAddr.firstName || ''} ${savedAddr.lastName || ''}`.trim();
-            const addrType = savedAddr.addressType || 'Home';
-            const address1 = savedAddr.address1 || '';
-            const locality = savedAddr.locality || '';
-            const phone = savedAddr.phone || '';
-            
-            if (fullName) {
-              document.getElementById("summary-display-name").textContent = fullName;
-              document.getElementById("summary-display-name-mini").textContent = fullName;
-            }
-            if (addrType) {
-              document.getElementById("summary-display-type").textContent = addrType;
-              document.getElementById("summary-display-type-mini").textContent = addrType;
-            }
-            if (phone) {
-              document.getElementById("summary-display-phone").textContent = phone;
-            }
-            if (address1 && locality) {
-              document.getElementById("summary-display-address").textContent = `${address1}, ${locality}`;
-              document.getElementById("summary-display-address-mini").textContent = `${address1}, ${locality}`;
-            }
+            savedAddr = JSON.parse(savedAddrStr);
           } catch (e) {
             console.error("Failed to parse saved address details:", e);
           }
+        }
+
+        // Load logged-in user info as fallback
+        let user = null;
+        try {
+          user = JSON.parse(localStorage.getItem("kawachi_user"));
+        } catch (e) {}
+
+        const firstNameInput = document.getElementById("shipping-first-name");
+        const lastNameInput = document.getElementById("shipping-last-name");
+        const emailInput = document.getElementById("shipping-email");
+        const phoneInput = document.getElementById("shipping-phone");
+
+        // 1. Populate input fields
+        if (savedAddr.firstName) {
+          firstNameInput.value = savedAddr.firstName;
+        } else if (user && user.first_name) {
+          firstNameInput.value = user.first_name;
+        } else if (user && user.name) {
+          firstNameInput.value = user.name.split(' ')[0] || '';
+        }
+
+        if (savedAddr.lastName) {
+          lastNameInput.value = savedAddr.lastName;
+        } else if (user && user.last_name) {
+          lastNameInput.value = user.last_name;
+        } else if (user && user.name) {
+          const parts = user.name.split(' ');
+          if (parts.length > 1) {
+            lastNameInput.value = parts.slice(1).join(' ') || '';
+          }
+        }
+
+        if (savedAddr.email) {
+          emailInput.value = savedAddr.email;
+        } else if (user && user.email) {
+          // Exclude numeric workaround email addresses
+          if (!user.email.endsWith('@kawachigroup.com') && !user.email.endsWith('@theredkawachi.com')) {
+            emailInput.value = user.email;
+          }
+        }
+
+        if (savedAddr.phone) {
+          phoneInput.value = savedAddr.phone;
+        } else if (user && user.phone) {
+          phoneInput.value = user.phone;
+        }
+
+        if (savedAddr.phoneAlt) document.getElementById("shipping-phone-alt").value = savedAddr.phoneAlt;
+        if (savedAddr.address1) document.getElementById("shipping-address-1").value = savedAddr.address1;
+        if (savedAddr.locality) document.getElementById("locality-display").value = savedAddr.locality;
+        
+        if (savedAddr.addressType) {
+          document.getElementById("address-type").value = savedAddr.addressType;
+          const btnHome = document.getElementById("addr-type-home");
+          const btnWork = document.getElementById("addr-type-work");
+          if (savedAddr.addressType === "Work") {
+            if (btnWork) btnWork.classList.add("active");
+            if (btnHome) btnHome.classList.remove("active");
+          } else {
+            if (btnHome) btnHome.classList.add("active");
+            if (btnWork) btnWork.classList.remove("active");
+          }
+        }
+
+        // 2. Populate summaries
+        const finalFirstName = firstNameInput.value;
+        const finalLastName = lastNameInput.value;
+        const fullName = `${finalFirstName} ${finalLastName}`.trim();
+        const addrType = savedAddr.addressType || 'Home';
+        const address1 = savedAddr.address1 || '';
+        const locality = savedAddr.locality || '';
+        const phone = phoneInput.value;
+
+        if (fullName) {
+          document.getElementById("summary-display-name").textContent = fullName;
+          document.getElementById("summary-display-name-mini").textContent = fullName;
+        }
+        if (addrType) {
+          document.getElementById("summary-display-type").textContent = addrType;
+          document.getElementById("summary-display-type-mini").textContent = addrType;
+        }
+        if (phone) {
+          document.getElementById("summary-display-phone").textContent = phone;
+        }
+        if (address1 && locality) {
+          document.getElementById("summary-display-address").textContent = `${address1}, ${locality}`;
+          document.getElementById("summary-display-address-mini").textContent = `${address1}, ${locality}`;
         }
       }
 
@@ -1095,6 +1142,26 @@
           addressType: addrType
         };
         localStorage.setItem("kawachi_saved_address", JSON.stringify(addressData));
+
+        // Update user profile in local storage if logged in
+        let user = null;
+        try {
+          user = JSON.parse(localStorage.getItem("kawachi_user"));
+        } catch(e) {}
+        if (user) {
+          user.first_name = firstName;
+          user.last_name = lastName;
+          user.name = (firstName + ' ' + lastName).trim() || user.name;
+          if (email) {
+            if (!user.email || user.email.endsWith('@kawachigroup.com') || user.email.endsWith('@theredkawachi.com')) {
+              user.email = email;
+            }
+          }
+          if (phone) {
+            user.phone = phone;
+          }
+          localStorage.setItem("kawachi_user", JSON.stringify(user));
+        }
 
         document.getElementById("summary-display-name").textContent = fullName;
         document.getElementById("summary-display-name-mini").textContent = fullName;
