@@ -482,12 +482,18 @@ async function loadLiveWooCommerceProducts() {
               per_page: 8,
             })
           : Promise.resolve([]),
-        client
-          .fetchProducts({
-            status: "publish",
-            per_page: 100,
-          })
-          .catch(() => []),
+        Promise.all([
+          client.fetchProducts({ status: "publish", per_page: 100, page: 1 }).catch(() => []),
+          client.fetchProducts({ status: "publish", per_page: 100, page: 2 }).catch(() => []),
+          client.fetchProducts({ status: "publish", per_page: 100, page: 3 }).catch(() => []),
+          client.fetchProducts({ status: "publish", per_page: 100, page: 4 }).catch(() => []),
+          client.fetchProducts({ status: "publish", per_page: 100, page: 5 }).catch(() => []),
+          client.fetchProducts({ status: "publish", per_page: 100, page: 6 }).catch(() => []),
+          client.fetchProducts({ status: "publish", per_page: 100, page: 7 }).catch(() => []),
+          client.fetchProducts({ status: "publish", per_page: 100, page: 8 }).catch(() => []),
+          client.fetchProducts({ status: "publish", per_page: 100, page: 9 }).catch(() => []),
+          client.fetchProducts({ status: "publish", per_page: 100, page: 10 }).catch(() => []),
+        ]).then(results => results.flat()),
       ]);
 
     const bestSellers = bestSellersRaw.map(mapWooProduct);
