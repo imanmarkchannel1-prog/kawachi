@@ -7872,29 +7872,29 @@ main.static-page-card blockquote {
   border-radius: 16px !important;
 }
 
-/* Amazon-style vertical rectangular arrows for static sliders */
+/* Sleek circular arrows for static sliders placed in the corners */
 .static-slider-arrow {
   position: absolute !important;
   top: 50% !important;
   transform: translateY(-50%) !important;
-  width: 44px !important;
-  height: 120px !important;
-  background-color: #ffffff !important;
-  border: 1.5px solid #cbd5e1 !important;
+  width: 40px !important;
+  height: 40px !important;
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  border: 1px solid #cbd5e1 !important;
   color: #0f172a !important;
-  border-radius: 8px !important;
+  border-radius: 50% !important;
   cursor: pointer !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   z-index: 20 !important;
-  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.15) !important;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12) !important;
   transition: all 0.2s ease !important;
 }
 
 .static-slider-arrow svg {
-  width: 24px !important;
-  height: 24px !important;
+  width: 20px !important;
+  height: 20px !important;
   color: #0f172a !important;
 }
 
@@ -7902,7 +7902,7 @@ main.static-page-card blockquote {
   background-color: #0f172a !important;
   color: #ffffff !important;
   border-color: #0f172a !important;
-  box-shadow: 0 6px 24px rgba(15, 23, 42, 0.25) !important;
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.22) !important;
 }
 
 .static-slider-arrow:hover svg {
@@ -7910,15 +7910,11 @@ main.static-page-card blockquote {
 }
 
 .static-slider-arrow.prev {
-  left: 0 !important;
-  border-top-left-radius: 0 !important;
-  border-bottom-left-radius: 0 !important;
+  left: 8px !important;
 }
 
 .static-slider-arrow.next {
-  right: 0 !important;
-  border-top-right-radius: 0 !important;
-  border-bottom-right-radius: 0 !important;
+  right: 8px !important;
 }
 
 .static-slider-arrow:disabled {
@@ -16180,14 +16176,21 @@ select.form-input.pre-selected:focus {
 /* Mobile swiping/scrolling override for category strips, Deals of the Day, and static marquee sliders */
 @media (max-width: 767px) {
   .product-slider-wrapper,
-  .deals-slider-wrapper,
-  .static-marquee-container {
+  .deals-slider-wrapper {
     overflow-x: auto !important;
     overflow-y: hidden !important;
     scrollbar-width: none !important;
     -webkit-overflow-scrolling: touch !important;
     padding-left: 20px !important;
     padding-right: 20px !important;
+  }
+  .static-marquee-container {
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scrollbar-width: none !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
   }
   .product-slider-wrapper::-webkit-scrollbar,
   .deals-slider-wrapper::-webkit-scrollbar,
@@ -16201,8 +16204,5 @@ select.form-input.pre-selected:focus {
     flex-wrap: nowrap !important;
     width: max-content !important;
     transform: none !important;
-  }
-  .static-slider-arrow {
-    display: none !important;
   }
 }
