@@ -14,8 +14,9 @@
     .orders-page {
       min-height: 85vh;
       padding: 40px 0 80px;
-      background: radial-gradient(circle at 10% 20%, rgba(26, 74, 122, 0.05) 0%, transparent 45%),
-                  radial-gradient(circle at 90% 80%, rgba(0, 229, 255, 0.04) 0%, transparent 45%);
+      background: radial-gradient(circle at top left, rgba(26, 74, 122, 0.08) 0%, transparent 45%),
+                  radial-gradient(circle at bottom right, rgba(251, 100, 27, 0.04) 0%, transparent 50%),
+                  linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%) !important;
     }
 
     @keyframes rotateDashed {
@@ -47,22 +48,7 @@
       display: flex; align-items: center; justify-content: center; flex-shrink: 0;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), inset 0 1px 1px rgba(255,255,255,0.2);
     }
-    .hero-meta { flex: 1; padding-right: 120px; }
-    .btn-logout {
-      position: absolute; top: 24px; right: 24px;
-      background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2);
-      color: rgba(255, 255, 255, 0.95); padding: 8px 16px; border-radius: 8px;
-      font-size: 12px; font-weight: 700; cursor: pointer;
-      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-      transition: all 0.2s ease; white-space: nowrap; font-family: inherit;
-      display: inline-flex; align-items: center; gap: 6px; z-index: 5;
-      outline: none;
-    }
-    .btn-logout:hover {
-      background: rgba(255, 255, 255, 0.18); border-color: rgba(255, 255, 255, 0.35);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-    .btn-logout:active { transform: scale(0.97); }
+    .hero-meta { flex: 1; }
 
     .orders-gate {
       max-width: 440px; margin: 0 auto; text-align: center;
@@ -276,21 +262,12 @@
         width: 26px !important;
         height: 26px !important;
       }
-      .hero-meta {
-        padding-right: 85px !important;
-      }
       .page-hero h1 {
         font-size: 19px !important;
         margin-bottom: 4px !important;
       }
       .page-hero p {
         font-size: 12px !important;
-      }
-      .btn-logout {
-        top: 20px !important;
-        right: 20px !important;
-        padding: 6px 12px !important;
-        font-size: 11px !important;
       }
     }
 
@@ -590,10 +567,6 @@
             <h1>My Orders</h1>
             <p id="orders-summary-text">Loading your order history...</p>
           </div>
-          <button class="btn-logout" onclick="handleLogout()">
-            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-            Sign Out
-          </button>
         </div>
 
         <div class="orders-toolbar" id="orders-toolbar" style="display:none;">

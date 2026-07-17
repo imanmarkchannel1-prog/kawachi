@@ -14,8 +14,9 @@
     .acct-page {
       min-height: 85vh;
       padding: 40px 0 80px;
-      background: radial-gradient(circle at 10% 20%, rgba(26, 74, 122, 0.05) 0%, transparent 45%),
-                  radial-gradient(circle at 90% 80%, rgba(0, 229, 255, 0.04) 0%, transparent 45%);
+      background: radial-gradient(circle at top left, rgba(26, 74, 122, 0.08) 0%, transparent 45%),
+                  radial-gradient(circle at bottom right, rgba(251, 100, 27, 0.04) 0%, transparent 50%),
+                  linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%) !important;
     }
 
     @keyframes rotateDashed {
@@ -259,24 +260,31 @@
     .profile-email { font-size: 13.5px; color: rgba(255,255,255,0.7); margin: 0 0 10px; }
     .profile-badge {
       display: inline-flex; align-items: center; gap: 6px;
-      background: rgba(0, 229, 255, 0.12); border: 1px solid rgba(0, 229, 255, 0.3);
-      border-radius: 20px; padding: 4px 12px; font-size: 12px; font-weight: 600; color: #00E5FF;
-      box-shadow: 0 2px 8px rgba(0, 229, 255, 0.15);
+      background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 20px; padding: 4px 12px; font-size: 12px; font-weight: 600; color: rgba(255, 255, 255, 0.9);
     }
-    .btn-logout {
-      position: absolute; top: 24px; right: 24px;
+    .logout-container {
+      position: absolute; top: 24px; right: 24px; z-index: 100;
+    }
+    .btn-logout-icon {
       background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2);
-      color: rgba(255, 255, 255, 0.95); padding: 8px 16px; border-radius: 8px;
-      font-size: 12px; font-weight: 700; cursor: pointer;
+      color: rgba(255, 255, 255, 0.95); width: 38px; height: 38px; border-radius: 50%;
+      display: inline-flex; align-items: center; justify-content: center; cursor: pointer;
       backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-      transition: all 0.2s ease; white-space: nowrap; font-family: inherit;
-      display: inline-flex; align-items: center; gap: 6px; z-index: 5;
+      transition: all 0.2s ease; outline: none; z-index: 5; padding: 0;
     }
-    .btn-logout:hover {
+    .btn-logout-icon:hover {
       background: rgba(255, 255, 255, 0.18); border-color: rgba(255, 255, 255, 0.35);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
-    .btn-logout:active { transform: scale(0.97); }
+    .btn-logout-icon:active { transform: scale(0.95); }
+    .logout-popover {
+      display: none; position: absolute; top: 46px; right: 0;
+      background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.15) !important; padding: 6px;
+      min-width: 120px; z-index: 1000; box-sizing: border-box;
+      transform-origin: top right;
+    }
     .profile-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
     .profile-card {
       background: #fff; border-radius: 16px; border: 1.5px solid #f1f5f9;
@@ -324,7 +332,8 @@
       .profile-meta { padding-right: 85px !important; }
       .profile-name { font-size: 19px !important; }
       .profile-email { font-size: 12px !important; margin-bottom: 8px !important; }
-      .btn-logout { top: 20px !important; right: 20px !important; padding: 6px 12px !important; font-size: 11px !important; }
+      .logout-container { top: 20px !important; right: 20px !important; }
+      .btn-logout-icon { width: 32px !important; height: 32px !important; }
       .auth-gate { padding: 32px 20px; }
     }
   </style>
@@ -571,10 +580,15 @@
                 Verified Member
               </span>
             </div>
-            <button class="btn-logout" onclick="handleLogout()">
-              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-              Sign Out
-            </button>
+            <div class="logout-container">
+              <button class="btn-logout-icon" aria-label="Sign Out" onclick="toggleLogoutMenu(event)">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+              </button>
+              <div id="logout-confirm-menu" class="logout-popover">
+                <button onclick="handleLogout()" style="display: block; width: 100%; text-align: left; background: transparent; border: none; padding: 10px 12px; font-size: 13px; font-weight: 700; color: #64748b; cursor: pointer; border-radius: 6px; transition: background 0.15s; outline: none; font-family: inherit;">Log out</button>
+                <button onclick="toggleLogoutMenu(event)" style="display: block; width: 100%; text-align: left; background: transparent; border: none; padding: 10px 12px; font-size: 13px; font-weight: 700; color: #ef4444; cursor: pointer; border-radius: 6px; transition: background 0.15s; outline: none; font-family: inherit;">Cancel</button>
+              </div>
+            </div>
           </div>
           <div class="profile-grid">
             <a href="orders.html" class="profile-card">
@@ -602,6 +616,18 @@
     function setUser(u) { localStorage.setItem(AUTH_KEY, JSON.stringify(u)); }
     function clearUser() { localStorage.removeItem(AUTH_KEY); }
     function getInitials(name) { return (name||'K').trim().split(' ').slice(0,2).map(w=>w[0].toUpperCase()).join(''); }
+    
+    window.toggleLogoutMenu = function(event) {
+      if (event) event.stopPropagation();
+      var menu = document.getElementById('logout-confirm-menu');
+      if (menu) {
+        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+      }
+    };
+    document.addEventListener('click', function() {
+      var menu = document.getElementById('logout-confirm-menu');
+      if (menu) menu.style.display = 'none';
+    });
 
     function renderPage() {
       const user = getUser();

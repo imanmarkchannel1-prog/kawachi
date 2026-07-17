@@ -16177,24 +16177,32 @@ select.form-input.pre-selected:focus {
   display: none !important;
 }
 
-/* Mobile swiping/scrolling override for category strips and Deals of the Day */
+/* Mobile swiping/scrolling override for category strips, Deals of the Day, and static marquee sliders */
 @media (max-width: 767px) {
   .product-slider-wrapper,
-  .deals-slider-wrapper {
+  .deals-slider-wrapper,
+  .static-marquee-container {
     overflow-x: auto !important;
     overflow-y: hidden !important;
     scrollbar-width: none !important;
     -webkit-overflow-scrolling: touch !important;
+    padding-left: 20px !important;
+    padding-right: 20px !important;
   }
   .product-slider-wrapper::-webkit-scrollbar,
-  .deals-slider-wrapper::-webkit-scrollbar {
+  .deals-slider-wrapper::-webkit-scrollbar,
+  .static-marquee-container::-webkit-scrollbar {
     display: none !important;
   }
   .product-slider-track,
-  .deals-slider-track {
+  .deals-slider-track,
+  .static-marquee-track {
     display: flex !important;
     flex-wrap: nowrap !important;
     width: max-content !important;
     transform: none !important;
+  }
+  .static-slider-arrow {
+    display: none !important;
   }
 }
