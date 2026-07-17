@@ -780,7 +780,8 @@
           padding: 6px 14px !important;
           font-size: 12px !important;
         }
-        #no-results-trending-title::after {
+        #no-results-trending-title::after,
+        #search-trending-title::after {
           display: none !important;
           content: none !important;
         }
@@ -1164,6 +1165,96 @@
               width: 100%;
             "
           ></div>
+
+          <!-- Looking for a specific product Section (Always visible at the bottom of search results) -->
+          <section class="search-assistance-section" style="width: 100%; margin-top: 40px; margin-bottom: 24px;">
+            <div class="search-assistance-card">
+              <h3 class="search-assistance-title">LOOKING FOR A SPECIFIC PRODUCT? 🤔</h3>
+              
+              <div class="search-assistance-categories-box" style="margin-top: 8px;">
+                <span class="search-assistance-tags-label" style="display: block; margin-bottom: 12px; text-align: center;">Browse Categories:</span>
+                <div class="categories-tag-lines" style="display: flex; flex-direction: column; gap: 10px; align-items: center;">
+                  <div class="tag-line" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;">
+                    <a href="search.html?q=Furniture" class="search-assistance-tag-link">Home Furniture</a>
+                    <a href="search.html?q=Kitchen" class="search-assistance-tag-link">Kitchen Storage</a>
+                    <a href="search.html?q=Decor" class="search-assistance-tag-link">Home Decor</a>
+                    <a href="search.html?q=Beauty" class="search-assistance-tag-link">Health & Beauty</a>
+                    <a href="search.html?q=Utility" class="search-assistance-tag-link">Utility Products</a>
+                  </div>
+                  <div class="tag-line" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;">
+                    <a href="search.html?q=Sauna" class="search-assistance-tag-link">Wellness & Spa</a>
+                    <a href="search.html?q=Office" class="search-assistance-tag-link">Office Essentials</a>
+                    <a href="search.html?q=Shelves" class="search-assistance-tag-link">Organizers & Shelves</a>
+                    <a href="search.html?q=Gadget" class="search-assistance-tag-link">Smart Gadgets</a>
+                    <a href="search.html?q=Fitness" class="search-assistance-tag-link">Fitness & Yoga</a>
+                  </div>
+                  <div class="tag-line" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;">
+                    <a href="search.html?q=Bedroom" class="search-assistance-tag-link">Bedroom Decor</a>
+                    <a href="search.html?q=Kids" class="search-assistance-tag-link">Kids Furniture</a>
+                    <a href="search.html?q=Garden" class="search-assistance-tag-link">Outdoor & Garden</a>
+                    <a href="search.html?q=Cabinet" class="search-assistance-tag-link">Storage Cabinets</a>
+                    <a href="search.html?q=Lifestyle" class="search-assistance-tag-link">Lifestyle & Comfort</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Horizontal Trending Slider (Always visible at the bottom of search results) -->
+          <div class="trending-recommendations-sec" style="margin-top: 32px; margin-bottom: 40px; border-top: 1px solid #E7E7E7; border-bottom: 1px solid #E7E7E7; padding: 40px 0 !important; display: block; width: 100% !important; max-width: none !important; background-color: #FFFFFF; position: relative; overflow: hidden; box-sizing: border-box;">
+            <div style="width: 100% !important; max-width: none !important; margin: 0; padding: 0; position: relative; box-sizing: border-box;">
+              <div style="position: relative; margin-bottom: 24px; padding: 0 24px; width: 100%; box-sizing: border-box;">
+                <h2 class="kawachi-sec-title" id="search-trending-title" style="font-size: 22px !important; margin: 0; text-align: left; letter-spacing: 0.3px; font-weight: 800; display: block; position: relative; padding-bottom: 8px;">
+                  Most Loved Products 💫
+                  <span style="position: absolute; bottom: 0; left: 0; width: 60px; height: 4px; background: linear-gradient(90deg, #be123c 0%, #fbbf24 100%); border-radius: 2px;"></span>
+                </h2>
+                <div style="margin-top: 10px; text-align: right; padding-right: 4px;">
+                  <a href="search.html?orderby=popularity" style="font-size: 13.5px; color: #007185; text-decoration: none; font-weight: 700;">See all &rsaquo;</a>
+                </div>
+              </div>
+              <div class="static-marquee-container" style="width: 100% !important; max-width: none !important; padding: 0 !important; margin: 0 !important; position: relative; overflow: hidden !important;">
+                <div class="static-marquee-track skeleton-loading" id="search-trending-track" style="margin: 0 !important;">
+                  <!-- Skeleton loaders (4 cards) -->
+                  <div class="skeleton-card">
+                    <div class="product-image-container"><div class="skeleton-el skeleton-img" style="width: 100%; height: 100%;"></div></div>
+                    <div class="product-info">
+                      <div class="skeleton-el skeleton-text-category" style="margin-bottom: 6px;"></div>
+                      <div class="skeleton-el skeleton-text-title" style="margin-bottom: 8px;"></div>
+                      <div class="skeleton-el skeleton-text-rating" style="margin-bottom: 6px;"></div>
+                      <div class="skeleton-el skeleton-price-row"></div>
+                    </div>
+                  </div>
+                  <div class="skeleton-card">
+                    <div class="product-image-container"><div class="skeleton-el skeleton-img" style="width: 100%; height: 100%;"></div></div>
+                    <div class="product-info">
+                      <div class="skeleton-el skeleton-text-category" style="margin-bottom: 6px;"></div>
+                      <div class="skeleton-el skeleton-text-title" style="margin-bottom: 8px;"></div>
+                      <div class="skeleton-el skeleton-text-rating" style="margin-bottom: 6px;"></div>
+                      <div class="skeleton-el skeleton-price-row"></div>
+                    </div>
+                  </div>
+                  <div class="skeleton-card">
+                    <div class="product-image-container"><div class="skeleton-el skeleton-img" style="width: 100%; height: 100%;"></div></div>
+                    <div class="product-info">
+                      <div class="skeleton-el skeleton-text-category" style="margin-bottom: 6px;"></div>
+                      <div class="skeleton-el skeleton-text-title" style="margin-bottom: 8px;"></div>
+                      <div class="skeleton-el skeleton-text-rating" style="margin-bottom: 6px;"></div>
+                      <div class="skeleton-el skeleton-price-row"></div>
+                    </div>
+                  </div>
+                  <div class="skeleton-card">
+                    <div class="product-image-container"><div class="skeleton-el skeleton-img" style="width: 100%; height: 100%;"></div></div>
+                    <div class="product-info">
+                      <div class="skeleton-el skeleton-text-category" style="margin-bottom: 6px;"></div>
+                      <div class="skeleton-el skeleton-text-title" style="margin-bottom: 8px;"></div>
+                      <div class="skeleton-el skeleton-text-rating" style="margin-bottom: 6px;"></div>
+                      <div class="skeleton-el skeleton-price-row"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </main>
@@ -1257,190 +1348,30 @@
         <div class="logo-scroll-track">
           <div class="logo-scroll-inner">
             <div class="logo-scroll-group">
-              <div class="partner-logo-item">
-                <img
-                  src="images/partners/amazon.svg"
-                  alt="Amazon"
-                  onerror="this.style.display = 'none'"
-                />
-              </div>
-              <div class="partner-logo-item">
-                <img
-                  src="images/partners/flipkart.svg"
-                  alt="Flipkart"
-                  onerror="this.style.display = 'none'"
-                />
-              </div>
-              <div class="partner-logo-item">
-                <img
-                  src="images/partners/meesho.svg"
-                  alt="Meesho"
-                  onerror="this.style.display = 'none'"
-                />
-              </div>
-              <div class="partner-logo-item">
-                <img
-                  src="images/partners/jiomart.svg"
-                  alt="JioMart"
-                  onerror="this.style.display = 'none'"
-                />
-              </div>
-              <div class="partner-logo-item">
-                <img
-                  src="images/partners/indiamart.svg"
-                  alt="IndiaMart"
-                  onerror="this.style.display = 'none'"
-                />
-              </div>
-              <div class="partner-logo-item">
-                <img
-                  src="images/partners/razorpay.svg"
-                  alt="Razorpay"
-                  onerror="this.style.display = 'none'"
-                />
-              </div>
-              <div class="partner-logo-item">
-                <img
-                  src="images/partners/paytm.svg"
-                  alt="Paytm"
-                  onerror="this.style.display = 'none'"
-                />
-              </div>
-              <div class="partner-logo-item">
-                <img
-                  src="images/partners/phonepe.svg"
-                  alt="PhonePe"
-                  onerror="this.style.display = 'none'"
-                />
-              </div>
-              <div class="partner-logo-item">
-                <img
-                  src="images/partners/grabon.svg"
-                  alt="GrabOn"
-                  onerror="this.style.display = 'none'"
-                />
-              </div>
-              <div class="partner-logo-item">
-                <img
-                  src="images/partners/delhivery.svg"
-                  alt="Delhivery"
-                  onerror="this.style.display = 'none'"
-                />
-              </div>
-              <div class="partner-logo-item">
-                <img
-                  src="images/partners/bluedart.svg"
-                  alt="BlueDart"
-                  onerror="this.style.display = 'none'"
-                />
-              </div>
-              <div class="partner-logo-item">
-                <img
-                  src="images/partners/shiprocket.svg"
-                  alt="Shiprocket"
-                  onerror="this.style.display = 'none'"
-                />
-              </div>
-              <div class="partner-logo-item">
-                <img
-                  src="images/partners/xpressbees.svg"
-                  alt="Xpressbees"
-                  onerror="this.style.display = 'none'"
-                />
-              </div>
+              <div class="partner-logo-item"><img src="images/partners/visa.svg" alt="Visa" onerror="this.style.display='none'"></div>
+              <div class="partner-logo-item"><img src="images/partners/mastercard.svg" alt="Mastercard" onerror="this.style.display='none'"></div>
+              <div class="partner-logo-item"><img src="images/partners/paypal.svg" alt="PayPal" onerror="this.style.display='none'"></div>
+              <div class="partner-logo-item"><img src="images/partners/razorpay.svg" alt="Razorpay" onerror="this.style.display='none'"></div>
+              <div class="partner-logo-item"><img src="images/partners/paytm.svg" alt="Paytm" onerror="this.style.display='none'"></div>
+              <div class="partner-logo-item"><img src="images/partners/phonepe.svg" alt="PhonePe" onerror="this.style.display='none'"></div>
+              <div class="partner-logo-item"><img src="images/partners/grabon.svg" alt="GrabOn" onerror="this.style.display='none'"></div>
+              <div class="partner-logo-item"><img src="images/partners/delhivery.svg" alt="Delhivery" onerror="this.style.display='none'"></div>
+              <div class="partner-logo-item"><img src="images/partners/bluedart.svg" alt="BlueDart" onerror="this.style.display='none'"></div>
+              <div class="partner-logo-item"><img src="images/partners/shiprocket.svg" alt="Shiprocket" onerror="this.style.display='none'"></div>
+              <div class="partner-logo-item"><img src="images/partners/xpressbees.svg" alt="Xpressbees" onerror="this.style.display='none'"></div>
             </div>
             <div class="logo-scroll-group">
-              <div class="partner-logo-item">
-                <img
-                  src="images/partners/amazon.svg"
-                  alt="Amazon"
-                  onerror="this.style.display = 'none'"
-                />
-              </div>
-              <div class="partner-logo-item">
-                <img
-                  src="images/partners/flipkart.svg"
-                  alt="Flipkart"
-                  onerror="this.style.display = 'none'"
-                />
-              </div>
-              <div class="partner-logo-item">
-                <img
-                  src="images/partners/meesho.svg"
-                  alt="Meesho"
-                  onerror="this.style.display = 'none'"
-                />
-              </div>
-              <div class="partner-logo-item">
-                <img
-                  src="images/partners/jiomart.svg"
-                  alt="JioMart"
-                  onerror="this.style.display = 'none'"
-                />
-              </div>
-              <div class="partner-logo-item">
-                <img
-                  src="images/partners/indiamart.svg"
-                  alt="IndiaMart"
-                  onerror="this.style.display = 'none'"
-                />
-              </div>
-              <div class="partner-logo-item">
-                <img
-                  src="images/partners/razorpay.svg"
-                  alt="Razorpay"
-                  onerror="this.style.display = 'none'"
-                />
-              </div>
-              <div class="partner-logo-item">
-                <img
-                  src="images/partners/paytm.svg"
-                  alt="Paytm"
-                  onerror="this.style.display = 'none'"
-                />
-              </div>
-              <div class="partner-logo-item">
-                <img
-                  src="images/partners/phonepe.svg"
-                  alt="PhonePe"
-                  onerror="this.style.display = 'none'"
-                />
-              </div>
-              <div class="partner-logo-item">
-                <img
-                  src="images/partners/grabon.svg"
-                  alt="GrabOn"
-                  onerror="this.style.display = 'none'"
-                />
-              </div>
-              <div class="partner-logo-item">
-                <img
-                  src="images/partners/delhivery.svg"
-                  alt="Delhivery"
-                  onerror="this.style.display = 'none'"
-                />
-              </div>
-              <div class="partner-logo-item">
-                <img
-                  src="images/partners/bluedart.svg"
-                  alt="BlueDart"
-                  onerror="this.style.display = 'none'"
-                />
-              </div>
-              <div class="partner-logo-item">
-                <img
-                  src="images/partners/shiprocket.svg"
-                  alt="Shiprocket"
-                  onerror="this.style.display = 'none'"
-                />
-              </div>
-              <div class="partner-logo-item">
-                <img
-                  src="images/partners/xpressbees.svg"
-                  alt="Xpressbees"
-                  onerror="this.style.display = 'none'"
-                />
-              </div>
+              <div class="partner-logo-item"><img src="images/partners/visa.svg" alt="Visa" onerror="this.style.display='none'"></div>
+              <div class="partner-logo-item"><img src="images/partners/mastercard.svg" alt="Mastercard" onerror="this.style.display='none'"></div>
+              <div class="partner-logo-item"><img src="images/partners/paypal.svg" alt="PayPal" onerror="this.style.display='none'"></div>
+              <div class="partner-logo-item"><img src="images/partners/razorpay.svg" alt="Razorpay" onerror="this.style.display='none'"></div>
+              <div class="partner-logo-item"><img src="images/partners/paytm.svg" alt="Paytm" onerror="this.style.display='none'"></div>
+              <div class="partner-logo-item"><img src="images/partners/phonepe.svg" alt="PhonePe" onerror="this.style.display='none'"></div>
+              <div class="partner-logo-item"><img src="images/partners/grabon.svg" alt="GrabOn" onerror="this.style.display='none'"></div>
+              <div class="partner-logo-item"><img src="images/partners/delhivery.svg" alt="Delhivery" onerror="this.style.display='none'"></div>
+              <div class="partner-logo-item"><img src="images/partners/bluedart.svg" alt="BlueDart" onerror="this.style.display='none'"></div>
+              <div class="partner-logo-item"><img src="images/partners/shiprocket.svg" alt="Shiprocket" onerror="this.style.display='none'"></div>
+              <div class="partner-logo-item"><img src="images/partners/xpressbees.svg" alt="Xpressbees" onerror="this.style.display='none'"></div>
             </div>
           </div>
         </div>
@@ -1922,65 +1853,8 @@
             </div>
           </div>
 
-          <!-- Looking for a specific product Section (Matching single-product.html) -->
-          <section class="search-assistance-section" style="grid-column: 1 / -1; width: 100%; margin-top: 40px;">
-            <div class="search-assistance-card">
-              <h3 class="search-assistance-title">LOOKING FOR A SPECIFIC PRODUCT? 🤔</h3>
-              
-              <div class="search-assistance-categories-box" style="margin-top: 8px;">
-                <span class="search-assistance-tags-label" style="display: block; margin-bottom: 12px; text-align: center;">Browse Categories:</span>
-                <div class="categories-tag-lines" style="display: flex; flex-direction: column; gap: 10px; align-items: center;">
-                  <div class="tag-line" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;">
-                    <a href="search.html?q=Furniture" class="search-assistance-tag-link">Home Furniture</a>
-                    <a href="search.html?q=Kitchen" class="search-assistance-tag-link">Kitchen Storage</a>
-                    <a href="search.html?q=Decor" class="search-assistance-tag-link">Home Decor</a>
-                    <a href="search.html?q=Beauty" class="search-assistance-tag-link">Health & Beauty</a>
-                    <a href="search.html?q=Utility" class="search-assistance-tag-link">Utility Products</a>
-                  </div>
-                  <div class="tag-line" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;">
-                    <a href="search.html?q=Sauna" class="search-assistance-tag-link">Wellness & Spa</a>
-                    <a href="search.html?q=Office" class="search-assistance-tag-link">Office Essentials</a>
-                    <a href="search.html?q=Shelves" class="search-assistance-tag-link">Organizers & Shelves</a>
-                    <a href="search.html?q=Gadget" class="search-assistance-tag-link">Smart Gadgets</a>
-                    <a href="search.html?q=Fitness" class="search-assistance-tag-link">Fitness & Yoga</a>
-                  </div>
-                  <div class="tag-line" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;">
-                    <a href="search.html?q=Bedroom" class="search-assistance-tag-link">Bedroom Decor</a>
-                    <a href="search.html?q=Kids" class="search-assistance-tag-link">Kids Furniture</a>
-                    <a href="search.html?q=Garden" class="search-assistance-tag-link">Outdoor & Garden</a>
-                    <a href="search.html?q=Cabinet" class="search-assistance-tag-link">Storage Cabinets</a>
-                    <a href="search.html?q=Lifestyle" class="search-assistance-tag-link">Lifestyle & Comfort</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-          
-          <!-- Moving Horizontal Trending Strip (Matching single-product.html styling exactly) -->
-          ${
-            mostLovedList.length > 0
-              ? `
-          <div class="trending-recommendations-sec" style="margin-top: 48px; border-top: 1px solid #E7E7E7; border-bottom: 1px solid #E7E7E7; padding: 40px 0 !important; display: block; width: 100% !important; max-width: none !important; background-color: #FFFFFF; grid-column: 1 / -1; position: relative; overflow: hidden; box-sizing: border-box;">
-            <div style="width: 100% !important; max-width: none !important; margin: 0; padding: 0; position: relative; box-sizing: border-box;">
-              <div style="position: relative; margin-bottom: 24px; padding: 0 24px; width: 100%; box-sizing: border-box;">
-                <h2 class="kawachi-sec-title" id="no-results-trending-title" style="font-size: 22px !important; margin: 0; text-align: left; letter-spacing: 0.3px; font-weight: 800; display: block; position: relative; padding-bottom: 8px;">
-                  Most Loved Products 💫
-                  <span style="position: absolute; bottom: 0; left: 0; width: 60px; height: 4px; background: linear-gradient(90deg, #be123c 0%, #fbbf24 100%); border-radius: 2px;"></span>
-                </h2>
-                <div style="margin-top: 10px; text-align: right; padding-right: 4px;">
-                  <a href="search.html?orderby=popularity" style="font-size: 13.5px; color: #007185; text-decoration: none; font-weight: 700;">See all &rsaquo;</a>
-                </div>
-              </div>
-              <div class="static-marquee-container" style="width: 100% !important; max-width: none !important; padding: 0 !important; margin: 0 !important; position: relative; overflow: hidden !important;">
-                <div class="static-marquee-track" id="no-results-trending-track" style="margin: 0 !important;">
-                </div>
-              </div>
-            </div>
-          </div>
-          `
-              : ""
-          }
         `;
+        }
         }
 
         // Render: Products Grid HTML
@@ -2102,7 +1976,6 @@
             resultsGrid.innerHTML = renderNoResultsCard(query);
             if (pagContainer) pagContainer.innerHTML = "";
             attachNoResultsCardListeners();
-            initNoResultsSlider();
           } else {
             if (summaryText) summaryText.style.display = "block";
             resultsGrid.style.display = "grid"; // Restore default grid layout
@@ -2164,12 +2037,11 @@
           }
         };
 
-        // Slider initialization for search empty recommendations — delegates to the shared setupStaticSlider() from main-api.js
-        function initNoResultsSlider() {
-          const track = document.getElementById("no-results-trending-track");
+        // Hydrate and initialize the static "Most Loved Products" slider track
+        function initSearchTrendingSlider() {
+          const track = document.getElementById("search-trending-track");
           if (!track) return;
 
-          // Get the most loved products (same sort as renderNoResultsCard)
           const allProds = window.KawachiProducts || [];
           const mostLovedList = [...allProds]
             .sort((a, b) => {
@@ -2183,7 +2055,6 @@
             .slice(0, 12);
 
           if (typeof window.setupStaticSlider === "function") {
-            // Use the exact same shared function the product page uses
             window.setupStaticSlider(track, mostLovedList);
           }
         }
@@ -2229,6 +2100,7 @@
 
         // Execute on page load
         setupSortListener();
+        initSearchTrendingSlider();
         await filterAndSortEngine();
       });
     </script>

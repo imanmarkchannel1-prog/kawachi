@@ -171,32 +171,30 @@ app.post("/api/auth/send-otp", async (req, res) => {
     const expires = Date.now() + 5 * 60 * 1000; // 5 minutes expiration
     otpCache.set(cleanPhone, { code: otp, expires });
 
-    console.log(`\n======================================================`);
-    console.log(
-      `[SMS AUTH SERVICE] Active OTP for +91${cleanPhone} is: ${otp}`,
-    );
-    console.log(`======================================================\n`);
+    // Live BlackSMS Production Integration
+    const apiKey = process.env.BLACKSMS_API_KEY;
+    const senderId = process.env.BLACKSMS_SENDER_ID;
 
-    // BlackSMS Integration
-    const apiKey =
-      process.env.BLACKSMS_API_KEY || "eb66bf1db97050a4e983aa2ae263caf7";
-    const senderId = process.env.BLACKSMS_SENDER_ID || "324";
-    const message = `Your Kawachi verification code is ${otp}. Please enter it within 5 minutes.`;
+    if (!apiKey || !senderId) {
+      throw new Error("BlackSMS API configuration key or Sender ID is missing from environment variables.");
+    }
 
-    try {
-      // Use dynamic URL params matching BlackSMS GET gateway or simple POST
-      const url = `https://blacksms.in/sms?apikey=${apiKey}&senderid=${senderId}&number=${cleanPhone}&message=${encodeURIComponent(message)}&route=1`;
-      const smsRes = await fetch(url);
-      if (!smsRes.ok) {
-        console.warn(
-          `[BlackSMS Gateway API warning] HTTP Status: ${smsRes.status}`,
-        );
-      }
-    } catch (smsErr) {
-      console.warn(
-        "[BlackSMS Gateway Connection failed] Continuing with console OTP log: ",
-        smsErr.message,
-      );
+    const smsRes = await fetch("https://blacksms.in/sms", {
+      method: "POST",
+      headers: {
+        "Authorization": apiKey,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        sender_id: senderId,
+        variables_values: otp,
+        numbers: cleanPhone
+      })
+    });
+
+    if (!smsRes.ok) {
+      const errorText = await smsRes.text();
+      throw new Error(`BlackSMS API error: Status ${smsRes.status} - ${errorText}`);
     }
 
     res.json({ success: true, message: "OTP sent successfully" });
