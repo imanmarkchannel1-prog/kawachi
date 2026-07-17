@@ -1673,9 +1673,25 @@
               order_id: orderId,
               handler: function (response) {
                 console.log("Payment Successful", response);
-                alert("Payment Successful! Thank you for your order. A support representative will coordinate delivery schedules within 12 hours.");
                 window.KawachiCart.clear();
-                window.location.href = "index.html";
+                const successOverlay = document.getElementById("order-success-overlay");
+                if (successOverlay) {
+                  successOverlay.style.display = "flex";
+                  let secondsLeft = 5;
+                  const countdownSpan = document.getElementById("success-countdown");
+                  if (countdownSpan) countdownSpan.textContent = secondsLeft;
+                  const interval = setInterval(() => {
+                    secondsLeft--;
+                    if (countdownSpan) countdownSpan.textContent = secondsLeft;
+                    if (secondsLeft <= 0) {
+                      clearInterval(interval);
+                      window.location.href = "index.html";
+                    }
+                  }, 1000);
+                } else {
+                  alert("Payment Successful! Thank you for your order. A support representative will coordinate delivery schedules within 12 hours.");
+                  window.location.href = "index.html";
+                }
               },
               prefill: {
                 name: `${firstName} ${lastName}`.trim(),
@@ -1728,5 +1744,22 @@
       }
     });
   </script>
+
+  <!-- Fullscreen Order Success Overlay with Countdown Redirect -->
+  <div id="order-success-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0a2540; z-index: 99999; align-items: center; justify-content: center; color: #ffffff; text-align: center; font-family: 'Plus Jakarta Sans', sans-serif;">
+    <div style="max-width: 400px; padding: 32px; background: rgba(255, 255, 255, 0.05); border: 1.5px solid rgba(255, 255, 255, 0.1); border-radius: 24px; backdrop-filter: blur(12px); box-shadow: 0 20px 40px rgba(0,0,0,0.3); margin: 20px; box-sizing: border-box;">
+      <div style="width: 80px; height: 80px; background: #10b981; color: #ffffff; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 24px; box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);">
+        <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+      </div>
+      <h2 style="font-size: 26px; font-weight: 800; margin-top: 0; margin-bottom: 12px; letter-spacing: -0.02em; font-family: 'Plus Jakarta Sans', sans-serif;">Order Completed!</h2>
+      <p style="font-size: 14.5px; color: #94a3b8; line-height: 1.6; margin-bottom: 24px;">Thank you for your purchase. Your payment was confirmed securely via Razorpay.</p>
+      <div style="font-size: 13px; font-weight: 700; color: #fb641b; background: rgba(251, 100, 27, 0.1); padding: 8px 16px; border-radius: 12px; display: inline-block; margin-bottom: 24px;">
+        Redirecting to homepage in <span id="success-countdown" style="font-size: 16px; font-weight: 800;">5</span> seconds...
+      </div>
+      <div>
+        <a href="index.html" class="btn-orange" style="display: block; text-decoration: none; padding: 14px; border-radius: 10px; font-weight: 800; font-size: 14px; box-shadow: 0 4px 12px rgba(251,100,27,0.25); text-align: center; color: #ffffff;">Go to Homepage Now</a>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
